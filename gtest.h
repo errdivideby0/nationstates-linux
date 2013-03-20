@@ -1,0 +1,43 @@
+#ifndef GTKMM_EXAMPLE_GTEST_H
+#define GTKMM_EXAMPLE_GTEST_H
+
+#include <gtkmm.h>
+#include "treeview.h"
+#include "functions.h"
+#include "saveview.h"
+
+class gTest : public Gtk::Window{
+
+public:
+	gTest();
+	virtual ~gTest();
+
+	void goto_data(std::vector<Glib::ustring> nation_data);
+
+protected:
+
+	void on_button_next();
+	void on_notebook_switch_page(Gtk::Widget* page, guint page_num);
+
+
+	std::vector< std::vector<Glib::ustring> > data_vectors;
+	Glib::ustring current_time, nation;
+
+	Gtk::Box main_box, big_box;
+	Gtk::VBox right_box, v_header;
+	Gtk::HBox header_box, description_box, Info3, Info4, Info5, Info6, event_box, save_box, nation_box, header_lower_box;
+	Gtk::ScrolledWindow scrolled_save, scrolled_events, scrolled_stats;
+	Gtk::Notebook notebook;
+	Tree_View stats;
+	Save_View saves;
+	functions fun;
+	Gtk::ButtonBox input_box, save_buttons;
+	Gtk::Image flag;
+	Gtk::Label fullname, events_label, description_label, rights;
+	Gtk::Entry nation_input;
+	Gtk::Button next_button;
+	Gtk::Window* errorPopup;
+
+};
+
+#endif
