@@ -74,6 +74,31 @@ Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from
 	return the_string.substr(from_start, the_string.size() - from_start - from_end);
 }
 
+// Just placing some string formation out here to clean up the gtest class
+Glib::ustring functions::make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
+	return "<b><big>"+all_data.at(2)+"</big></b>"+"\n\""+all_data.at(4)+"\"\n"+all_data.at(6)+"\n\n"+data_vectors.at(0).at(3)+" million citizens";
+}
+Glib::ustring functions::make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
+	return "Civil Rights: "+data_vectors.at(6).at(0)+" ("+data_vectors.at(0).at(0)+")\nEconomy: "+data_vectors.at(6).at(1)+" ("+
+		data_vectors.at(0).at(1)+")\nPolitical Freedom: "+data_vectors.at(6).at(2)+" ("+data_vectors.at(0).at(2)+")\n\nInfluence = "+all_data.at(66);
+}
+Glib::ustring functions::make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors){
+	Glib::ustring events_text;
+	for(int i=0; i<data_vectors.at(2).size(); i++){
+		events_text = events_text+"<b>"+data_vectors.at(2).at(i)+"</b>\n"+data_vectors.at(2).at(i+1)+"\n\n"; i++;}
+	return events_text;
+}
+Glib::ustring functions::make_description_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors, Glib::ustring nation){
+	string stringer = data_vectors.at(3).at(6);
+	stringer.at(0) = toupper(stringer.at(0));
+	Glib::ustring description = all_data.at(2)+" is a "+data_vectors.at(3).at(0)+" nation, renowned for its "+data_vectors.at(3).at(1)+", and "+
+		data_vectors.at(3).at(2)+" citizens.\n\n"+data_vectors.at(3).at(4)+" "+data_vectors.at(3).at(5)+"\n\n"+stringer+", "+data_vectors.at(3).at(7)+
+		", "+data_vectors.at(3).at(8)+", and "+data_vectors.at(3).at(9)+". "+data_vectors.at(3).at(10)+" "+nation+"\'s national animal is the "+
+		data_vectors.at(3).at(11)+", which "+data_vectors.at(3).at(12)+", and its currency is the "+data_vectors.at(3).at(13)+".";
+	return description;
+}
+
+
 // Write all the lines of a file to a ustring vector that is returned
 std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;

@@ -20,6 +20,12 @@ void curl_grab(Glib::ustring filed, Glib::ustring url);
 int get_nation_data(Glib::ustring nation);
 Glib::ustring get_time(int mode);
 int number_of_sets(Glib::ustring nation);
+
+Glib::ustring make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);
+Glib::ustring make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);
+Glib::ustring make_description_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors, Glib::ustring nation);
+Glib::ustring make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors);
+
 std::vector<Glib::ustring> load_data(Glib::ustring current_time, Glib::ustring nation);
 void save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation);
 void set_error(Gtk::Window* errorPopup, Glib::ustring title, Glib::ustring error_message);

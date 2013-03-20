@@ -86,18 +86,11 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 	std::vector<Glib::ustring> previous_dates;
 	double change_value = 0;
 
-	try{
-		clear_stat_list();
-		//if(print_mode == 1){
-			previous_dates.push_back("hi");
-			previous_dates.push_back("hey");
-		//}
-	}
-	catch(exception& e){
-		cout<<"error in print setup\n";
-	}
-		cout<<"names.size() ="<<names.size()<<"\n";
-	cout<<"comparor.at(1).size() = "<<comparor.at(1).size()<<"\n";
+	clear_stat_list();
+	//if(print_mode == 1){
+		previous_dates.push_back("one");
+		previous_dates.push_back("two");
+	//}
 
 	try{
 		append_category_row("Deaths");
@@ -139,6 +132,7 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		cout<<"error in Economy\n";
 	}
 
+	try{
 		append_category_row("Budget");
 		for(int i=0; i<comparor.at(4).size(); i++){
 			append_stat_row();
@@ -150,7 +144,12 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 			if(change_value==0)
 				set_stat_row("", names.at(69+i), comparor.at(4).at(i), comparor.at(4).at(i));
 		}
+	}
+	catch(exception& e){
+		cout<<"error in Budget\n";
+	}
 
+	try{
 		append_category_row("Census Data");
 		for(int i=0; i<comparor.at(0).size(); i++){
 			append_stat_row();
@@ -162,6 +161,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 			if(change_value==0)
 				set_stat_row("", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
 		}
+	}
+	catch(exception& e){
+		cout<<"error in Census\n";
+	}
 	expand_stat_list();
 }
 
