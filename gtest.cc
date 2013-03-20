@@ -90,7 +90,6 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_notebook_switch_page));
 
 	show_all_children();
-	call_this(*this);
 }
 
 gTest::~gTest(){
@@ -196,12 +195,13 @@ void gTest::goto_data(std::vector<Glib::ustring> nation_data){
 	stats.print_data(data_vectors, last_vectors, 1);
 }
 
-gTest gtest = *this;
 
 void Save_View::save_menu_print(){
 	//if(nation_data.at(0).at(0) == '*')
 	//	nation_data.at(0) = trim(nation_data.at(0), 1, 0);
 
-	gtest.goto_data(nation_data);
+
+	// Can not figure out how to get the gTest instance that contains the Save_View instance.
+	//gtest.goto_data(nation_data);
 }
 
