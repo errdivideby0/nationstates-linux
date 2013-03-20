@@ -28,7 +28,6 @@ std::vector<Glib::ustring> print_node(const xmlpp::Node* node, std::vector<Glib:
 std::vector<std::vector<Glib::ustring> > vectors_generate(std::vector<Glib::ustring> all_data, Glib::ustring nation);
 std::vector<std::vector<Glib::ustring> > last_vectors_generate(std::vector<Glib::ustring> last_data);
 
-
 };
 
 #endif

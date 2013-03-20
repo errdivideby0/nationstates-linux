@@ -24,8 +24,8 @@ protected:
 
 	void save_menu_load();
 	void save_menu_delete();
-	void save_menu_print();
 	void save_menu_nothing();
+	void save_menu_print();
 
 	class SaveColumns : public Gtk::TreeModel::ColumnRecord{
 		public:

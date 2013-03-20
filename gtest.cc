@@ -118,7 +118,8 @@ void gTest::on_button_next(){
 			xmlpp::DomParser parser;
 			parser.parse_file("./nation.xml");
 
-			std::vector<Glib::ustring> all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
+			std::vector<Glib::ustring> all_data;
+			all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 
 			data_vectors.clear();
 			data_vectors = fun.vectors_generate(all_data, nation);
@@ -191,17 +192,6 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 }
 
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){
-	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
-	stats.print_data(data_vectors, last_vectors, 1);
+	//std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
+	//stats.print_data(data_vectors, last_vectors, 1);
 }
-
-
-void Save_View::save_menu_print(){
-	//if(nation_data.at(0).at(0) == '*')
-	//	nation_data.at(0) = trim(nation_data.at(0), 1, 0);
-
-
-	// Can not figure out how to get the gTest instance that contains the Save_View instance.
-	//gtest.goto_data(nation_data);
-}
-

@@ -13,6 +13,7 @@
 
 using namespace std;
 
+// Converts a string to an int
 int functions::strint(string String){
 	stringstream data(String);
 	int Int;
@@ -20,6 +21,7 @@ int functions::strint(string String){
 	return Int;
 }
 
+// Converts a string to a double
 double functions::strouble(string String){
 	stringstream data(String);
 	double Double;
@@ -27,23 +29,27 @@ double functions::strouble(string String){
 	return Double;
 }
 
+// Converts a string to a char*
 const char * functions::strchar(string String){
 	const char * Char = String.c_str();
 	return Char;
 }
 
+// Converts an int to a string
 string functions::intstr(int number){
 	 stringstream ss;
 	 ss << number;
 	 return ss.str();
 }
 
+// Converts a double to a string
 string functions::doubstr(double number){
 	 ostringstream ss;
 	 ss << number;
 	 return ss.str();
 }
 
+// Counts the number of lines in a file (1, 2, 3, ...)
 int functions::count_lines(string file){
 	ifstream read;
 	read.open(strchar(file));
@@ -57,15 +63,18 @@ int functions::count_lines(string file){
 	return nlines;
 }
 
+// Function used by curl to write data
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 		size_t written = fwrite(ptr, size, nmemb, stream);
 		return written;
 }
 
+// Trim a string (string, # of chars to remove from begining, # of chars to remove from end)
 Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from_end){
 	return the_string.substr(from_start, the_string.size() - from_start - from_end);
 }
 
+// Write all the lines of a file to a ustring vector that is returned
 std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;
 	std::vector<Glib::ustring> cities_vector;
@@ -79,6 +88,7 @@ std::vector<Glib::ustring> functions::read(string file){
 	return cities_vector;
 }
 
+// Download a file from the internet with (save the file as this name, the link to the file)
 void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 	CURL *curl = curl_easy_init();
 	if (curl) {
@@ -92,6 +102,7 @@ void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 	}
 }
 
+// Takes the nation name and forms a file called nation.xml that contains all the nation data, also returns the number of lines in the file
 int functions::get_nation_data(Glib::ustring nation){
 	Glib::ustring nation_url = "http://www.nationstates.net/cgi-bin/api.cgi?nation="+nation+"&q=";
 	std::vector<Glib::ustring> url_requests = read("./url_requests.txt");
@@ -102,6 +113,7 @@ int functions::get_nation_data(Glib::ustring nation){
 	return size;
 }
 
+// Gets the current time. Mode zero gives the date in ISO YYYY-MM-DD, mode one gives whether it is the morning nationstates or the afternoon, mode one give the current hour HH
 Glib::ustring functions::get_time(int mode){
 	curl_grab("./time.txt", "http://www.timeapi.org/est/now?format=%25FT%25R");
 	ifstream read;
@@ -132,10 +144,12 @@ Glib::ustring functions::get_time(int mode){
 	}
 }
 
+// Returns the number of previous data points you have for a nation
 int functions::number_of_sets(Glib::ustring nation){
 	return count_lines("./"+nation+"/datelog.txt");
 }
 
+// Loads the last (non-current) data point into a vector and returns it (for a nation)
 std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib::ustring nation){
 	Glib::ustring pdv;
 	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
@@ -146,6 +160,8 @@ std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib
 	return read("./"+nation+"/"+pdv);
 }
 
+// Saves the nations data set if it does not previously exist and it is a new day on nationstates
+// There is a problem here where new data exists but it is not a new day yet. This is because the ns calculation time is uncertain
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
 	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
@@ -181,12 +197,14 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	}
 }
 
+// Sets the error message for a popup window and shows it.
 void functions::set_error(Gtk::Window* errorPopup, Glib::ustring title, Glib::ustring error_message){
 	errorPopup->set_title(title);
 	errorPopup->add_label(error_message, false, 0.5, 0.5);
 	errorPopup->show_all();
 }
 
+// Sets up the error popup window.
 Gtk::Window* functions::error_setup(){
 	Gtk::Window* errorPopup;
 	errorPopup = Gtk::manage (new Gtk::Window());
@@ -196,6 +214,7 @@ Gtk::Window* functions::error_setup(){
 	return errorPopup;
 }
 
+// This parses the nation.xml and forms a vector of all the values and titles.
 std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first){
 
 	Glib::ustring finalname;
@@ -227,6 +246,7 @@ std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::v
 	return new_data_first;
 }
 
+// Takes the data vector formed by print_node and searches for certain elements that we want. Pushes them to new vectors to later print.
 std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector<Glib::ustring> all_data, Glib::ustring nation){
 
 	std::vector<std::vector<Glib::ustring> > data_vectors;
@@ -304,6 +324,7 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 	return data_vectors;
 }
 
+// Does the same as generate vectors but without somethings.
 std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::vector<Glib::ustring> last_data){
 
 	std::vector<std::vector<Glib::ustring> > last_vectors;
