@@ -7,10 +7,16 @@
 #include "saveview.h"
 
 class gTest : public Gtk::Window{
+private:
+	gTest();
+	gTest(const gTest&);
+	gTest& operator=(const gTest&);
 
 public:
-	gTest();
-	virtual ~gTest();
+	static gTest& instance(){
+		static gTest singleton;
+		return singleton;
+	}
 
 	void goto_data(std::vector<Glib::ustring> nation_data);
 

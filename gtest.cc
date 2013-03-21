@@ -1,5 +1,6 @@
 #include "gtest.h"
 #include <cstdlib>
+#include <iostream>
 #include <exception>
 #include <gtkmm.h>
 #include <string>
@@ -26,13 +27,13 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(460, 570);
+	scrolled_stats.set_size_request(470, 570);
 
-	right_box.set_size_request(600, 570);
+	right_box.set_size_request(590, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
 
-	v_header.set_size_request(600, 120);
+	v_header.set_size_request(590, 120);
 	v_header.pack_start(header_box);
 	v_header.pack_start(header_lower_box);
 
@@ -93,15 +94,11 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 	show_all_children();
 }
 
-gTest::~gTest(){
-}
-
 void gTest::on_button_next(){
 
 	string nationer = nation_input.get_text().lowercase();
 	nationer[0] = toupper(nationer[0]);
 
-	//nation.clear();
 	nation = nationer;
 
 	errorPopup = fun.error_setup();
@@ -185,6 +182,6 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 }
 
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){
-	//std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
-	//stats.print_data(data_vectors, last_vectors, 1);
+	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
+	stats.print_data(data_vectors, last_vectors, 1);
 }

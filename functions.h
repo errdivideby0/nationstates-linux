@@ -9,6 +9,8 @@ class functions{
 public:
 
 const char * strchar (std::string String);
+double strouble(std::string String);
+std::string doubstr(double number);
 int count_lines(std::string file);
 Glib::ustring trim(Glib::ustring the_string, int from_start, int from_end);
 std::vector<Glib::ustring> read(std::string file);

@@ -16,7 +16,6 @@ public:
 	void set_row(Glib::ustring text);
 	int number_selected();
 	void save_menu_get(std::vector< std::vector<Glib::ustring> > data_vectors);
-	void send_instance();
 
 protected:
 

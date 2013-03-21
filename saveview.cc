@@ -1,4 +1,6 @@
 #include "saveview.h"
+#include "gtest.h"
+#include <iostream>
 
 using namespace std;
 
@@ -93,14 +95,8 @@ int Save_View::number_selected(){
 	return get_selection()->count_selected_rows();
 }
 
-void Save_View::send_instance(){
-}
-
 void Save_View::save_menu_print(){
-	//if(nation_data.at(0).at(0) == '*')
-	//	nation_data.at(0) = trim(nation_data.at(0), 1, 0);
-
-
-	// Can not figure out how to get the gTest instance that contains the Save_View instance.
-	//gtest.goto_data(nation_data);
+	if(nation_data.at(0).at(0) == '*')
+		nation_data.at(0) = fun.trim(nation_data.at(0), 1, 0);
+	gTest::instance().goto_data(nation_data);
 }

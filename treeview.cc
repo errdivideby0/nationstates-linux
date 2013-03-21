@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "treeview.h"
+#include "functions.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -100,9 +101,9 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 			if(previous_dates.size()>1){
 				for(int j=0; j<comparee.at(1).size(); j++){
 					if(comparor.at(1).at(i) == comparee.at(1).at(j)){
-						change_value = std::stod(comparor.at(1).at(i+1), 0) - std::stod(comparee.at(1).at(j+1), 0);
+						change_value = fun.strouble(comparor.at(1).at(i+1)) - fun.strouble(comparee.at(1).at(j+1));
 						if(change_value != 0)
-								set_stat_row("<b>"+std::to_string(change_value)+"</b>%", "<b>"+comparor.at(1).at(i)+"</b>", "<b>"+comparor.at(1).at(i+1)+"</b>", "<b>"+comparee.at(1).at(j+1)+"</b>%");
+								set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+comparor.at(1).at(i)+"</b>", "<b>"+comparor.at(1).at(i+1)+"</b>", "<b>"+comparee.at(1).at(j+1)+"</b>%");
 						j = comparee.at(1).size()-1;
 					}
 				}
@@ -121,9 +122,9 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		for(int i=0; i<comparor.at(5).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
-				change_value = std::stod(comparor.at(5).at(i), 0) - std::stod(comparee.at(2).at(i), 0);
+				change_value = fun.strouble(comparor.at(5).at(i)) - fun.strouble(comparee.at(2).at(i));
 				if(change_value != 0)
-					set_stat_row("<b>"+std::to_string(change_value)+"</b>%", "<b>"+names.at(80+i)+"</b>", "<b>"+comparor.at(5).at(i)+"</b>%", "<b>"+comparee.at(2).at(i)+"</b>%");
+					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(80+i)+"</b>", "<b>"+comparor.at(5).at(i)+"</b>%", "<b>"+comparee.at(2).at(i)+"</b>%");
 			}
 			if(change_value==0)
 				set_stat_row("", names.at(80+i), comparor.at(5).at(i)+"%", comparor.at(5).at(i)+"%");
@@ -138,9 +139,9 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		for(int i=0; i<comparor.at(4).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
-				change_value = std::stod(fun.trim(comparor.at(4).at(i), 0, 1), 0) - std::stod(fun.trim(comparee.at(3).at(i), 0, 1), 0);
+				change_value = fun.strouble(fun.trim(comparor.at(4).at(i), 0, 1)) - fun.strouble(fun.trim(comparee.at(3).at(i), 0, 1));
 				if(change_value != 0)
-					set_stat_row("<b>"+std::to_string(change_value)+"</b>%", "<b>"+names.at(69+i)+"</b>", "<b>"+comparor.at(4).at(i)+"</b>", "<b>"+comparee.at(3).at(i)+"</b>");
+					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(69+i)+"</b>", "<b>"+comparor.at(4).at(i)+"</b>", "<b>"+comparee.at(3).at(i)+"</b>");
 			}
 			if(change_value==0)
 				set_stat_row("", names.at(69+i), comparor.at(4).at(i), comparor.at(4).at(i));
@@ -155,9 +156,9 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		for(int i=0; i<comparor.at(0).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
-				change_value = std::stod(comparor.at(0).at(i), 0) - std::stod(comparee.at(0).at(i), 0);
+				change_value = fun.strouble(comparor.at(0).at(i)) - fun.strouble(comparee.at(0).at(i));
 				if(change_value != 0)
-					set_stat_row("<b>"+std::to_string(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
+					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
 			}
 			if(change_value==0)
 				set_stat_row("", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));

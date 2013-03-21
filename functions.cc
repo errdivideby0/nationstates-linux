@@ -22,6 +22,21 @@ const char * functions::strchar(string String){
 	return Char;
 }
 
+// Converts a string to a double
+double functions::strouble(string String){
+	stringstream data(String);
+	double Double;
+	data >> Double;
+	return Double;
+}
+
+// Converts a double to a string
+string functions::doubstr(double number){
+	ostringstream ss;
+	ss << number;
+	return ss.str();
+}
+
 // Counts the number of lines in a file (1, 2, 3, ...)
 int functions::count_lines(string file){
 	ifstream read;
@@ -338,7 +353,7 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 	return data_vectors;
 }
 
-// Does the same as generate vectors but without somethings.
+// Does the same as generate vectors but without some things.
 std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::vector<Glib::ustring> last_data){
 
 	std::vector<std::vector<Glib::ustring> > last_vectors;
