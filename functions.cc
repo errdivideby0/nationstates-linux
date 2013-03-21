@@ -12,43 +12,14 @@
 #include "functions.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <string>
 
 using namespace std;
-
-// Converts a string to an int
-int functions::strint(string String){
-	stringstream data(String);
-	int Int;
-	data >> Int;
-	return Int;
-}
-
-// Converts a string to a double
-double functions::strouble(string String){
-	stringstream data(String);
-	double Double;
-	data >> Double;
-	return Double;
-}
 
 // Converts a string to a char*
 const char * functions::strchar(string String){
 	const char * Char = String.c_str();
 	return Char;
-}
-
-// Converts an int to a string
-string functions::intstr(int number){
-	 stringstream ss;
-	 ss << number;
-	 return ss.str();
-}
-
-// Converts a double to a string
-string functions::doubstr(double number){
-	 ostringstream ss;
-	 ss << number;
-	 return ss.str();
 }
 
 // Counts the number of lines in a file (1, 2, 3, ...)
@@ -156,15 +127,15 @@ Glib::ustring functions::get_time(int mode){
 	}
 	else if(mode == 1){
 		isotime = trim(isotime, 11, 3);
-		if(strint(isotime)<13) isotime = "morning";
+		if(std::stoi(isotime, 0, 10)<13) isotime = "morning";
 		else isotime = "evening";
 		return isotime;
 	}
 	else if(mode == 2){
-		iso_time = 24 - strint(trim(isotime, 11, 3));
+		iso_time = 24 - std::stoi(trim(isotime, 11, 3), 0, 10);
 		if(iso_time>12)
 			iso_time = iso_time - 12;
-		return intstr(iso_time);
+		return std::to_string(iso_time);
 	}
 	else if(mode == 3){
 		return trim(isotime, 11, 0);
@@ -308,7 +279,7 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 			deaths.push_back(all_data.at(i).erase(0,6));
 			deaths.push_back(trim(all_data.at(i+1), 0, 1)); i++;}
 		else if(all_data.at(i).find("EVENT")!=-1){
-			time_t thetime =  static_cast<time_t>(strouble(all_data.at(i+2)));
+			time_t thetime =  static_cast<time_t>(std::stod(all_data.at(i+2), 0));
 			struct tm * timeinfo = localtime(&thetime);
 			char buffer [80];
 			strftime(buffer, 80, "%d %B, %Y, %R", timeinfo);
@@ -348,7 +319,7 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 			economy.push_back(all_data.at(i+1)); i++;}
 		else if(all_data.at(i) == "PUBLICSECTOR"){
 			economy.push_back(trim(all_data.at(i+1), 0, 1));
-			economy.push_back(intstr(100-strint(all_data.at(i+1)))); i++;}
+			economy.push_back(std::to_string(100-std::stoi(all_data.at(i+1), 0, 10))); i++;}
 		else if(all_data.at(i) == "FREEDOM"){
 			for(int j=0; j<3; j++)
 				freedoms.push_back(all_data.at(i+2+(j*2)));
@@ -385,7 +356,7 @@ std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::v
 			last_economy.push_back(last_data.at(i+1)); i++;}
 		else if(last_data.at(i) == "PUBLICSECTOR"){
 			last_economy.push_back(last_data.at(i+1));
-			last_economy.push_back(intstr(100-strint(last_data.at(i+1)))); i++;}
+			last_economy.push_back(std::to_string(100-std::stoi(last_data.at(i+1), 0, 10))); i++;}
 		else if(last_data.at(i) == "ENVIRONMENT"){
 			for(int j=0; j<11; j++)
 				last_budget.push_back(last_data.at(i+1+(j*2)));

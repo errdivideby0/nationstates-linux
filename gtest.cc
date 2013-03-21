@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <exception>
 #include <gtkmm.h>
+#include <string>
 
 using namespace std;
 
@@ -169,7 +170,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			for(int j=0; j<nation_list.size(); j++){
 				std::vector<Glib::ustring> previous_dates = fun.read("./"+nation_list.at(j)+"/datelog.txt");
 				int n_dates = previous_dates.size();
-				saves.append_nation(nation_list.at(j), fun.intstr(n_dates));
+				saves.append_nation(nation_list.at(j), std::to_string(n_dates));
 				for(int i=n_dates-1; i>-1; i--){
 					saves.append_row();
 					Glib::ustring pdate = fun.trim(previous_dates.at(i), 0, 4);
