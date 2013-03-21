@@ -191,32 +191,47 @@ std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib
 // There is a problem here where new data exists but it is not a new day yet. This is because the ns calculation time is uncertain
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
+	// Reads the nations date log file to see if the current time matches any previous data sets
 	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
+
+	//If it does not match or there are no previous dates, it writes a new file
 	if(((previous_dates.size()>0)&&(current_time != previous_dates.back()))||(previous_dates.size()==0)){
 		ofstream save;
 		fstream savedate;
+
+		// Checks to see if /nation/datelog exists, if not it makes the directory
 		if(access(strchar("./"+nation+"/datelog.txt"), F_OK) == -1)
 			mkdir(strchar(nation), S_IRWXU);
+
+		// Uses the save stream to create a new data point with filename: current_time
 		save.open(strchar("./"+nation+"/"+current_time));
+
+		// Writes each element of all_data to a new line in the file
 		for(int i=0; i<all_data.size(); i++)
 			save<<all_data.at(i)<<"\n";
 
+		//Opens the nations datelog file and adds current_date to a new line (a log of data points)
 		savedate.open(strchar("./"+nation+"/datelog.txt"), fstream::in | fstream::out | fstream::app);
 		savedate<<current_time<<"\n";
 		save.close();
 		savedate.close();
 	}
 
+	// Makes a vector of all the nations that have data sets
 	std::vector<Glib::ustring> nation_list = read("./nation_list.txt");
 	int first_run = 0; int exists = 0;
+
+	// If there are no data sets
 	if(nation_list.size()==0)
 		first_run = 1;
 	else{
+		// For each nation in the log, if it matches, set as 1
 		for(int i=0; i<nation_list.size(); i++){
 			if(nation == nation_list.at(i))
 				exists = 1;
 		}
 	}
+	// If none of the above conditions hold true, save the nation as a new line in the nation_list log
 	if((exists == 0)||(first_run == 1)){
 		fstream savenation;
 		savenation.open(strchar("./nation_list.txt"), fstream::in | fstream::out | fstream::app);
