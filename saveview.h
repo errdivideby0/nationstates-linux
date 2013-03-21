@@ -48,5 +48,4 @@ protected:
 	functions fun;
 };
 
-
 #endif

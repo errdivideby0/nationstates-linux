@@ -8,22 +8,22 @@ Compassion
 Eco-Friendliness
 Social Conservatism
 Nudity
-Manufacturing: Automobile
-Manufacturing: Cheese Exports
-Manufacturing: Basket Weaving
-Manufacturing: Information Technology
-Manufacturing: Pizza Delivery
-Manufacturing: Trout Fishing
-Manufacturing: Arms Manufacturing
-Manufacturing: Agriculture
-Manufacturing: Beverage Sales
-Manufacturing: Timber Woodchipping
-Manufacturing: Mining
-Manufacturing: Insurance
-Manufacturing: Furniture Restoration
-Manufacturing: Retail
-Manufacturing: Book Publishing
-Manufacturing: Gambling
+Automobile
+Cheese Exports
+Basket Weaving
+Information Technology
+Pizza Delivery
+Trout Fishing
+Arms Manufacturing
+Agriculture
+Beverage Sales
+Timber Woodchipping
+Mining
+Insurance
+Furniture Restoration
+Retail
+Book Publishing
+Gambling
 Manufacturing
 Government Size
 Welfare

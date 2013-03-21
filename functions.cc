@@ -64,7 +64,7 @@ Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from
 
 // Just placing some string formation out here to clean up the gtest class
 Glib::ustring functions::make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
-	return "<b><big>"+all_data.at(2)+"</big></b>"+"\n\""+all_data.at(4)+"\"\n"+all_data.at(6)+"\n\n"+data_vectors.at(0).at(3)+" million citizens";
+	return "\""+all_data.at(4)+"\"\n"+all_data.at(6)+"\n\n"+data_vectors.at(0).at(3)+" million citizens";
 }
 Glib::ustring functions::make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
 	return "Civil Rights: "+data_vectors.at(6).at(0)+" ("+data_vectors.at(0).at(0)+")\nEconomy: "+data_vectors.at(6).at(1)+" ("+
@@ -372,7 +372,7 @@ std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::v
 		else if(last_data.at(i) == "TAX"){
 			last_economy.push_back(last_data.at(i+1)); i++;}
 		else if(last_data.at(i) == "PUBLICSECTOR"){
-			last_economy.push_back(last_data.at(i+1));
+			last_economy.push_back(trim(last_data.at(i+1), 0, 1));
 			last_economy.push_back(std::to_string(100-std::stoi(last_data.at(i+1), 0, 10))); i++;}
 		else if(last_data.at(i) == "ENVIRONMENT"){
 			for(int j=0; j<11; j++)

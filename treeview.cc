@@ -168,10 +168,35 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 				set_stat_row("", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
 			else if(previous_dates.size() == 0)
 				set_stat_row("", names.at(i), comparor.at(0).at(i), "");
+			if(i == 9)
+				i = i + 17;
 		}
 	}
 	catch(exception& e){
 		cout<<"error in Census\n";
+	}
+
+	try{
+		append_category_row("Manufacturing");
+		for(int i=9; i<26; i++){
+			append_stat_row();
+			if(i==9)
+				i = 26;
+			if(previous_dates.size()>1){
+				change_value = fun.strouble(comparor.at(0).at(i)) - fun.strouble(comparee.at(0).at(i));
+				if(change_value != 0)
+					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
+			}
+			if((change_value==0)&&(previous_dates.size()>1))
+				set_stat_row("", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
+			else if(previous_dates.size() == 0)
+				set_stat_row("", names.at(i), comparor.at(0).at(i), "");
+			if(i==26)
+				i = 10;
+		}
+	}
+	catch(exception& e){
+		cout<<"error in Manufacturing\n";
 	}
 	expand_stat_list();
 }

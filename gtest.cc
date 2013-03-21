@@ -7,10 +7,10 @@
 
 using namespace std;
 
-gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
+gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	set_border_width(0);
-	set_default_size(1080, 620);
+	set_default_size(1040, 620);
 
 	scrolled_save.add(saves);
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -19,23 +19,23 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 	scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 	add(main_box);
-	main_box.pack_start(big_box);
-	main_box.pack_start(input_box, Gtk::PACK_SHRINK);
+	//main_box.pack_start(big_box);
 
-	big_box.pack_start(scrolled_stats);
-	big_box.pack_start(right_box);
+	main_box.pack_start(scrolled_stats);
+	main_box.pack_start(right_box);
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(500, 570);
+	scrolled_stats.set_size_request(430, 570);
 
-	right_box.set_size_request(580, 570);
+	right_box.set_size_request(590, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
+	right_box.pack_start(input_box, Gtk::PACK_SHRINK);
 
-	v_header.set_size_request(580, 120);
+	v_header.set_size_request(590, 100);
+	v_header.pack_start(header_upper_box);
 	v_header.pack_start(header_box);
-	v_header.pack_start(header_lower_box);
 
 	notebook.append_page(description_box, "Description");
 	notebook.append_page(Info3, "Issues");
@@ -48,17 +48,22 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 	save_box.pack_start(save_buttons);
 	save_box.pack_start(scrolled_save);
 
-	header_lower_box.set_border_width(8);
+	header_upper_box.set_border_width(4);
+	header_upper_box.pack_start(nation_label);
 
 	header_box.pack_start(flag);
 	header_box.pack_start(nation_box);
 	header_box.set_border_width(8);
 
-	flag.set_size_request(110, 120);
-	nation_box.set_size_request(470, 120);
+	flag.set_size_request(115, 100);
+	nation_box.set_size_request(475, 100);
+
+	nation_label.set_selectable(true);
+	nation_label.set_markup("<b><big>Nation</big></b>");
+	nation_label.set_justify(Gtk::JUSTIFY_CENTER);
 
 	fullname.set_selectable(true);
-	fullname.set_markup("<b><big>Nation</big></b>\n\"Motto\"\nCategory");
+	fullname.set_markup("\"Motto\"\nCategory");
 	fullname.set_justify(Gtk::JUSTIFY_LEFT);
 
 	rights.set_selectable(true);
@@ -79,6 +84,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 
 	nation_box.add(fullname);
 	nation_box.add(rights);
+	nation_box.set_border_width(8);
 
 	set_title("NationStates");
 	nation_input.set_placeholder_text("Enter Nation Name");
@@ -136,6 +142,7 @@ void gTest::on_button_next(){
 			fun.curl_grab("./"+nation+"/flag.jpg", all_data.at(25));
 			flag.set("./"+nation+"/flag.jpg");
 
+			nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");
 			fullname			.set_markup(fun.make_fullname_text(all_data, data_vectors));
 			rights				.set_markup(fun.make_rights_text(all_data, data_vectors));
 			description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
@@ -144,10 +151,7 @@ void gTest::on_button_next(){
 			set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
 
 			// This is to force a refresh (the on_notebook_switch_page function) but I do not know a better way of doing so.
-			if(notebook.get_current_page() == 6){
-				notebook.set_current_page(5);
-				notebook.set_current_page(6);
-			}
+			force_notebook_refresh();
 		}
 		else{
 			if(nation_size>0)
@@ -207,16 +211,14 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	data_vectors = fun.vectors_generate(all_data, nation);
 
 	stats.print_data(data_vectors, last_vectors, 0);
+	nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");
 	fullname			.set_markup(fun.make_fullname_text(all_data, data_vectors));
 	rights				.set_markup(fun.make_rights_text(all_data, data_vectors));
 	description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
 	events_label		.set_markup(fun.make_events_text(data_vectors));
 
 	set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
-	if(notebook.get_current_page() == 6){
-		notebook.set_current_page(5);
-		notebook.set_current_page(6);
-	}
+	force_notebook_refresh();
 }
 
 void gTest::goto_delete_all(Glib::ustring nationer){
@@ -233,9 +235,13 @@ void gTest::goto_get_all(Glib::ustring nationer){
 	std::vector<Glib::ustring> all_data;
 	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 	fun.save_data(all_data, currenter_time, nationer);
+	force_notebook_refresh();
+
+}
+
+void gTest::force_notebook_refresh(){
 	if(notebook.get_current_page() == 6){
 		notebook.set_current_page(5);
 		notebook.set_current_page(6);
 	}
-
 }
