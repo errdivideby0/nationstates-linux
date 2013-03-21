@@ -48,43 +48,40 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	save_box.pack_start(save_buttons);
 	save_box.pack_start(scrolled_save);
 
-	header_upper_box.set_border_width(4);
+	header_upper_box.set_border_width(5);
 	header_upper_box.pack_start(nation_label);
 
-	header_box.pack_start(flag);
-	header_box.pack_start(nation_box);
-	header_box.set_border_width(8);
-
-	flag.set_size_request(115, 100);
-	nation_box.set_size_request(475, 100);
+	header_box.pack_start(flag, Gtk::PACK_SHRINK);
+	header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
 
 	nation_label.set_selectable(true);
 	nation_label.set_markup("<b><big>Nation</big></b>");
 	nation_label.set_justify(Gtk::JUSTIFY_CENTER);
 
 	fullname.set_selectable(true);
-	fullname.set_markup("\"Motto\"\nCategory");
+	fullname.set_markup("\"Motto\"\nCategory\nPopulation:");
 	fullname.set_justify(Gtk::JUSTIFY_LEFT);
+	fullname.set_line_wrap();
 
 	rights.set_selectable(true);
-	rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:    ( )");
+	rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:    ( )\nInfluence:    ");
 	rights.set_justify(Gtk::JUSTIFY_RIGHT);
 
 	description_box.pack_start(description_label, Gtk::PACK_SHRINK);
 	description_box.set_valign(Gtk::ALIGN_START);
 	description_box.set_halign(Gtk::ALIGN_START);
-	description_box.set_border_width(10);
+	description_box.set_border_width(8);
 	description_label.set_line_wrap();
 
 	event_box.set_valign(Gtk::ALIGN_START);
 	event_box.set_halign(Gtk::ALIGN_START);
 	event_box.pack_start(events_label);
-	event_box.set_border_width(10);
+	event_box.set_border_width(8);
 	events_label.set_line_wrap();
 
-	nation_box.add(fullname);
-	nation_box.add(rights);
-	nation_box.set_border_width(8);
+	nation_box.pack_start(fullname);
+	nation_box.pack_start(rights);
+	nation_box.set_border_width(5);
 
 	set_title("NationStates");
 	nation_input.set_placeholder_text("Enter Nation Name");
@@ -149,8 +146,6 @@ void gTest::on_button_next(){
 			events_label		.set_markup(fun.make_events_text(data_vectors));
 
 			set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
-
-			// This is to force a refresh (the on_notebook_switch_page function) but I do not know a better way of doing so.
 			force_notebook_refresh();
 		}
 		else{
@@ -217,6 +212,9 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
 	events_label		.set_markup(fun.make_events_text(data_vectors));
 
+	fun.curl_grab("./"+nation+"/flag.jpg", all_data.at(25));
+	flag.set("./"+nation+"/flag.jpg");
+
 	set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
 	force_notebook_refresh();
 }
@@ -236,7 +234,6 @@ void gTest::goto_get_all(Glib::ustring nationer){
 	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 	fun.save_data(all_data, currenter_time, nationer);
 	force_notebook_refresh();
-
 }
 
 void gTest::force_notebook_refresh(){
