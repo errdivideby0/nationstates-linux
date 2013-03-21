@@ -10,7 +10,7 @@ using namespace std;
 gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	set_border_width(0);
-	set_default_size(1060, 620);
+	set_default_size(1080, 620);
 
 	scrolled_save.add(saves);
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -27,13 +27,13 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(470, 570);
+	scrolled_stats.set_size_request(480, 570);
 
-	right_box.set_size_request(590, 570);
+	right_box.set_size_request(580, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
 
-	v_header.set_size_request(590, 120);
+	v_header.set_size_request(580, 120);
 	v_header.pack_start(header_box);
 	v_header.pack_start(header_lower_box);
 
@@ -54,8 +54,8 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 	header_box.pack_start(nation_box);
 	header_box.set_border_width(8);
 
-	flag.set_size_request(120, 120);
-	nation_box.set_size_request(480, 120);
+	flag.set_size_request(110, 120);
+	nation_box.set_size_request(470, 120);
 
 	fullname.set_selectable(true);
 	fullname.set_markup("<b><big>Nation</big></b>\n\"Motto\"\nCategory");
