@@ -24,6 +24,8 @@ protected:
 	void save_menu_delete();
 	void save_menu_nothing();
 	void save_menu_print();
+	void save_title_menu_get();
+	void save_title_menu_delete_all();
 
 	class SaveColumns : public Gtk::TreeModel::ColumnRecord{
 		public:
@@ -42,7 +44,7 @@ protected:
 	Glib::RefPtr<Gtk::TreeSelection> selection;
 	Gtk::TreeModel::Row nation_row, save_row, selected_row, parent_row;
 	Gtk::TreeModel::iterator parentrow, iter;
-	Gtk::Menu save_menu;
+	Gtk::Menu save_menu, save_title_menu;
 	functions fun;
 };
 

@@ -12,10 +12,7 @@ Save_View::Save_View(){
 	set_model(SaveModel);
 	append_column("Date", save_columns.stat_date);
 
-	Gtk::MenuItem* item = Gtk::manage(new Gtk::MenuItem("Get Latest Data", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_nothing));
-	save_menu.append(*item);
-	item = Gtk::manage(new Gtk::MenuItem("Compare", true));
+	Gtk::MenuItem*  item = Gtk::manage(new Gtk::MenuItem("Compare", true));
 	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_print));
 	save_menu.append(*item);
 
@@ -27,11 +24,20 @@ Save_View::Save_View(){
 	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_delete));
 	save_menu.append(*item);
 
+	Gtk::MenuItem* title_item = Gtk::manage(new Gtk::MenuItem("Get Latest Data for", true));
+	title_item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_title_menu_get));
+	save_title_menu.append(*title_item);
+	title_item = Gtk::manage(new Gtk::MenuItem("Delete Data for", true));
+	title_item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_title_menu_delete_all));
+	save_title_menu.append(*title_item);
+
+	save_title_menu.accelerate(*this);
+	save_title_menu.show_all();
+
 	save_menu.accelerate(*this);
 	save_menu.show_all();
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Save_View::on_button_press_event));
-
 }
 
 Save_View::~Save_View(){
@@ -43,10 +49,12 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 	return_value = TreeView::on_button_press_event(event);
 
 	nation_data.clear();
+	// Get the selected row that was clicked
 	selection = get_selection();
 	iter = selection->get_selected();
 	selected_row = *iter;
 
+	// If user has clicked a nation date in the nation tree
 	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent())){
 		Glib::ustring ndate = selected_row[save_columns.stat_date];
 		nation_data.push_back(ndate + ".txt");
@@ -55,6 +63,12 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 		Glib::ustring nname = parent_row[save_columns.stat_date];
 		nation_data.push_back(nname.substr(0, nname.find(' ')));
 		save_menu.popup(event->button, event->time);
+	}
+	// If user has clicked a row without a parent (the nation)
+	else if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0)){
+		Glib::ustring nname = selected_row[save_columns.stat_date];
+		nation_data.push_back(nname.substr(0, nname.find(' ')));
+		save_title_menu.popup(event->button, event->time);
 	}
 	return return_value;
 }
@@ -100,4 +114,12 @@ void Save_View::save_menu_print(){
 	if(nation_data.at(0).at(0) == '*')
 		nation_data.at(0) = fun.trim(nation_data.at(0), 1, 0);
 	gTest::instance().goto_data(nation_data);
+}
+
+void Save_View::save_title_menu_delete_all(){
+	gTest::instance().goto_delete_all(nation_data.at(0));
+}
+
+void Save_View::save_title_menu_get(){
+	gTest::instance().goto_get_all(nation_data.at(0));
 }

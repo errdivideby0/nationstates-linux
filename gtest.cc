@@ -218,3 +218,24 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 		notebook.set_current_page(6);
 	}
 }
+
+void gTest::goto_delete_all(Glib::ustring nationer){
+	//delete nationer folder, and from nation_log
+}
+
+void gTest::goto_get_all(Glib::ustring nationer){
+	Glib::ustring currenter_time = fun.get_time(0)+"-"+fun.get_time(1)+".txt";
+
+	fun.get_nation_data(nationer);
+	xmlpp::DomParser parser;
+	parser.parse_file("./nation.xml");
+
+	std::vector<Glib::ustring> all_data;
+	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
+	fun.save_data(all_data, currenter_time, nationer);
+	if(notebook.get_current_page() == 6){
+		notebook.set_current_page(5);
+		notebook.set_current_page(6);
+	}
+
+}
