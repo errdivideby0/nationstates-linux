@@ -10,6 +10,8 @@
 #include <giomm/file.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -193,7 +195,8 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	if(((previous_dates.size()>0)&&(current_time != previous_dates.back()))||(previous_dates.size()==0)){
 		ofstream save;
 		fstream savedate;
-		system(strchar("mkdir "+nation));
+		if(access(strchar("./"+nation+"/datelog.txt"), F_OK) == -1)
+			mkdir(strchar(nation), S_IRWXU);
 		save.open(strchar("./"+nation+"/"+current_time));
 		for(int i=0; i<all_data.size(); i++)
 			save<<all_data.at(i)<<"\n";
