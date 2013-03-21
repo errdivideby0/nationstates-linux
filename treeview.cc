@@ -8,8 +8,6 @@
 
 using namespace std;
 
-std::vector<Glib::ustring> Tree_View::names;
-
 Tree_View::Tree_View(){
 
 	TreeModel = Gtk::TreeStore::create(stat_columns);
@@ -89,10 +87,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 	double change_value = 0;
 
 	clear_stat_list();
-	//if(print_mode == 1){
+	if(print_mode == 1){
 		previous_dates.push_back("one");
 		previous_dates.push_back("two");
-	//}
+	}
 
 	try{
 		append_category_row("Deaths");
@@ -103,13 +101,15 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 					if(comparor.at(1).at(i) == comparee.at(1).at(j)){
 						change_value = fun.strouble(comparor.at(1).at(i+1)) - fun.strouble(comparee.at(1).at(j+1));
 						if(change_value != 0)
-								set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+comparor.at(1).at(i)+"</b>", "<b>"+comparor.at(1).at(i+1)+"</b>", "<b>"+comparee.at(1).at(j+1)+"</b>%");
+								set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+comparor.at(1).at(i)+"</b>", "<b>"+comparor.at(1).at(i+1)+"</b>%", "<b>"+comparee.at(1).at(j+1)+"</b>%");
 						j = comparee.at(1).size()-1;
 					}
 				}
 			}
-			if(change_value==0)
+			if((change_value==0)&&(previous_dates.size()>1))
 				set_stat_row("", comparor.at(1).at(i), comparor.at(1).at(i+1)+"%", comparor.at(1).at(i+1)+"%");
+			else if(previous_dates.size() == 0)
+				set_stat_row("", comparor.at(1).at(i), comparor.at(1).at(i+1)+"%", "");
 			i++;
 		}
 	}
@@ -126,8 +126,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 				if(change_value != 0)
 					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(80+i)+"</b>", "<b>"+comparor.at(5).at(i)+"</b>%", "<b>"+comparee.at(2).at(i)+"</b>%");
 			}
-			if(change_value==0)
+			if((change_value==0)&&(previous_dates.size()>1))
 				set_stat_row("", names.at(80+i), comparor.at(5).at(i)+"%", comparor.at(5).at(i)+"%");
+			else if(previous_dates.size() == 0)
+				set_stat_row("", names.at(80+i), comparor.at(5).at(i)+"%", "");
 		}
 	}
 	catch(exception& e){
@@ -143,8 +145,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 				if(change_value != 0)
 					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(69+i)+"</b>", "<b>"+comparor.at(4).at(i)+"</b>", "<b>"+comparee.at(3).at(i)+"</b>");
 			}
-			if(change_value==0)
+			if((change_value==0)&&(previous_dates.size()>1))
 				set_stat_row("", names.at(69+i), comparor.at(4).at(i), comparor.at(4).at(i));
+			else if(previous_dates.size() == 0)
+				set_stat_row("", names.at(69+i), comparor.at(4).at(i), "");
 		}
 	}
 	catch(exception& e){
@@ -160,8 +164,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 				if(change_value != 0)
 					set_stat_row("<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
 			}
-			if(change_value==0)
+			if((change_value==0)&&(previous_dates.size()>1))
 				set_stat_row("", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
+			else if(previous_dates.size() == 0)
+				set_stat_row("", names.at(i), comparor.at(0).at(i), "");
 		}
 	}
 	catch(exception& e){

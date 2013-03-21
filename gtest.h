@@ -19,6 +19,8 @@ public:
 	}
 
 	void goto_data(std::vector<Glib::ustring> nation_data);
+	void goto_load(std::vector<Glib::ustring> nation_data);
+
 
 protected:
 

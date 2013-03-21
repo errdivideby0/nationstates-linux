@@ -175,6 +175,8 @@ std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib
 
 // Saves the nations data set if it does not previously exist and it is a new day on nationstates
 // There is a problem here where new data exists but it is not a new day yet. This is because the ns calculation time is uncertain
+
+// Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
 	// Reads the nations date log file to see if the current time matches any previous data sets

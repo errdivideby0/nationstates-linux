@@ -38,7 +38,7 @@ protected:
 	Gtk::TreeView TreeView;
 	Glib::RefPtr<Gtk::TreeStore> TreeModel;
 	Gtk::TreeModel::Row category_row, stat_row;
-	static std::vector<Glib::ustring> names;
+	std::vector<Glib::ustring> names;
 	functions fun;
 
 };

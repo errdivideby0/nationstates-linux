@@ -60,18 +60,15 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 }
 
 void Save_View::save_menu_load(){
-
+	if(nation_data.at(0).at(0) == '*')
+		nation_data.at(0) = fun.trim(nation_data.at(0), 1, 0);
+	gTest::instance().goto_load(nation_data);
 }
 
 void Save_View::save_menu_nothing(){
 }
 
 void Save_View::save_menu_delete(){
-}
-
-void Save_View::save_menu_get(std::vector< std::vector<Glib::ustring> > data_vectors){
-	data_vectorers.clear();
-	data_vectorers = data_vectors;
 }
 
 void Save_View::clear_save_list(){
@@ -93,6 +90,10 @@ void Save_View::set_row(Glib::ustring text){
 
 int Save_View::number_selected(){
 	return get_selection()->count_selected_rows();
+}
+
+void Save_View::expand_category(){
+	//expand_row(get_path(save_row.parent()), true);
 }
 
 void Save_View::save_menu_print(){

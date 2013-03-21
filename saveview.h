@@ -15,8 +15,7 @@ public:
 	void append_row();
 	void set_row(Glib::ustring text);
 	int number_selected();
-	void save_menu_get(std::vector< std::vector<Glib::ustring> > data_vectors);
-
+	void expand_category();
 protected:
 
 	virtual bool on_button_press_event(GdkEventButton *ev);
@@ -37,7 +36,6 @@ protected:
 	};
 	SaveColumns save_columns;
 
-	std::vector< std::vector<Glib::ustring> > data_vectorers;
 	static std::vector<Glib::ustring> nation_data;
 
 	Glib::RefPtr<Gtk::TreeStore> SaveModel;

@@ -27,7 +27,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_VERTICAL), big_box(Gtk::ORIENTATION_HO
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(480, 570);
+	scrolled_stats.set_size_request(500, 570);
 
 	right_box.set_size_request(580, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
@@ -126,7 +126,10 @@ void gTest::on_button_next(){
 			if(fun.number_of_sets(nation)>1)
 				last_vectors = fun.last_vectors_generate(fun.load_data(current_time, nation));
 
-			stats.print_data(data_vectors, last_vectors, 0);
+			if(fun.read("./"+nation+"/datelog.txt").size()>1)
+				stats.print_data(data_vectors, last_vectors, 1);
+			else
+				stats.print_data(data_vectors, last_vectors, 0);
 
 			fun.save_data(all_data, current_time, nation);
 
@@ -159,6 +162,13 @@ void gTest::on_button_next(){
 		set_title("NationStates"); }
 }
 
+/* Use this to detect which rows are expanded
+bool Gtk::TreeView::row_expanded 	( 	const TreeModel::Path&  	path	)
+Returns true if the node pointed to by path is expanded in tree_view.
+Parameters
+    path	A Gtk::TreePath to test expansion state.
+*/
+
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	if(page_num == 6){
 		std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
@@ -171,8 +181,10 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 				for(int i=n_dates-1; i>-1; i--){
 					saves.append_row();
 					Glib::ustring pdate = fun.trim(previous_dates.at(i), 0, 4);
-					if((nation == nation_list.at(j))&&(current_time == previous_dates.at(i)))
+					if((nation == nation_list.at(j))&&(current_time == previous_dates.at(i))){
 						saves.set_row("*"+pdate);
+						saves.expand_category();
+					}
 					else
 						saves.set_row(pdate);
 				}
@@ -184,4 +196,25 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){
 	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
 	stats.print_data(data_vectors, last_vectors, 1);
+}
+
+void gTest::goto_load(std::vector<Glib::ustring> nation_data){
+	nation = nation_data.at(1);
+	current_time = nation_data.at(0);
+	std::vector<Glib::ustring> all_data = fun.read("./"+nation+"/"+current_time);
+	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(all_data);
+	data_vectors.clear();
+	data_vectors = fun.vectors_generate(all_data, nation);
+
+	stats.print_data(data_vectors, last_vectors, 0);
+	fullname			.set_markup(fun.make_fullname_text(all_data, data_vectors));
+	rights				.set_markup(fun.make_rights_text(all_data, data_vectors));
+	description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
+	events_label		.set_markup(fun.make_events_text(data_vectors));
+
+	set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
+	if(notebook.get_current_page() == 6){
+		notebook.set_current_page(5);
+		notebook.set_current_page(6);
+	}
 }
