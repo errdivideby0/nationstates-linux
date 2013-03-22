@@ -103,7 +103,6 @@ Glib::ustring functions::make_description_text(std::vector<Glib::ustring> all_da
 	return description;
 }
 
-
 // Write all the lines of a file to a ustring vector that is returned
 std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;
@@ -177,15 +176,15 @@ Glib::ustring functions::get_time(int mode, bool gmt){
 }
 
 bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee){
-	// Checks to see if any of the census data has changed.
+	bool return_value = false;
 	for(int i=0; i<comparor.at(0).size(); i++){
-		if(comparor.at(0).at(i) != comparee.at(0).at(i))
-			return true;
+		if(comparor.at(0).at(i) != comparee.at(0).at(i)){
+			//cout<<"comparor.at(0).at(i) = "<<comparor.at(0).at(i)<<" comparee.at(0).at(i) ="<<comparee.at(0).at(i)<<"\n";
+			return_value = true;
+		}
 	}
+	return return_value;
 }
-
-// Saves the nations data set if it does not previously exist and it is a new day on nationstates
-// There is a problem here where new data exists but it is not a new day yet. This is because the ns calculation time is uncertain
 
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
@@ -263,7 +262,7 @@ Gtk::Window* functions::error_setup(){
 	return errorPopup;
 }
 
-// This parses the nation.xml and forms a vector of all the values and titles.
+// This parses the nation.xml and forms a vector of all the values and titles. Best to pretend this does not exist
 std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first){
 
 	Glib::ustring finalname;

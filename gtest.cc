@@ -147,10 +147,10 @@ void gTest::on_button_next(){
 			data_vectors = fun.vectors_generate(all_data, nation);
 
 			//loads the latest data saved
-			std::vector<Glib::ustring> nation_data;
-			nation_data.push_back(fun.read("./"+nation+"/datelog.txt").back());
-			nation_data.push_back(nation);
-			goto_load(nation_data);
+			std::vector<Glib::ustring> nation_datar;
+			nation_datar.push_back(fun.read("./"+nation+"/datelog.txt").back());
+			nation_datar.push_back(nation);
+			goto_load(nation_datar);
 
 			std::vector< std::vector<Glib::ustring> > last_vectors;
 			int lines = fun.count_lines("./"+nation+"/datelog.txt");

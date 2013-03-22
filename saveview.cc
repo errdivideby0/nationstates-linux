@@ -41,10 +41,10 @@ Save_View::Save_View(){
 	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_delete));
 	save_menu.append(*item);
 
-	Gtk::MenuItem* title_item = Gtk::manage(new Gtk::MenuItem("Get Latest Data for", true));
+	Gtk::MenuItem* title_item = Gtk::manage(new Gtk::MenuItem("Get Latest Data", true));
 	title_item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_title_menu_get));
 	save_title_menu.append(*title_item);
-	title_item = Gtk::manage(new Gtk::MenuItem("Delete Data for", true));
+	title_item = Gtk::manage(new Gtk::MenuItem("Delete Nation's Data", true));
 	title_item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_title_menu_delete_all));
 	save_title_menu.append(*title_item);
 
