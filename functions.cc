@@ -127,8 +127,11 @@ int functions::get_nation_data(Glib::ustring nation){
 }
 
 // Gets the current time. Mode zero gives the date in ISO YYYY-MM-DD, mode one gives whether it is the morning nationstates or the afternoon, mode one give the current hour HH
-Glib::ustring functions::get_time(int mode){
-	curl_grab("./time.txt", "http://www.timeapi.org/est/now?format=%25FT%25R");
+Glib::ustring functions::get_time(int mode, bool gmt){
+	if(gmt)
+		curl_grab("./time.txt", "http://www.timeapi.org/gmt/now?format=%25FT%25R");
+	else
+		curl_grab("./time.txt", "http://www.timeapi.org/est/now?format=%25FT%25R");
 	ifstream read;
 	string dBuffer;
 	read.open("./time.txt");
@@ -152,8 +155,15 @@ Glib::ustring functions::get_time(int mode){
 			iso_time = iso_time - 12;
 		return std::to_string(iso_time);
 	}
-	else if(mode == 3){
+	else if(mode == 3)
 		return trim(isotime, 11, 0);
+}
+
+bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee){
+	// Checks to see if any of the census data has changed.
+	for(int i=0; i<comparor.at(0).size(); i++){
+		if(comparor.at(0).at(i) != comparee.at(0).at(i))
+			return true;
 	}
 }
 
@@ -179,11 +189,15 @@ std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
-	// Reads the nations date log file to see if the current time matches any previous data sets
 	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
-
+	bool newdata = false;
+	if(previous_dates.size()>0){
+		std::vector<std::vector<Glib::ustring> > comparor = last_vectors_generate(all_data);
+		std::vector<std::vector<Glib::ustring> > comparee = last_vectors_generate(read("./"+nation+"/"+previous_dates.back()));
+		newdata = check_for_new_data(comparor, comparee);
+	}
 	//If it does not match or there are no previous dates, it writes a new file
-	if(((previous_dates.size()>0)&&(current_time != previous_dates.back()))||(previous_dates.size()==0)){
+	if((newdata)||(previous_dates.size() == 0)){
 		ofstream save;
 		fstream savedate;
 
@@ -191,10 +205,13 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 		if(access(strchar("./"+nation+"/datelog.txt"), F_OK) == -1)
 			mkdir(strchar(nation), S_IRWXU);
 
-		// Uses the save stream to create a new data point with filename: current_time
-		save.open(strchar("./"+nation+"/"+current_time));
+		// If the current time is the same as the latest saved and there is new data, save with gmt mode which will force a save with the next filename
+		if(previous_dates.size()>0){
+			if(current_time == previous_dates.back())
+				current_time = get_time(0, true)+"-"+get_time(1, true)+".txt";
+		}
 
-		// Writes each element of all_data to a new line in the file
+		save.open(strchar("./"+nation+"/"+current_time));
 		for(int i=0; i<all_data.size(); i++)
 			save<<all_data.at(i)<<"\n";
 

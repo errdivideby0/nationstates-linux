@@ -1,0 +1,42 @@
+[DONE] Make timezone independant
+
+[DONE] Parse XML Correctly
+[DONE] Add a detail box with flag, name, population and etc
+
+[DONE] Recode the save and load system
+[DONE] Add back in changed values and bold everything if it is different
+[DONE] Fix private spending change
+[DONE] Add a Past Data viewer
+
+[DONE] Detect if user is on page 6 (saved data) when adding a new nation to reload
+[DONE] Trim date logs of useless data
+[DONE] Add time to next tick info
+[DONE] Made Event page timestamped and scrollable
+[DONE] Fix time to Server time
+[DONE] Make nation logs save to folders
+[DONE] Moved all data vectors into vector vectors
+[DONE] Show currently loaded data name
+[DONE] Fix new state not adding to list after few loads of nation comparing
+[DONE] Add a compare latest to button
+[DONE] Push printing to function
+[DONE] Give option to load any save as the main data
+[DONE] LOADS
+[TEST]Load new data and compare to old imediately when avialable. if current data is newer than the last in the save file.
+
+Add an update all button
+Change title time to to minutes to 4:35
+Refine the UI size.
+Fix deaths not comparing nicely when different methods of death exist between data sets
+Make flag resize automatically to a standard size
+
+Add column for world data
+// http://www.nationstates.net/cgi-bin/api.cgi?q=(shard1)+(shard2)+(...)
+// numnations numregions census censusid censussize censusscale censusmedian featuredregion newnations
+
+Add region data to region tab
+// http://www.nationstates.net/cgi-bin/api.cgi?region=(name)&q=(shard1)+(shard2)+(...)
+// name factbook numnations nations delegate delegatevotes gavote scvote founder power flag embassies tags happenings messages*
+
+Implement a new Window class for are you sure delete data options
+Parse description for %%area%%, @@leader@@ and such tags
+Start saving events

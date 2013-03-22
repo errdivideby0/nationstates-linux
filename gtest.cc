@@ -114,7 +114,7 @@ void gTest::on_button_next(){
 		if(nation_size>69){
 
 			current_time.clear();
-			current_time = fun.get_time(0)+"-"+fun.get_time(1)+".txt";
+			current_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".txt";
 
 			xmlpp::DomParser parser;
 			parser.parse_file("./nation.xml");
@@ -126,11 +126,10 @@ void gTest::on_button_next(){
 			data_vectors = fun.vectors_generate(all_data, nation);
 
 			std::vector< std::vector<Glib::ustring> > last_vectors;
-			if(fun.number_of_sets(nation)>1)
+			if(fun.number_of_sets(nation)>1){
 				last_vectors = fun.last_vectors_generate(fun.load_data(current_time, nation));
-
-			if(fun.read("./"+nation+"/datelog.txt").size()>1)
 				stats.print_data(data_vectors, last_vectors, 1);
+			}
 			else
 				stats.print_data(data_vectors, last_vectors, 0);
 
@@ -145,7 +144,11 @@ void gTest::on_button_next(){
 			description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
 			events_label		.set_markup(fun.make_events_text(data_vectors));
 
-			set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
+			Glib::ustring gmttime = fun.get_time(0, true)+"-"+fun.get_time(1, true)+".txt";
+			if(fun.read("./"+nation+"/datelog.txt").back() == gmttime)
+				set_title(nation+" | roughly 13 hours until update");
+			else
+				set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
 			force_notebook_refresh();
 		}
 		else{
@@ -212,10 +215,10 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
 	events_label		.set_markup(fun.make_events_text(data_vectors));
 
-	fun.curl_grab("./"+nation+"/flag.jpg", all_data.at(25));
+	flag.clear();
 	flag.set("./"+nation+"/flag.jpg");
 
-	set_title(nation+" | roughly "+fun.get_time(2)+" hours until update");
+	set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
 	force_notebook_refresh();
 }
 
@@ -224,7 +227,7 @@ void gTest::goto_delete_all(Glib::ustring nationer){
 }
 
 void gTest::goto_get_all(Glib::ustring nationer){
-	Glib::ustring currenter_time = fun.get_time(0)+"-"+fun.get_time(1)+".txt";
+	Glib::ustring currenter_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".txt";
 
 	fun.get_nation_data(nationer);
 	xmlpp::DomParser parser;
