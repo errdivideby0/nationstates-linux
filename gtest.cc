@@ -29,6 +29,8 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	set_border_width(0);
 	set_default_size(1040, 620);
 
+	update_button.set_label("Update All");
+
 	scrolled_save.add(saves);
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
@@ -36,21 +38,19 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 	add(main_box);
-	//main_box.pack_start(big_box);
-
 	main_box.pack_start(scrolled_stats);
 	main_box.pack_start(right_box);
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(430, 570);
+	scrolled_stats.set_size_request(450, 570);
 
-	right_box.set_size_request(590, 570);
+	right_box.set_size_request(570, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
 	right_box.pack_start(input_box, Gtk::PACK_SHRINK);
 
-	v_header.set_size_request(590, 100);
+	v_header.set_size_request(570, 100);
 	v_header.pack_start(header_upper_box);
 	v_header.pack_start(header_box);
 
@@ -105,10 +105,12 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	input_box.pack_start(nation_input);
 	input_box.pack_start(next_button, Gtk::PACK_SHRINK);
+	input_box.pack_start(update_button);
 	input_box.set_border_width(5);
 	input_box.set_layout(Gtk::BUTTONBOX_END);
 
 	next_button.signal_clicked().connect(sigc::mem_fun(*this, &gTest::on_button_next));
+	update_button.signal_clicked().connect(sigc::mem_fun(*this, &gTest::on_button_update));
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_notebook_switch_page));
 
 	show_all_children();
@@ -139,34 +141,25 @@ void gTest::on_button_next(){
 			std::vector<Glib::ustring> all_data;
 			all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 
+			fun.save_data(all_data, current_time, nation);
+
 			data_vectors.clear();
 			data_vectors = fun.vectors_generate(all_data, nation);
 
+			//loads the latest data saved
+			std::vector<Glib::ustring> nation_data;
+			nation_data.push_back(fun.read("./"+nation+"/datelog.txt").back());
+			nation_data.push_back(nation);
+			goto_load(nation_data);
+
 			std::vector< std::vector<Glib::ustring> > last_vectors;
-			if(fun.number_of_sets(nation)>1){
-				last_vectors = fun.last_vectors_generate(fun.load_data(current_time, nation));
+			int lines = fun.count_lines("./"+nation+"/datelog.txt");
+			if(lines>1){
+				last_vectors = fun.last_vectors_generate(fun.read("./"+nation+"/"+fun.read("./"+nation+"/datelog.txt").at(lines-2)));
 				stats.print_data(data_vectors, last_vectors, 1);
 			}
 			else
 				stats.print_data(data_vectors, last_vectors, 0);
-
-			fun.save_data(all_data, current_time, nation);
-
-			fun.curl_grab("./"+nation+"/flag.jpg", all_data.at(25));
-			flag.set("./"+nation+"/flag.jpg");
-
-			nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");
-			fullname			.set_markup(fun.make_fullname_text(all_data, data_vectors));
-			rights				.set_markup(fun.make_rights_text(all_data, data_vectors));
-			description_label	.set_label(fun.make_description_text(all_data, data_vectors, nation));
-			events_label		.set_markup(fun.make_events_text(data_vectors));
-
-			Glib::ustring gmttime = fun.get_time(0, true)+"-"+fun.get_time(1, true)+".txt";
-			if(fun.read("./"+nation+"/datelog.txt").back() == gmttime)
-				set_title(nation+" | roughly 13 hours until update");
-			else
-				set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
-			force_notebook_refresh();
 		}
 		else{
 			if(nation_size>0)
@@ -208,7 +201,19 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 						saves.set_row(pdate);
 				}
 			}
+		// add an update all button to the button box left
+		update_button.show();
 		}
+	}
+	else
+		update_button.hide();
+}
+
+void gTest::on_button_update(){
+	std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
+	if(nation_list.size()>0){
+		for(int i=0; i<nation_list.size(); i++)
+			goto_get_all(nation_list.at(i));
 	}
 }
 

@@ -45,6 +45,7 @@ public:
 protected:
 
 	void on_button_next();
+	void on_button_update();
 	void on_notebook_switch_page(Gtk::Widget* page, guint page_num);
 	void force_notebook_refresh();
 
@@ -63,7 +64,7 @@ protected:
 	Gtk::Image flag;
 	Gtk::Label fullname, events_label, description_label, rights, nation_label;
 	Gtk::Entry nation_input;
-	Gtk::Button next_button;
+	Gtk::Button next_button, update_button;
 	Gtk::Window* errorPopup;
 };
 

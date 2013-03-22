@@ -184,22 +184,6 @@ bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comp
 	}
 }
 
-// Returns the number of previous data points you have for a nation
-int functions::number_of_sets(Glib::ustring nation){
-	return count_lines("./"+nation+"/datelog.txt");
-}
-
-// Loads the last (non-current) data point into a vector and returns it (for a nation)
-std::vector<Glib::ustring> functions::load_data(Glib::ustring current_time, Glib::ustring nation){
-	Glib::ustring pdv;
-	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
-	if(current_time != previous_dates.back())
-		pdv = previous_dates.back();
-	else pdv =
-		previous_dates.at(previous_dates.size() - 2);
-	return read("./"+nation+"/"+pdv);
-}
-
 // Saves the nations data set if it does not previously exist and it is a new day on nationstates
 // There is a problem here where new data exists but it is not a new day yet. This is because the ns calculation time is uncertain
 

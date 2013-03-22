@@ -19,11 +19,13 @@
 [DONE] Fix new state not adding to list after few loads of nation comparing
 [DONE] Add a compare latest to button
 [DONE] Push printing to function
+
 [DONE] Give option to load any save as the main data
 [DONE] LOADS
-[TEST]Load new data and compare to old imediately when avialable. if current data is newer than the last in the save file.
+[DONE] Load new data and compare to old imediately when avialable. if current data is newer than the last in the save file.
+[DONE] Add an update all button
+[DONE] If the data was saved before the hour end, make it load the latest one and compare to current_time
 
-Add an update all button
 Change title time to to minutes to 4:35
 Refine the UI size.
 Fix deaths not comparing nicely when different methods of death exist between data sets
