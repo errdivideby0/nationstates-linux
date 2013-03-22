@@ -35,16 +35,17 @@ protected:
 
 	void append_category_row(Glib::ustring category_name);
 	void append_stat_row();
-	void set_stat_row(Glib::ustring text, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4);
+	void set_stat_row(int index, Glib::ustring text, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4);
 	void expand_stat_list();
 
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord{
 		public:
 
 		ModelColumns(){
-			add(stat_name); add(stat_value); add(stat_value2); add(stat_update);
+			add(index_number); add(stat_name); add(stat_value); add(stat_value2); add(stat_update);
 		}
 
+		Gtk::TreeModelColumn<int> index_number;
 		Gtk::TreeModelColumn<Glib::ustring> stat_name;
 		Gtk::TreeModelColumn<Glib::ustring> stat_value;
 		Gtk::TreeModelColumn<Glib::ustring> stat_value2;
