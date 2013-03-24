@@ -22,6 +22,7 @@
 #include "treeview.h"
 #include "functions.h"
 #include "saveview.h"
+#include "ploter.h"
 
 class gTest : public Gtk::Window{
 private:
@@ -41,13 +42,15 @@ public:
 	void goto_load(std::vector<Glib::ustring> nation_data);
 	void goto_delete_all(Glib::ustring nationer);
 	void goto_get_all(Glib::ustring nationer);
+	void force_notebook_refresh(int page);
+	static std::vector<Glib::ustring> stat_vector;
+	std::vector<Glib::ustring> get_stat_vector();
 
 protected:
 
 	void on_button_next();
 	void on_button_update();
 	void on_notebook_switch_page(Gtk::Widget* page, guint page_num);
-	void force_notebook_refresh();
 
 	std::vector< std::vector<Glib::ustring> > data_vectors;
 	Glib::ustring current_time, nation;
@@ -59,6 +62,7 @@ protected:
 	Gtk::Notebook notebook;
 	Tree_View stats;
 	Save_View saves;
+	Census_Plot plotter;
 	functions fun;
 	Gtk::ButtonBox input_box, save_buttons;
 	Gtk::Image flag;
@@ -66,6 +70,7 @@ protected:
 	Gtk::Entry nation_input;
 	Gtk::Button next_button, update_button;
 	Gtk::Window* errorPopup;
+	Cairo::RefPtr<Cairo::Context> cr;
 };
 
 #endif

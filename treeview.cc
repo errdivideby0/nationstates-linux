@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include "treeview.h"
 #include "functions.h"
+#include "gtest.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -49,6 +50,8 @@ Tree_View::Tree_View(){
 
 	names.clear();
 
+	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Tree_View::on_selection_changed));
+
 	ifstream read;
 	read.open("./stat_names.txt");
 	int nlines = -1;
@@ -67,7 +70,6 @@ Tree_View::Tree_View(){
 		names.push_back(dBuffer);
 	}
 	reader.close();
-
 }
 
 Tree_View::~Tree_View(){
@@ -91,7 +93,6 @@ void Tree_View::append_stat_row(){
 }
 
 void Tree_View::set_stat_row(int index, Glib::ustring text1, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4){
-	cout<<index<<"\n";
 	stat_row[stat_columns.index_number] = index;
 	stat_row[stat_columns.stat_update] = text1;
 	stat_row[stat_columns.stat_name] = text2;
@@ -116,10 +117,10 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 
 	try{
 		append_category_row("Deaths");
-		for(int i=0; i<comparor.at(1).size(); i++){
+		for( int i=0; i<comparor.at(1).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
-				for(int j=0; j<comparee.at(1).size(); j++){
+				for( int j=0; j<comparee.at(1).size(); j++){
 					if(comparor.at(1).at(i) == comparee.at(1).at(j)){
 						change_value = fun.strouble(comparor.at(1).at(i+1)) - fun.strouble(comparee.at(1).at(j+1));
 						if(change_value != 0)
@@ -141,7 +142,7 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 
 	try{
 		append_category_row("Economy");
-		for(int i=0; i<comparor.at(5).size(); i++){
+		for( int i=0; i<comparor.at(5).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
 				change_value = fun.strouble(comparor.at(5).at(i)) - fun.strouble(comparee.at(2).at(i));
@@ -160,7 +161,7 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 
 	try{
 		append_category_row("Budget");
-		for(int i=0; i<comparor.at(4).size(); i++){
+		for( int i=0; i<comparor.at(4).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
 				change_value = fun.strouble(fun.trim(comparor.at(4).at(i), 0, 1)) - fun.strouble(fun.trim(comparee.at(3).at(i), 0, 1));
@@ -179,7 +180,7 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 
 	try{
 		append_category_row("Census Data");
-		for(int i=0; i<comparor.at(0).size(); i++){
+		for( int i=0; i<comparor.at(0).size(); i++){
 			append_stat_row();
 			if(previous_dates.size()>1){
 				change_value = fun.strouble(comparor.at(0).at(i)) - fun.strouble(comparee.at(0).at(i));
@@ -200,7 +201,7 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 
 	try{
 		append_category_row("Manufacturing");
-		for(int i=9; i<26; i++){
+		for( int i=9; i<26; i++){
 			append_stat_row();
 			if(i==9)
 				i = 26;
@@ -221,4 +222,32 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		cout<<"error in Manufacturing\n";
 	}
 	expand_stat_list();
+}
+
+void Tree_View::on_selection_changed(){
+	gTest::instance().force_notebook_refresh(4);
+}
+
+std::vector<Glib::ustring> Tree_View::get_selected_stat(){
+
+	std::vector<Glib::ustring> stat_vector;
+	if(get_selection()->count_selected_rows() > 0){
+		selection = get_selection();
+		iter = selection->get_selected();
+		selected_row = *iter;
+		// If user has clicked a nation date in the nation tree
+		if(selected_row->parent()){
+			Glib::ustring name = selected_row[stat_columns.stat_name];
+			Glib::ustring stat = to_string(selected_row[stat_columns.index_number]);
+
+			parentrow = selected_row->parent();
+			parent_row = *parentrow;
+			Glib::ustring category = parent_row[stat_columns.stat_name];
+
+			stat_vector.push_back(name);
+			stat_vector.push_back(category);
+			stat_vector.push_back(stat);
+		}
+	}
+	return stat_vector;
 }

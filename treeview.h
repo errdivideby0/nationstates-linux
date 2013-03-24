@@ -30,6 +30,8 @@ public:
 	Glib::ustring get_name_at(int place);
 	void print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode);
 	void clear_stat_list();
+	std::vector<Glib::ustring> get_selected_stat();
+	void on_selection_changed();
 
 protected:
 
@@ -55,7 +57,9 @@ protected:
 
 	Gtk::TreeView TreeView;
 	Glib::RefPtr<Gtk::TreeStore> TreeModel;
-	Gtk::TreeModel::Row category_row, stat_row;
+	Glib::RefPtr<Gtk::TreeSelection> selection;
+	Gtk::TreeModel::Row category_row, stat_row, selected_row, parent_row;
+	Gtk::TreeModel::iterator parentrow, iter;
 	std::vector<Glib::ustring> names;
 	functions fun;
 

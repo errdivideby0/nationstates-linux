@@ -22,6 +22,8 @@
 #include <gtkmm.h>
 #include <string>
 
+std::vector<Glib::ustring> gTest::stat_vector;
+
 using namespace std;
 
 gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
@@ -64,6 +66,8 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	save_box.pack_start(save_buttons);
 	save_box.pack_start(scrolled_save);
+
+	Info6.pack_start(plotter);
 
 	header_upper_box.set_border_width(5);
 	header_upper_box.pack_start(nation_label);
@@ -186,11 +190,11 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 		std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
 		if(nation_list.size()>0){
 			saves.clear_save_list();
-			for(int j=0; j<nation_list.size(); j++){
+			for( int j=0; j<nation_list.size(); j++){
 				std::vector<Glib::ustring> previous_dates = fun.read("./"+nation_list.at(j)+"/datelog.txt");
 				int n_dates = previous_dates.size();
 				saves.append_nation(nation_list.at(j), std::to_string(n_dates));
-				for(int i=n_dates-1; i>-1; i--){
+				for(signed int i=n_dates-1; i>-1; i--){
 					saves.append_row();
 					Glib::ustring pdate = fun.trim(previous_dates.at(i), 0, 4);
 					if((nation == nation_list.at(j))&&(current_time == previous_dates.at(i))){
@@ -205,6 +209,13 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 		update_button.show();
 		}
 	}
+	else if(page_num == 4){
+		stat_vector.clear();
+		stat_vector = stats.get_selected_stat();
+		if(stat_vector.size()>0){
+			cout<<"Index is "<<stat_vector.at(1)<<"\nCategory is "<<stat_vector.at(0)<<"\n";
+		}
+	}
 	else
 		update_button.hide();
 }
@@ -212,9 +223,13 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 void gTest::on_button_update(){
 	std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
 	if(nation_list.size()>0){
-		for(int i=0; i<nation_list.size(); i++)
+		for( int i=0; i<nation_list.size(); i++)
 			goto_get_all(nation_list.at(i));
 	}
+}
+
+std::vector<Glib::ustring> gTest::get_stat_vector(){
+	return stat_vector;
 }
 
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){
@@ -240,8 +255,11 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	flag.clear();
 	flag.set("./"+nation+"/flag.jpg");
 
+	try{
 	set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
-	force_notebook_refresh();
+	force_notebook_refresh(6);
+	}
+	catch(exception& e){cout<<"Is the error here?";}
 }
 
 void gTest::goto_delete_all(Glib::ustring nationer){
@@ -258,12 +276,15 @@ void gTest::goto_get_all(Glib::ustring nationer){
 	std::vector<Glib::ustring> all_data;
 	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 	fun.save_data(all_data, currenter_time, nationer);
-	force_notebook_refresh();
+	force_notebook_refresh(6);
 }
 
-void gTest::force_notebook_refresh(){
-	if(notebook.get_current_page() == 6){
-		notebook.set_current_page(5);
-		notebook.set_current_page(6);
+void gTest::force_notebook_refresh(int page){
+	if(notebook.get_current_page() == page){
+		if(page>2)
+			notebook.set_current_page(page-1);
+		else
+			notebook.set_current_page(page+1);
+		notebook.set_current_page(page);
 	}
 }
