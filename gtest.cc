@@ -23,6 +23,7 @@
 #include <string>
 
 std::vector<Glib::ustring> gTest::stat_vector;
+std::vector<double> gTest::values_vector;
 
 using namespace std;
 
@@ -186,12 +187,15 @@ Parameters
 */
 
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
+	std::vector<Glib::ustring> previous_dates;
+	std::vector< std::vector<Glib::ustring> > temp_vectors;
 	if(page_num == 6){
 		std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
 		if(nation_list.size()>0){
 			saves.clear_save_list();
 			for( int j=0; j<nation_list.size(); j++){
-				std::vector<Glib::ustring> previous_dates = fun.read("./"+nation_list.at(j)+"/datelog.txt");
+				previous_dates.clear();
+				previous_dates = fun.read("./"+nation_list.at(j)+"/datelog.txt");
 				int n_dates = previous_dates.size();
 				saves.append_nation(nation_list.at(j), std::to_string(n_dates));
 				for(signed int i=n_dates-1; i>-1; i--){
@@ -212,8 +216,25 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	else if(page_num == 4){
 		stat_vector.clear();
 		stat_vector = stats.get_selected_stat();
-		if(stat_vector.size()>0){
-			cout<<"Index is "<<stat_vector.at(1)<<"\nCategory is "<<stat_vector.at(0)<<"\n";
+		if(stat_vector.size()>1){
+			int index = 0;
+			if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
+				index = 0;
+			else if(stat_vector.at(1)== "Deaths")
+				index = 1;
+			else if(stat_vector.at(1)=="Budget")
+				index = 2;
+			else if(stat_vector.at(1)=="Economy")
+				index = 3;
+
+			values_vector.clear();
+			previous_dates.clear();
+			std::vector<Glib::ustring> previous_dates = fun.read("./"+nation+"/datelog.txt");
+			for(int i=0; i<previous_dates.size(); i++){
+				temp_vectors.clear();
+				temp_vectors = fun.last_vectors_generate(fun.read("./"+nation+"/"+previous_dates.at(i)));
+				values_vector.push_back(fun.strouble(temp_vectors.at(index).at(stoi(stat_vector.at(2)))));
+			}
 		}
 	}
 	else
@@ -230,6 +251,10 @@ void gTest::on_button_update(){
 
 std::vector<Glib::ustring> gTest::get_stat_vector(){
 	return stat_vector;
+}
+
+std::vector<double> gTest::get_value_vector(){
+	return values_vector;
 }
 
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){

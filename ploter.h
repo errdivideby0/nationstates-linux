@@ -20,6 +20,7 @@
 
 #include <gtkmm/drawingarea.h>
 #include <cairomm/context.h>
+#include "functions.h"
 
 class Census_Plot : public Gtk::DrawingArea
 {
@@ -29,6 +30,7 @@ public:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
 
 protected:
+	functions fun;
 };
 
 #endif
