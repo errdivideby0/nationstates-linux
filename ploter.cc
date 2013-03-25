@@ -18,6 +18,7 @@
 #include "ploter.h"
 #include "gtest.h"
 
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <cairomm/context.h>
@@ -40,31 +41,13 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	int text_height;
 
 	int xs, ys, ysb, xsb, yso;
-	xs = width / 10;
+	xs = width/10;
 	xsb = width/12;
-	ys = height - (height / 10);
-	yso = height/10;
-	ysb = height/13;
-
-	cr->set_line_width(2.0);
-
-	cr->set_source_rgba(0.0, 0.0, 0.0, 0.78);
-	cr->move_to(xs, ys);
-	cr->line_to(width - xs, ys);
-	cr->move_to(xs, ys);
-	cr->line_to(xs, height - ys);
-	cr->stroke();
-	cr->set_line_width(1.0);
-	cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-	for(int i=1; i<11; i++){
-		cr->move_to(xs -2 , ys - (i*ysb) + 0.5);
-		cr->line_to(width -xs, ys - (i*ysb) + 0.5);
-	}
-	cr->stroke();
+	ys = height/10;
+	ysb = (height - (2*ys))/10;
 
 	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
 	if(stat_vector.size()>1){
-		cout<<"Trying to print graph\n";
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 		Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("date");
 
@@ -80,34 +63,88 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		std::vector<double> values_vector = gTest::instance().get_value_vector();
 		if(values_vector.size()>1){
-			double maxer, miner;
 			int n_points;
+			int larger = 0;
 			n_points = values_vector.size();
+			double miner = values_vector.at(0);
+			double maxer = values_vector.at(0);
 			for(int i=0; i<n_points; i++){
 				if(values_vector.at(i)>maxer)
 					maxer = values_vector.at(i);
 				else if(values_vector.at(i)<miner)
 					miner = values_vector.at(i);
 			}
-		//// Set axis points ////
-			Glib::RefPtr<Pango::Layout> y_label;
-			for(int i=1; i<11; i++){
-				y_label = create_pango_layout(fun.doubstr((maxer/10)*i));
-				y_label->get_pixel_size(text_width, text_height);
-				cr->move_to(xs -6 -text_width, ys - (i*ysb) + 0.5 - text_height/2);
-				y_label->show_in_cairo_context(cr);
+			if(abs(maxer)>abs(miner))
+				larger = 1;
+
+			cr->set_line_width(2.0);
+			cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
+			if(miner>=0){
+				cr->move_to(xs, height- ys);
+				cr->line_to(width - xs, height - ys);
 			}
+			else if(maxer<=0){
+				cr->move_to(xs, ys);
+				cr->line_to(width - xs, ys);
+			}
+			else{
+				cr->move_to(xs, 0.5*(height - 2*ys));
+				cr->line_to(width - xs, 0.5*(height - 2*ys));
+			}
+			cr->move_to(xs, ys);
+			cr->line_to(xs, height - ys);
+			cr->stroke();
+
+			// Print the axis lines and then labels
+			Glib::RefPtr<Pango::Layout> y_label;
+			cr->set_line_width(1.0);
+			for(int i=0; i<11; i++){
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
+				cr->move_to(xs -2 , (height - ys) - (i*ysb) + 0.5);
+				cr->line_to(width -xs, (height - ys) - (i*ysb) + 0.5);
+				cr->stroke();
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
+				if(miner>=0)
+					y_label = create_pango_layout(fun.doubstr((maxer/10)*i));
+				else if(maxer<=0)
+					y_label = create_pango_layout(fun.doubstr(miner - (miner/10)*i));
+				else if(larger == 1)
+					y_label = create_pango_layout(fun.doubstr(-maxer + (maxer/5)*i));
+				else
+					y_label = create_pango_layout(fun.doubstr(miner - (miner/5)*i));
+				y_label->get_pixel_size(text_width, text_height);
+				cr->move_to(xs -6 -text_width, (height - ys) - (i*ysb) + 0.5 - text_height/2);
+				y_label->show_in_cairo_context(cr);
+				cr->stroke();
+			}
+
 		//// draw lines
-		// From xs to 1-xs, and ys to ys - 1?
 			cr->set_line_width(2.0);
 			cr->set_source_rgba(0.7, 0.0, 0.0, 0.8);
 			for(int i=0; i<n_points-1; i++){ //////////////////////////// Height from the bottom
-				cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ( (values_vector.at(i))*((height-(2*ysb))/maxer) ) -0.5);
-				cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), height - ( (values_vector.at(i+1))*((height-(2*ysb))/maxer) ) -0.5);
+				//// Does not work if miner>maxer because it think the max is at teh top of the graph
+				if(miner>=0){
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
+					cr->curve_to(xs +(i*((width-(2*xs))/n_points)) + ((width-(2*xs))/n_points)/2, height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5,
+					xs +((i+1)*((width-(2*xs))/n_points)) - ((width-(2*xs))/n_points)/2, height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5,
+					xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
+				}
+				// I can probably else this.
+				else if(maxer<=0){
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
+					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
+				}
+				else if(larger == 1){
+					// ERROR HERE. It needs to set something else
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
+					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
+				}
+				else{
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
+					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
+				}
 			}
 			cr->stroke();
-		////
-
 		}
 
 		//// Display the y-axis label
