@@ -31,10 +31,13 @@ std::string doubstr(double number);
 int count_lines(std::string file);
 Glib::ustring trim(Glib::ustring the_string, int from_start, int from_end);
 std::vector<Glib::ustring> read(std::string file);
+std::vector<Glib::ustring> read_find(const char * file, Glib::ustring term, int lines);
+std::string read_single(const char * file, Glib::ustring term);
 void curl_grab(Glib::ustring filed, Glib::ustring url);
 int get_nation_data(Glib::ustring nation);
 Glib::ustring get_time(int mode, bool gmt);
 bool check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee);
+std::vector<Glib::ustring> get_deaths(const char * latest_deaths, Glib::ustring nation);
 
 Glib::ustring make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);
 Glib::ustring make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);

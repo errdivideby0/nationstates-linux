@@ -44,29 +44,14 @@ Tree_View::Tree_View(){
 	viewcol = Gtk::manage( new Gtk::TreeView::Column ("+/-", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_update);
 	append_column (*viewcol);
-	viewcol = Gtk::manage( new Gtk::TreeView::Column ("index", *render));
-	viewcol->add_attribute (render->property_markup(), stat_columns.index_number);
-	append_column (*viewcol);
-
 	names.clear();
 
 	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Tree_View::on_selection_changed));
 
-	ifstream read;
-	read.open("./stat_names.txt");
-	int nlines = -1;
-	string nline;
-	while (read.good()){
-		getline (read,nline);
-		nlines++;
-		}
-	read.close();
-
 	ifstream reader;
 	string dBuffer;
 	reader.open("./stat_names.txt");
-	for(int i=0; i<nlines; i++){
-		getline (reader,dBuffer);
+	while(getline(reader, dBuffer)){
 		names.push_back(dBuffer);
 	}
 	reader.close();

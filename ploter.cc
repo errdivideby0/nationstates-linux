@@ -88,8 +88,8 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				cr->line_to(width - xs, ys);
 			}
 			else{
-				cr->move_to(xs, 0.5*(height - 2*ys));
-				cr->line_to(width - xs, 0.5*(height - 2*ys));
+				cr->move_to(xs, ys + 0.5*(height - 2*ys));
+				cr->line_to(width - xs, ys + 0.5*(height - 2*ys));
 			}
 			cr->move_to(xs, ys);
 			cr->line_to(xs, height - ys);
@@ -135,12 +135,12 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				}
 				else if(larger == 1){
 					// ERROR HERE. It needs to set something else
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
-					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / (2*maxer)) +0.5);
+					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / (2*maxer)) +0.5);
 				}
 				else{
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
-					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
+					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / (2*miner)));
+					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / (2*miner)));
 				}
 			}
 			cr->stroke();

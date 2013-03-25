@@ -15,7 +15,6 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -27,8 +26,8 @@
 #include <giomm/file.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
-#include <sys/types.h>
-#include <sys/stat.h>
+//#include <sys/types.h>
+//#include <sys/stat.h>
 #include <string>
 
 using namespace std;
@@ -107,14 +106,45 @@ Glib::ustring functions::make_description_text(std::vector<Glib::ustring> all_da
 std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;
 	std::vector<Glib::ustring> cities_vector;
-	string dBuffer;
 	read.open(strchar(file));
-	for(int i=0; i<count_lines(file); i++){
-		getline (read,dBuffer);
-		cities_vector.push_back(dBuffer);
+	while(getline(read,file)){
+		cities_vector.push_back(file);
 	}
 	read.close();
 	return cities_vector;
+}
+
+std::vector<Glib::ustring> functions::read_find(const char * file, Glib::ustring term, int lines){
+	ifstream read;
+	std::vector<Glib::ustring> t_vector;
+	read.open(file);
+	string filer;
+	while(getline(read,filer)){
+		if(filer == term){
+			t_vector.push_back(filer);
+			for(int j=0; j<lines -1; j++){
+				getline(read,filer);
+				t_vector.push_back(filer);
+			}
+			break;
+		}
+	}
+	read.close();
+	return t_vector;
+}
+
+std::string functions::read_single(const char * file, Glib::ustring term){
+	ifstream read;
+	read.open(file);
+	string filer;
+	while(getline(read,filer)){
+		if(filer == term){
+			getline(read,filer);
+			break;
+		}
+	}
+	read.close();
+	return filer;
 }
 
 // Download a file from the internet with (save the file as this name, the link to the file)
@@ -179,7 +209,6 @@ bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comp
 	bool return_value = false;
 	for(int i=0; i<comparor.at(0).size(); i++){
 		if(comparor.at(0).at(i) != comparee.at(0).at(i)){
-			//cout<<"comparor.at(0).at(i) = "<<comparor.at(0).at(i)<<" comparee.at(0).at(i) ="<<comparee.at(0).at(i)<<"\n";
 			return_value = true;
 		}
 	}
@@ -359,8 +388,6 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 				freedoms.push_back(all_data.at(i+2+(j*2)));
 		i=i+6;
 		}
-		//else
-		//	cout<<"all_data.at ("<<i<<") = "<<all_data.at(i)<<"\n";
 	}
 	data_vectors.push_back(census);
 	data_vectors.push_back(deaths);
@@ -402,5 +429,25 @@ std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::v
 	last_vectors.push_back(last_economy);
 	last_vectors.push_back(last_budget);
 	return last_vectors;
+}
+
+std::vector<Glib::ustring> functions::get_deaths(const char * latest_deaths, Glib::ustring nation){
+	ifstream read_death;
+	read_death.open("./"+nation+"/"+latest_deaths);
+	string dBuffer;
+	std::vector<Glib::ustring> all_deaths;
+	while(getline(read_death, dBuffer)){
+		if(dBuffer.find("CAUSE-")!=-1){
+			while(dBuffer.find("CAUSE-")!=-1){
+				for(int i=0; i<2; i++){
+					all_deaths.push_back(dBuffer);
+					getline(read_death, dBuffer);
+				}
+			}
+		break;
+		}
+	}
+	read_death.close();
+	return all_deaths;
 }
 
