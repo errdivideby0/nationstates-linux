@@ -223,9 +223,9 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			else if(stat_vector.at(1)== "Deaths")
 				index = 1;
 			else if(stat_vector.at(1)=="Budget")
-				index = 2;
-			else if(stat_vector.at(1)=="Economy")
 				index = 3;
+			else if(stat_vector.at(1)=="Economy")
+				index = 2;
 
 			values_vector.clear();
 			previous_dates.clear();

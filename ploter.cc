@@ -129,7 +129,6 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 					xs +((i+1)*((width-(2*xs))/n_points)) - ((width-(2*xs))/n_points)/2, height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5,
 					xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
 				}
-				// I can probably else this.
 				else if(maxer<=0){
 					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
 					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
