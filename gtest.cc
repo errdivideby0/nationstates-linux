@@ -46,14 +46,14 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(450, 570);
+	scrolled_stats.set_size_request(440, 570);
 
-	right_box.set_size_request(570, 570);
+	right_box.set_size_request(600, 570);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
 	right_box.pack_start(input_box, Gtk::PACK_SHRINK);
 
-	v_header.set_size_request(570, 100);
+	v_header.set_size_request(600, 100);
 	v_header.pack_start(header_upper_box);
 	v_header.pack_start(header_box);
 

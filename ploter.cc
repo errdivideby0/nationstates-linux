@@ -59,11 +59,14 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 		cr->move_to(width/2 - (text_width/2), height - ysb/2 - (text_height/2));
 		date_label->show_in_cairo_context(cr);
 
+		Glib::RefPtr<Pango::Layout> name_label;
 
-		Glib::RefPtr<Pango::Layout> name_label = create_pango_layout(stat_vector.at(0));
-		name_label->get_pixel_size(text_width, text_height);
-		cr->move_to(width/2 - (text_width/2), ysb/5 + (text_height/2));
-		name_label->show_in_cairo_context(cr);
+		if(stat_vector.size()==3){
+			name_label = create_pango_layout(stat_vector.at(0));
+			name_label->get_pixel_size(text_width, text_height);
+			cr->move_to(width/2 - (text_width/2), ysb/5 + (text_height/2));
+			name_label->show_in_cairo_context(cr);
+		}
 
 		std::vector<double> values_vector = gTest::instance().get_value_vector();
 		if(values_vector.size()>1){
@@ -84,15 +87,15 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 			if(miner>=0){
 				cr->move_to(1.5*xs, height- ys);
-				cr->line_to(width - 0.5*xs, height - ys);
+				cr->line_to(width - 2*xs, height - ys);
 			}
 			else if(maxer<=0){
 				cr->move_to(1.5*xs, ys);
-				cr->line_to(width - 0.5*xs, ys);
+				cr->line_to(width - 2*xs, ys);
 			}
 			else{
 				cr->move_to(1.5*xs, ys + 0.5*(height - 2*ys));
-				cr->line_to(width - 0.5*xs, ys + 0.5*(height - 2*ys));
+				cr->line_to(width - 2*xs, ys + 0.5*(height - 2*ys));
 			}
 			cr->move_to(1.5*xs, ys);
 			cr->line_to(1.5*xs, height - ys);
@@ -104,7 +107,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			for(int i=0; i<11; i++){
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
 				cr->move_to(1.5*xs -2 , (height - ys) - (i*ysb) + 0.5);
-				cr->line_to(width - 0.5*xs, (height - ys) - (i*ysb) + 0.5);
+				cr->line_to(width - 2*xs, (height - ys) - (i*ysb) + 0.5);
 				cr->stroke();
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 				if(miner>=0)
@@ -126,28 +129,44 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			for(int k=0; k<n_lines; k++){
 				cr->set_source_rgba(0.7/k, k*0.02, k*0.05, 0.8);
 				for(int i=0; i<split-1; i++){
-					//// Does not work if miner>maxer because it think the max is at the top of the graph
 					if(miner>=0){
-						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5);
-						cr->curve_to(1.5*xs +(i*((width-(2*xs))/split)) + ((width-(2*xs))/split)/2, height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5,
-						1.5*xs +((i+1)*((width-(2*xs))/split)) - ((width-(2*xs))/split)/2, height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5,
-						1.5*xs +((i+1)*((width-(2*xs))/split)), height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5);
+						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5);
+						cr->curve_to(1.5*xs +(i*((width-(3.25*xs))/split)) + ((width-(3.25*xs))/split)/2, height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5,
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)) - ((width-(3.25*xs))/split)/2, height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5,
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)), height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5);
 					}
 					else if(maxer<=0){
-						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / miner));
-						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner));
+						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / miner));
+						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner));
 					}
 					else if(larger == 1){
-						// ERROR HERE. It needs to set something else
-						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / (2*maxer)) +0.5);
-						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5);
+						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), height/2 - (values_vector.at((k*split)+i) * (height - 2*ys) / (2*maxer)) +0.5);
+						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5);
 					}
 					else{
-						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / (2*miner)));
-						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)));
+						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), height/2 + (values_vector.at((k*split)+i) * (height - 2*ys) / (2*miner)));
+						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)));
 					}
 				}
-			cr->stroke();
+				cr->stroke();
+			}
+			double width_end = 1.5*xs +((split-1)*((width-(3.25*xs))/split)) + 4;
+			for(int k=0; k<n_lines; k++){
+				cr->set_source_rgba(0.7/k, k*0.02, k*0.05, 0.8);
+				if(stat_vector.at(k*3).find('<')!=-1)
+					stat_vector.at(k*3) = fun.trim(stat_vector.at(k*3), 3, 4);
+				name_label = create_pango_layout(stat_vector.at(k*3));
+				name_label->get_pixel_size(text_width, text_height);
+				if(miner>=0)
+					cr->move_to(width_end, height -ys - (values_vector.at((k*split)+split-1) * (height - 2*ys) / maxer) +0.5 - (text_height/2));
+				else if(maxer<=0)
+					cr->move_to(width_end, ys + (values_vector.at((k*split)+split-1) * (height - 2*ys) / miner) - (text_height/2));
+				else if(larger==1)
+					cr->move_to(width_end, height/2 - (values_vector.at((k*split)+split-1) * (height - 2*ys) / (2*maxer)) +0.5 - (text_height/2));
+				else
+					cr->move_to(width_end, height/2 + (values_vector.at((k*split)+split-1) * (height - 2*ys) / (2*miner)) - (text_height/2));
+				name_label->show_in_cairo_context(cr);
+				cr->stroke();
 			}
 		}
 

@@ -41,7 +41,7 @@ double functions::strouble(string String){
 	return Double;
 }
 
-// Converts a double to a string
+// I am using this because it output as 0.53 instead of 0.5300000
 string functions::doubstr(double number){
 	ostringstream ss;
 	ss << number;
@@ -213,7 +213,7 @@ bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comp
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
-	if(count_lines("./name-store/nation_list.txt")==0)
+	if(access("./name-store/nation_list.txt", F_OK) == -1)
 		mkdir("nations-store", S_IRWXU);
 
 	std::vector<Glib::ustring> previous_dates = read("./nations-store/"+nation+"/datelog.txt");
@@ -225,13 +225,13 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	}
 	//If it does not match or there are no previous dates, it writes a new file
 	if((newdata)||(previous_dates.size() == 0)){
-		ofstream save;
-		fstream savedate;
 
 		// Checks to see if /nation/datelog exists, if not it makes the directory
 		if(access(strchar("./nations-store/"+nation+"/datelog.txt"), F_OK) == -1)
 			mkdir(strchar("./nations-store/"+nation), S_IRWXU);
 
+		ofstream save;
+		fstream savedate;
 		// If the current time is the same as the latest saved and there is new data, save with gmt mode which will force a save with the next filename
 		if(previous_dates.size()>0){
 			if(current_time == previous_dates.back())
