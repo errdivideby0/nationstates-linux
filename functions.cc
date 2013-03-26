@@ -21,14 +21,10 @@
 #include <stdio.h>
 #include <fstream>
 #include <cstdlib>
-#include <stdlib.h>
 #include <curl/curl.h>
-#include <giomm/file.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
-//#include <sys/types.h>
-//#include <sys/stat.h>
-#include <string>
+//#include <string>
 
 using namespace std;
 

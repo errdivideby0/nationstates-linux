@@ -31,6 +31,7 @@ public:
 
 protected:
 	functions fun;
+	static std::vector<Glib::ustring> unit_vector;
 };
 
 #endif

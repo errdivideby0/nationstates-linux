@@ -47,6 +47,7 @@ public:
 	static std::vector<double> values_vector;
 	std::vector<Glib::ustring> get_stat_vector();
 	std::vector<double> get_value_vector();
+	std::vector<Glib::ustring> get_units();
 
 protected:
 

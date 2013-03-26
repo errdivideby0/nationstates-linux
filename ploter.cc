@@ -27,7 +27,10 @@
 
 using namespace std;
 
+std::vector<Glib::ustring> Census_Plot::unit_vector;
+
 Census_Plot::Census_Plot(){
+	unit_vector = fun.read("./unit_names.txt");
 }
 
 Census_Plot::~Census_Plot(){
@@ -49,7 +52,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
 	if(stat_vector.size()>1){
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
-		Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("date");
+		Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("Time");
 
 		date_label->get_pixel_size(text_width, text_height);
 		cr->move_to(width/2 - (text_width/2), height - ysb/2 - (text_height/2));
@@ -58,7 +61,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		Glib::RefPtr<Pango::Layout> name_label = create_pango_layout(stat_vector.at(0));
 		name_label->get_pixel_size(text_width, text_height);
-		cr->move_to(width/2 - (text_width/2), ysb/2 + (text_height/2));
+		cr->move_to(width/2 - (text_width/2), ysb/5 + (text_height/2));
 		name_label->show_in_cairo_context(cr);
 
 		std::vector<double> values_vector = gTest::instance().get_value_vector();
@@ -80,19 +83,19 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			cr->set_line_width(2.0);
 			cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 			if(miner>=0){
-				cr->move_to(xs, height- ys);
-				cr->line_to(width - xs, height - ys);
+				cr->move_to(1.5*xs, height- ys);
+				cr->line_to(width - 0.5*xs, height - ys);
 			}
 			else if(maxer<=0){
-				cr->move_to(xs, ys);
-				cr->line_to(width - xs, ys);
+				cr->move_to(1.5*xs, ys);
+				cr->line_to(width - 0.5*xs, ys);
 			}
 			else{
-				cr->move_to(xs, ys + 0.5*(height - 2*ys));
-				cr->line_to(width - xs, ys + 0.5*(height - 2*ys));
+				cr->move_to(1.5*xs, ys + 0.5*(height - 2*ys));
+				cr->line_to(width - 0.5*xs, ys + 0.5*(height - 2*ys));
 			}
-			cr->move_to(xs, ys);
-			cr->line_to(xs, height - ys);
+			cr->move_to(1.5*xs, ys);
+			cr->line_to(1.5*xs, height - ys);
 			cr->stroke();
 
 			// Print the axis lines and then labels
@@ -100,8 +103,8 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			cr->set_line_width(1.0);
 			for(int i=0; i<11; i++){
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
-				cr->move_to(xs -2 , (height - ys) - (i*ysb) + 0.5);
-				cr->line_to(width -xs, (height - ys) - (i*ysb) + 0.5);
+				cr->move_to(1.5*xs -2 , (height - ys) - (i*ysb) + 0.5);
+				cr->line_to(width - 0.5*xs, (height - ys) - (i*ysb) + 0.5);
 				cr->stroke();
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 				if(miner>=0)
@@ -113,7 +116,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				else
 					y_label = create_pango_layout(fun.doubstr(miner - (miner/5)*i));
 				y_label->get_pixel_size(text_width, text_height);
-				cr->move_to(xs -6 -text_width, (height - ys) - (i*ysb) + 0.5 - text_height/2);
+				cr->move_to(1.5*xs -6 -text_width, (height - ys) - (i*ysb) + 0.5 - text_height/2);
 				y_label->show_in_cairo_context(cr);
 				cr->stroke();
 			}
@@ -124,33 +127,38 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			for(int i=0; i<n_points-1; i++){ //////////////////////////// Height from the bottom
 				//// Does not work if miner>maxer because it think the max is at teh top of the graph
 				if(miner>=0){
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
-					cr->curve_to(xs +(i*((width-(2*xs))/n_points)) + ((width-(2*xs))/n_points)/2, height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5,
-					xs +((i+1)*((width-(2*xs))/n_points)) - ((width-(2*xs))/n_points)/2, height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5,
-					xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
+					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
+					cr->curve_to(1.5*xs +(i*((width-(2*xs))/n_points)) + ((width-(2*xs))/n_points)/2, height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5,
+					1.5*xs +((i+1)*((width-(2*xs))/n_points)) - ((width-(2*xs))/n_points)/2, height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5,
+					1.5*xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
 				}
 				else if(maxer<=0){
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
-					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
+					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
+					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
 				}
 				else if(larger == 1){
 					// ERROR HERE. It needs to set something else
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / (2*maxer)) +0.5);
-					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / (2*maxer)) +0.5);
+					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / (2*maxer)) +0.5);
+					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / (2*maxer)) +0.5);
 				}
 				else{
-					cr->move_to(xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / (2*miner)));
-					cr->line_to(xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / (2*miner)));
+					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / (2*miner)));
+					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / (2*miner)));
 				}
 			}
 			cr->stroke();
 		}
 
 		//// Display the y-axis label
-		Glib::RefPtr<Pango::Layout> layout_vertical = create_pango_layout(stat_vector.at(0));
+		Glib::RefPtr<Pango::Layout> layout_vertical;
+		if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
+			layout_vertical = create_pango_layout(unit_vector.at(stoi(stat_vector.at(2))));
+		else
+			layout_vertical = create_pango_layout("Percent");
+
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 		layout_vertical->get_pixel_size(text_width, text_height);
-		cr->move_to(xsb/2 - text_height, height/2 + text_width/2);
+		cr->move_to(xsb/1.5 - text_height, height/2 + text_width/2);
 
 		Cairo::Matrix rotater = Cairo::identity_matrix();
 		rotater.rotate(4.71238898);

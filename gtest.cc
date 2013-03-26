@@ -223,11 +223,12 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			Glib::ustring name = stat_vector.at(0);
 			std::vector<Glib::ustring> death_names;
 			std::vector<Glib::ustring> previous_dates = fun.read("./"+nation+"/datelog.txt");
+
 			if(stat_vector.at(1)=="Deaths")
 				death_names = fun.get_deaths(previous_dates.back().c_str(), nation);
 
 			for(int i=0; i<previous_dates.size(); i++){
-				// This makes loading the graphs much faster and efficent.
+				// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
 
 				Glib::ustring date = "./"+nation+"/"+previous_dates.at(i);
 				if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
@@ -248,7 +249,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 					else if(name.find("Social")!= -1)
 						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SOCIALEQUALITY"), 0, 1)));
 					else if(name.find("Education")!= -1)
-						values_vector.pcouush_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "EDUCATION"), 0, 1)));
+						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "EDUCATION"), 0, 1)));
 					else if(name.find("Law")!= -1)
 						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "LAWANDORDER"), 0, 1)));
 					else if(name.find("Admin")!= -1)
