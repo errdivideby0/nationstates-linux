@@ -21,8 +21,6 @@
 #include "functions.h"
 #include "gtest.h"
 #include <fstream>
-//#include <sstream>
-//#include <string>
 
 using namespace std;
 

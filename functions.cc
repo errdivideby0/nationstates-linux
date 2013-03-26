@@ -213,6 +213,9 @@ bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comp
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
+	if(count_lines("./name-store/nation_list.txt")==0)
+		mkdir("nations-store", S_IRWXU);
+
 	std::vector<Glib::ustring> previous_dates = read("./nations-store/"+nation+"/datelog.txt");
 	bool newdata = false;
 	if(previous_dates.size()>0){
@@ -227,7 +230,7 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 
 		// Checks to see if /nation/datelog exists, if not it makes the directory
 		if(access(strchar("./nations-store/"+nation+"/datelog.txt"), F_OK) == -1)
-			mkdir(strchar(nation), S_IRWXU);
+			mkdir(strchar("./nations-store/"+nation), S_IRWXU);
 
 		// If the current time is the same as the latest saved and there is new data, save with gmt mode which will force a save with the next filename
 		if(previous_dates.size()>0){

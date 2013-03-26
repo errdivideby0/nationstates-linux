@@ -317,6 +317,7 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	events_label		.set_markup(fun.make_events_text(data_vectors));
 
 	flag.clear();
+	fun.curl_grab("./nations-store/"+nation+"/flag.jpg", all_data.at(25));
 	flag.set("./nations-store/"+nation+"/flag.jpg");
 
 	try{
