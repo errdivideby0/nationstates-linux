@@ -1,8 +1,8 @@
 To compile on archlinux install the packages:
 	pacman -Sy libxml++ gtkmm3 curl base-devel
 
-Select all and then use the build command:
-	make all
+Select all, install, and then use the build command:
+	make
 
 Run with 
 	./nationstates-linux
@@ -14,11 +14,3 @@ If you can not build it, or want to build it on another distro, use your preferr
 
 Then run double click the nationstates-linux file in the bin folder.
 	./bin/nationstates-linux
-
-----
-
-If you want to brave it on windows, download and install gtk for windows:
-	http://sourceforge.net/projects/gtk-win/files/latest/download
-
-After that, I have no idea. Try running the ./bin/nationstates file and report back.
-
