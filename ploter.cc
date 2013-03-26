@@ -137,15 +137,21 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 					}
 					else if(maxer<=0){
 						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / miner));
-						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner));
+						cr->curve_to(1.5*xs +(i*((width-(3.25*xs))/split)) + ((width-(3.25*xs))/split)/2, ys + (values_vector.at((k*split)+i) * (height - 2*ys) / miner),
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)) - ((width-(3.25*xs))/split)/2, ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner),
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner));
 					}
 					else if(larger == 1){
 						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), height/2 - (values_vector.at((k*split)+i) * (height - 2*ys) / (2*maxer)) +0.5);
-						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5);
+						cr->curve_to(1.5*xs +(i*((width-(3.25*xs))/split)) + ((width-(3.25*xs))/split)/2, height/2 - (values_vector.at((k*split)+i) * (height - 2*ys) / (2*maxer)) +0.5,
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)) - ((width-(3.25*xs))/split)/2, height/2 - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5,
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5);
 					}
 					else{
 						cr->move_to(1.5*xs +(i*((width-(3.25*xs))/split)), height/2 + (values_vector.at((k*split)+i) * (height - 2*ys) / (2*miner)));
-						cr->line_to(1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)));
+						cr->curve_to(1.5*xs +(i*((width-(3.25*xs))/split)) + ((width-(3.25*xs))/split)/2, height/2 + (values_vector.at((k*split)+i) * (height - 2*ys) / (2*miner)),
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)) - ((width-(3.25*xs))/split)/2, height/2 + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)),
+						1.5*xs +((i+1)*((width-(3.25*xs))/split)), height/2 + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)));
 					}
 				}
 				cr->stroke();

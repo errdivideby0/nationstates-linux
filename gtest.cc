@@ -60,7 +60,6 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	notebook.append_page(description_box, "Description");
 	notebook.append_page(Info3, "Issues");
  	notebook.append_page(Info4, "Region");
-	notebook.append_page(Info5, "Compare");
 	notebook.append_page(Info6, "Census Graph");
 	notebook.append_page(scrolled_events, "Events");
 	notebook.append_page(save_box, "Saved Data");
