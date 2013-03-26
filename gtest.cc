@@ -153,14 +153,14 @@ void gTest::on_button_next(){
 
 			//loads the latest data saved
 			std::vector<Glib::ustring> nation_datar;
-			nation_datar.push_back(fun.read("./"+nation+"/datelog.txt").back());
+			nation_datar.push_back(fun.read("./nations-store/"+nation+"/datelog.txt").back());
 			nation_datar.push_back(nation);
 			goto_load(nation_datar);
 
 			std::vector< std::vector<Glib::ustring> > last_vectors;
-			int lines = fun.count_lines("./"+nation+"/datelog.txt");
+			int lines = fun.count_lines("./nations-store/"+nation+"/datelog.txt");
 			if(lines>1){
-				last_vectors = fun.last_vectors_generate(fun.read("./"+nation+"/"+fun.read("./"+nation+"/datelog.txt").at(lines-2)));
+				last_vectors = fun.last_vectors_generate(fun.read("./nations-store/"+nation+"/"+fun.read("./nations-store/"+nation+"/datelog.txt").at(lines-2)));
 				stats.print_data(data_vectors, last_vectors, 1);
 			}
 			else
@@ -190,12 +190,12 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
 	if(page_num == 6){
-		std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
+		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 		if(nation_list.size()>0){
 			saves.clear_save_list();
 			for( int j=0; j<nation_list.size(); j++){
 				previous_dates.clear();
-				previous_dates = fun.read("./"+nation_list.at(j)+"/datelog.txt");
+				previous_dates = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
 				int n_dates = previous_dates.size();
 				saves.append_nation(nation_list.at(j), std::to_string(n_dates));
 				for(signed int i=n_dates-1; i>-1; i--){
@@ -222,7 +222,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			previous_dates.clear();
 			Glib::ustring name = stat_vector.at(0);
 			std::vector<Glib::ustring> death_names;
-			std::vector<Glib::ustring> previous_dates = fun.read("./"+nation+"/datelog.txt");
+			std::vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
 
 			if(stat_vector.at(1)=="Deaths")
 				death_names = fun.get_deaths(previous_dates.back().c_str(), nation);
@@ -230,7 +230,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			for(int i=0; i<previous_dates.size(); i++){
 				// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
 
-				Glib::ustring date = "./"+nation+"/"+previous_dates.at(i);
+				Glib::ustring date = "./nations-store/"+nation+"/"+previous_dates.at(i);
 				if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
 					values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "CENSUSSCORE-"+stat_vector.at(2))));
 
@@ -281,7 +281,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 }
 
 void gTest::on_button_update(){
-	std::vector<Glib::ustring> nation_list = fun.read("./nation_list.txt");
+	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 	if(nation_list.size()>0){
 		for( int i=0; i<nation_list.size(); i++)
 			goto_get_all(nation_list.at(i));
@@ -297,14 +297,14 @@ std::vector<double> gTest::get_value_vector(){
 }
 
 void gTest::goto_data(std::vector<Glib::ustring> nation_data){
-	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./"+nation_data.at(1)+"/"+nation_data.at(0)));
+	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(fun.read("./nations-store/"+nation_data.at(1)+"/"+nation_data.at(0)));
 	stats.print_data(data_vectors, last_vectors, 1);
 }
 
 void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	nation = nation_data.at(1);
 	current_time = nation_data.at(0);
-	std::vector<Glib::ustring> all_data = fun.read("./"+nation+"/"+current_time);
+	std::vector<Glib::ustring> all_data = fun.read("./nations-store/"+nation+"/"+current_time);
 	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(all_data);
 	data_vectors.clear();
 	data_vectors = fun.vectors_generate(all_data, nation);
@@ -317,7 +317,7 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	events_label		.set_markup(fun.make_events_text(data_vectors));
 
 	flag.clear();
-	flag.set("./"+nation+"/flag.jpg");
+	flag.set("./nations-store/"+nation+"/flag.jpg");
 
 	try{
 	set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");

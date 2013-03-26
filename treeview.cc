@@ -21,8 +21,8 @@
 #include "functions.h"
 #include "gtest.h"
 #include <fstream>
-#include <sstream>
-#include <string>
+//#include <sstream>
+//#include <string>
 
 using namespace std;
 
@@ -50,7 +50,7 @@ Tree_View::Tree_View(){
 
 	ifstream reader;
 	string dBuffer;
-	reader.open("./stat_names.txt");
+	reader.open("./name-store/stat_names.txt");
 	while(getline(reader, dBuffer)){
 		names.push_back(dBuffer);
 	}

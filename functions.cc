@@ -24,7 +24,6 @@
 #include <curl/curl.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
-//#include <string>
 
 using namespace std;
 
@@ -160,7 +159,7 @@ void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 // Takes the nation name and forms a file called nation.xml that contains all the nation data, also returns the number of lines in the file
 int functions::get_nation_data(Glib::ustring nation){
 	Glib::ustring nation_url = "http://www.nationstates.net/cgi-bin/api.cgi?nation="+nation+"&q=";
-	std::vector<Glib::ustring> url_requests = read("./url_requests.txt");
+	std::vector<Glib::ustring> url_requests = read("./name-store/url_requests.txt");
 	for(int i=0; i<url_requests.size(); i++)
 		nation_url = nation_url+"+"+url_requests.at(i);
 	curl_grab("./nation.xml", nation_url);
@@ -214,11 +213,11 @@ bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comp
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
 void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
 
-	std::vector<Glib::ustring> previous_dates = read("./"+nation+"/datelog.txt");
+	std::vector<Glib::ustring> previous_dates = read("./nations-store/"+nation+"/datelog.txt");
 	bool newdata = false;
 	if(previous_dates.size()>0){
 		std::vector<std::vector<Glib::ustring> > comparor = last_vectors_generate(all_data);
-		std::vector<std::vector<Glib::ustring> > comparee = last_vectors_generate(read("./"+nation+"/"+previous_dates.back()));
+		std::vector<std::vector<Glib::ustring> > comparee = last_vectors_generate(read("./nations-store/"+nation+"/"+previous_dates.back()));
 		newdata = check_for_new_data(comparor, comparee);
 	}
 	//If it does not match or there are no previous dates, it writes a new file
@@ -227,7 +226,7 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 		fstream savedate;
 
 		// Checks to see if /nation/datelog exists, if not it makes the directory
-		if(access(strchar("./"+nation+"/datelog.txt"), F_OK) == -1)
+		if(access(strchar("./nations-store/"+nation+"/datelog.txt"), F_OK) == -1)
 			mkdir(strchar(nation), S_IRWXU);
 
 		// If the current time is the same as the latest saved and there is new data, save with gmt mode which will force a save with the next filename
@@ -236,19 +235,19 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 				current_time = get_time(0, true)+"-"+get_time(1, true)+".txt";
 		}
 
-		save.open(strchar("./"+nation+"/"+current_time));
+		save.open(strchar("./nations-store/"+nation+"/"+current_time));
 		for(int i=0; i<all_data.size(); i++)
 			save<<all_data.at(i)<<"\n";
 
 		//Opens the nations datelog file and adds current_date to a new line (a log of data points)
-		savedate.open(strchar("./"+nation+"/datelog.txt"), fstream::in | fstream::out | fstream::app);
+		savedate.open(strchar("./nations-store/"+nation+"/datelog.txt"), fstream::in | fstream::out | fstream::app);
 		savedate<<current_time<<"\n";
 		save.close();
 		savedate.close();
 	}
 
 	// Makes a vector of all the nations that have data sets
-	std::vector<Glib::ustring> nation_list = read("./nation_list.txt");
+	std::vector<Glib::ustring> nation_list = read("./name-store/nation_list.txt");
 	int first_run = 0; int exists = 0;
 
 	// If there are no data sets
@@ -264,7 +263,7 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	// If none of the above conditions hold true, save the nation as a new line in the nation_list log
 	if((exists == 0)||(first_run == 1)){
 		fstream savenation;
-		savenation.open(strchar("./nation_list.txt"), fstream::in | fstream::out | fstream::app);
+		savenation.open(strchar("./name-store/nation_list.txt"), fstream::in | fstream::out | fstream::app);
 		savenation<<nation<<"\n";
 		savenation.close();
 	}
@@ -429,7 +428,7 @@ std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::v
 
 std::vector<Glib::ustring> functions::get_deaths(const char * latest_deaths, Glib::ustring nation){
 	ifstream read_death;
-	read_death.open("./"+nation+"/"+latest_deaths);
+	read_death.open("./nations-store/"+nation+"/"+latest_deaths);
 	string dBuffer;
 	std::vector<Glib::ustring> all_deaths;
 	while(getline(read_death, dBuffer)){

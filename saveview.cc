@@ -17,7 +17,6 @@
 
 #include "saveview.h"
 #include "gtest.h"
-#include <iostream>
 
 using namespace std;
 

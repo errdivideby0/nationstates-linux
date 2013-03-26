@@ -30,7 +30,7 @@ using namespace std;
 std::vector<Glib::ustring> Census_Plot::unit_vector;
 
 Census_Plot::Census_Plot(){
-	unit_vector = fun.read("./unit_names.txt");
+	unit_vector = fun.read("./name-store/unit_names.txt");
 }
 
 Census_Plot::~Census_Plot(){
