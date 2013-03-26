@@ -215,62 +215,64 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	}
 	else if(page_num == 4){
 		stat_vector.clear();
+		values_vector.clear();
 		stat_vector = stats.get_selected_stat();
 
 		if(stat_vector.size()>1){
-			values_vector.clear();
-			previous_dates.clear();
-			Glib::ustring name = stat_vector.at(0);
-			std::vector<Glib::ustring> death_names;
-			std::vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
+			for(int j=0; j<stat_vector.size()/3; j++){
+				previous_dates.clear();
+				Glib::ustring name = stat_vector.at((j*3)+0);
+				std::vector<Glib::ustring> death_names;
+				std::vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
 
-			if(stat_vector.at(1)=="Deaths")
-				death_names = fun.get_deaths(previous_dates.back().c_str(), nation);
+				if(stat_vector.at((j*3)+1)=="Deaths")
+					death_names = fun.get_deaths(previous_dates.back().c_str(), nation);
 
-			for(int i=0; i<previous_dates.size(); i++){
-				// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
+				for(int i=0; i<previous_dates.size(); i++){
+					// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
 
-				Glib::ustring date = "./nations-store/"+nation+"/"+previous_dates.at(i);
-				if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
-					values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "CENSUSSCORE-"+stat_vector.at(2))));
+					Glib::ustring date = "./nations-store/"+nation+"/"+previous_dates.at(i);
+					if((stat_vector.at((j*3)+1)=="Census Data")||(stat_vector.at((j*3)+1)=="Manufacturing"))
+						values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "CENSUSSCORE-"+stat_vector.at((j*3)+2))));
 
-				else if(stat_vector.at(1)=="Economy"){
-					if(name.find("Tax") != -1)
-						values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "TAX")));
-					else if(name.find("Public") != -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
-					else
-						values_vector.push_back(100.0 - fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
-				}
+					else if(stat_vector.at((j*3)+1)=="Economy"){
+						if(name.find("Tax") != -1)
+							values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "TAX")));
+						else if(name.find("Public") != -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
+						else
+							values_vector.push_back(100.0 - fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
+					}
 
-				else if(stat_vector.at(1)=="Budget"){
-					if(name.find("Enviroment")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ENVIROMENT"), 0, 1)));
-					else if(name.find("Social")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SOCIALEQUALITY"), 0, 1)));
-					else if(name.find("Education")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "EDUCATION"), 0, 1)));
-					else if(name.find("Law")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "LAWANDORDER"), 0, 1)));
-					else if(name.find("Admin")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ADMINISTRATION"), 0, 1)));
-					else if(name.find("Welfare")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "WELFARE"), 0, 1)));
-					else if(name.find("Spirit")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SPIRITUALITY"), 0, 1)));
-					else if(name.find("Defence")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "DEFENCE"), 0, 1)));
-					else if(name.find("Public")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICTRANSPORT"), 0, 1)));
-					else if(name.find("Health")!= -1)
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "HEALTHCARE"), 0, 1)));
-					else
-						values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "COMMERCE"), 0, 1)));
-				}
-				else{
-					for(int j=0; j<death_names.size()/2; j++){
-						if(death_names.at(j*2).find(name)!=-1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), death_names.at(j*2)), 0, 1)));
+					else if(stat_vector.at((j*3)+1)=="Budget"){
+						if(name.find("Enviroment")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ENVIROMENT"), 0, 1)));
+						else if(name.find("Social")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SOCIALEQUALITY"), 0, 1)));
+						else if(name.find("Education")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "EDUCATION"), 0, 1)));
+						else if(name.find("Law")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "LAWANDORDER"), 0, 1)));
+						else if(name.find("Admin")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ADMINISTRATION"), 0, 1)));
+						else if(name.find("Welfare")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "WELFARE"), 0, 1)));
+						else if(name.find("Spirit")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SPIRITUALITY"), 0, 1)));
+						else if(name.find("Defence")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "DEFENCE"), 0, 1)));
+						else if(name.find("Public")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICTRANSPORT"), 0, 1)));
+						else if(name.find("Health")!= -1)
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "HEALTHCARE"), 0, 1)));
+						else
+							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "COMMERCE"), 0, 1)));
+					}
+					else{
+						for(int k=0; k<death_names.size()/2; k++){
+							if(death_names.at(k*2).find(name)!=-1)
+								values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), death_names.at(k*2)), 0, 1)));
+						}
 					}
 				}
 			}

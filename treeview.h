@@ -31,7 +31,6 @@ public:
 	void print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode);
 	void clear_stat_list();
 	std::vector<Glib::ustring> get_selected_stat();
-	void on_selection_changed();
 
 protected:
 
@@ -39,6 +38,8 @@ protected:
 	void append_stat_row();
 	void set_stat_row(int index, Glib::ustring text, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4);
 	void expand_stat_list();
+	void on_selection_changed();
+	void selected_row_callback(const Gtk::TreeModel::iterator& iter);
 
 	class ModelColumns : public Gtk::TreeModel::ColumnRecord{
 		public:
@@ -57,10 +58,11 @@ protected:
 
 	Gtk::TreeView TreeView;
 	Glib::RefPtr<Gtk::TreeStore> TreeModel;
-	Glib::RefPtr<Gtk::TreeSelection> selection;
-	Gtk::TreeModel::Row category_row, stat_row, selected_row, parent_row;
-	Gtk::TreeModel::iterator parentrow, iter;
+	//Glib::RefPtr<Gtk::TreeSelection> selected_row;
+	Gtk::TreeModel::Row category_row, stat_row, parent_row;
+	Gtk::TreeModel::iterator parentrow;
 	std::vector<Glib::ustring> names;
+	static std::vector<Glib::ustring> stat_vector;
 	functions fun;
 
 };

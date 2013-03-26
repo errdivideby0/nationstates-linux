@@ -22,6 +22,8 @@
 #include "gtest.h"
 #include <fstream>
 
+std::vector<Glib::ustring> Tree_View::stat_vector;
+
 using namespace std;
 
 Tree_View::Tree_View(){
@@ -45,6 +47,7 @@ Tree_View::Tree_View(){
 	names.clear();
 
 	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Tree_View::on_selection_changed));
+	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
 	ifstream reader;
 	string dBuffer;
@@ -207,30 +210,27 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 	expand_stat_list();
 }
 
-void Tree_View::on_selection_changed(){
-	gTest::instance().force_notebook_refresh(4);
-}
-
-std::vector<Glib::ustring> Tree_View::get_selected_stat(){
-
-	std::vector<Glib::ustring> stat_vector;
-	if(get_selection()->count_selected_rows() > 0){
-		selection = get_selection();
-		iter = selection->get_selected();
-		selected_row = *iter;
-		// If user has clicked a nation date in the nation tree
+void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
+	if(iter){
+		Gtk::TreeModel::Row selected_row = *iter;
 		if(selected_row->parent()){
 			Glib::ustring name = selected_row[stat_columns.stat_name];
 			Glib::ustring stat = to_string(selected_row[stat_columns.index_number]);
-
-			parentrow = selected_row->parent();
-			parent_row = *parentrow;
+			parent_row = *(selected_row->parent());
 			Glib::ustring category = parent_row[stat_columns.stat_name];
-
 			stat_vector.push_back(name);
 			stat_vector.push_back(category);
 			stat_vector.push_back(stat);
 		}
 	}
+}
+
+void Tree_View::on_selection_changed(){
+	stat_vector.clear();
+	get_selection()->selected_foreach_iter(sigc::mem_fun(*this, &Tree_View::selected_row_callback));
+	gTest::instance().force_notebook_refresh(4);
+}
+
+std::vector<Glib::ustring> Tree_View::get_selected_stat(){
 	return stat_vector;
 }

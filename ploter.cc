@@ -50,6 +50,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	ysb = (height - (2*ys))/10;
 
 	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
+	int n_lines = stat_vector.size()/3;
 	if(stat_vector.size()>1){
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
 		Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("Time");
@@ -66,12 +67,11 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		std::vector<double> values_vector = gTest::instance().get_value_vector();
 		if(values_vector.size()>1){
-			int n_points;
+			int split = values_vector.size()/n_lines;
 			int larger = 0;
-			n_points = values_vector.size();
 			double miner = values_vector.at(0);
 			double maxer = values_vector.at(0);
-			for(int i=0; i<n_points; i++){
+			for(int i=0; i<split*n_lines; i++){
 				if(values_vector.at(i)>maxer)
 					maxer = values_vector.at(i);
 				else if(values_vector.at(i)<miner)
@@ -123,30 +123,32 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		//// draw lines
 			cr->set_line_width(2.0);
-			cr->set_source_rgba(0.7, 0.0, 0.0, 0.8);
-			for(int i=0; i<n_points-1; i++){ //////////////////////////// Height from the bottom
-				//// Does not work if miner>maxer because it think the max is at teh top of the graph
-				if(miner>=0){
-					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5);
-					cr->curve_to(1.5*xs +(i*((width-(2*xs))/n_points)) + ((width-(2*xs))/n_points)/2, height - ys - (values_vector.at(i) * (height - 2*ys) / maxer) +0.5,
-					1.5*xs +((i+1)*((width-(2*xs))/n_points)) - ((width-(2*xs))/n_points)/2, height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5,
-					1.5*xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / maxer) +0.5);
+			for(int k=0; k<n_lines; k++){
+				cr->set_source_rgba(0.7/k, k*0.02, k*0.05, 0.8);
+				for(int i=0; i<split-1; i++){
+					//// Does not work if miner>maxer because it think the max is at the top of the graph
+					if(miner>=0){
+						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5);
+						cr->curve_to(1.5*xs +(i*((width-(2*xs))/split)) + ((width-(2*xs))/split)/2, height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / maxer) +0.5,
+						1.5*xs +((i+1)*((width-(2*xs))/split)) - ((width-(2*xs))/split)/2, height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5,
+						1.5*xs +((i+1)*((width-(2*xs))/split)), height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / maxer) +0.5);
+					}
+					else if(maxer<=0){
+						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / miner));
+						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / miner));
+					}
+					else if(larger == 1){
+						// ERROR HERE. It needs to set something else
+						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / (2*maxer)) +0.5);
+						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), height -ys - (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*maxer)) +0.5);
+					}
+					else{
+						cr->move_to(1.5*xs +(i*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i) * (height - 2*ys) / (2*miner)));
+						cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/split)), ys + (values_vector.at((k*split)+i+1) * (height - 2*ys) / (2*miner)));
+					}
 				}
-				else if(maxer<=0){
-					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / miner));
-					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / miner));
-				}
-				else if(larger == 1){
-					// ERROR HERE. It needs to set something else
-					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), height - ys - (values_vector.at(i) * (height - 2*ys) / (2*maxer)) +0.5);
-					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), height -ys - (values_vector.at(i+1) * (height - 2*ys) / (2*maxer)) +0.5);
-				}
-				else{
-					cr->move_to(1.5*xs +(i*((width-(2*xs))/n_points)), ys + (values_vector.at(i) * (height - 2*ys) / (2*miner)));
-					cr->line_to(1.5*xs +((i+1)*((width-(2*xs))/n_points)), ys + (values_vector.at(i+1) * (height - 2*ys) / (2*miner)));
-				}
-			}
 			cr->stroke();
+			}
 		}
 
 		//// Display the y-axis label
