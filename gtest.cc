@@ -58,16 +58,16 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	v_header.pack_start(header_box);
 
 	notebook.append_page(description_box, "Description");
-	notebook.append_page(Info3, "Issues");
- 	notebook.append_page(Info4, "Region");
-	notebook.append_page(Info6, "Census Graph");
+	notebook.append_page(issues_box, "Issues");
+ 	notebook.append_page(region_box, "Region");
+	notebook.append_page(graph_box, "Census Graph");
 	notebook.append_page(scrolled_events, "Events");
 	notebook.append_page(save_box, "Saved Data");
 
 	save_box.pack_start(save_buttons);
 	save_box.pack_start(scrolled_save);
 
-	Info6.pack_start(plotter);
+	graph_box.pack_start(plotter);
 
 	header_upper_box.set_border_width(5);
 	header_upper_box.pack_start(nation_label);
@@ -188,7 +188,7 @@ Parameters
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
-	if(page_num == 6){
+	if(page_num == 5){
 		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 		if(nation_list.size()>0){
 			saves.clear_save_list();
@@ -212,7 +212,7 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 		update_button.show();
 		}
 	}
-	else if(page_num == 4){
+	else if(page_num == 3){
 		stat_vector.clear();
 		values_vector.clear();
 		stat_vector = stats.get_selected_stat();
@@ -323,7 +323,7 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 
 	try{
 	set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
-	force_notebook_refresh(6);
+	force_notebook_refresh(5);
 	}
 	catch(exception& e){cout<<"Is the error here?";}
 }
@@ -342,7 +342,7 @@ void gTest::goto_get_all(Glib::ustring nationer){
 	std::vector<Glib::ustring> all_data;
 	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 	fun.save_data(all_data, currenter_time, nationer);
-	force_notebook_refresh(6);
+	force_notebook_refresh(5);
 }
 
 void gTest::force_notebook_refresh(int page){

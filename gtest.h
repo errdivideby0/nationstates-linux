@@ -60,7 +60,7 @@ protected:
 
 	Gtk::Box main_box, big_box;
 	Gtk::VBox right_box, v_header;
-	Gtk::HBox header_box, description_box, Info3, Info4, Info6, event_box, save_box, nation_box, header_upper_box;
+	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook;
 	Tree_View stats;

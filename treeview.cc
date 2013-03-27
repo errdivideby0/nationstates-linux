@@ -228,7 +228,7 @@ void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
 void Tree_View::on_selection_changed(){
 	stat_vector.clear();
 	get_selection()->selected_foreach_iter(sigc::mem_fun(*this, &Tree_View::selected_row_callback));
-	gTest::instance().force_notebook_refresh(4);
+	gTest::instance().force_notebook_refresh(3);
 }
 
 std::vector<Glib::ustring> Tree_View::get_selected_stat(){
