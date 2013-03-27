@@ -40,14 +40,12 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	Gtk::Allocation allocation = get_allocation();
 	const int width = allocation.get_width();
 	const int height = allocation.get_height();
-	int text_width;
-	int text_height;
 
-	int xs, ys, ysb, xsb, yso;
-	xs = width/10;
-	xsb = width/12;
-	ys = height/10;
-	ysb = (height - (2*ys))/10;
+	int text_width, text_height;
+	int xs = width/10;
+	int xsb = width/12;
+	int ys = height/10;
+	int ysb = (height - (2*ys))/10;
 
 	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
 	int n_lines = stat_vector.size()/3;
