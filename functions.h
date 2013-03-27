@@ -31,7 +31,6 @@ std::string doubstr(double number);
 int count_lines(std::string file);
 Glib::ustring trim(Glib::ustring the_string, int from_start, int from_end);
 std::vector<Glib::ustring> read(std::string file);
-std::vector<Glib::ustring> read_find(const char * file, Glib::ustring term, int lines);
 std::string read_single(const char * file, Glib::ustring term);
 void curl_grab(Glib::ustring filed, Glib::ustring url);
 int get_nation_data(Glib::ustring nation);

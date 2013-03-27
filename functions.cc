@@ -100,29 +100,10 @@ Glib::ustring functions::make_description_text(std::vector<Glib::ustring> all_da
 // Write all the lines of a file to a ustring vector that is returned
 std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;
-	std::vector<Glib::ustring> cities_vector;
+	std::vector<Glib::ustring> t_vector;
 	read.open(strchar(file));
 	while(getline(read,file)){
-		cities_vector.push_back(file);
-	}
-	read.close();
-	return cities_vector;
-}
-
-std::vector<Glib::ustring> functions::read_find(const char * file, Glib::ustring term, int lines){
-	ifstream read;
-	std::vector<Glib::ustring> t_vector;
-	read.open(file);
-	string filer;
-	while(getline(read,filer)){
-		if(filer == term){
-			t_vector.push_back(filer);
-			for(int j=0; j<lines -1; j++){
-				getline(read,filer);
-				t_vector.push_back(filer);
-			}
-			break;
-		}
+		t_vector.push_back(file);
 	}
 	read.close();
 	return t_vector;
@@ -150,7 +131,7 @@ void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 		curl_easy_setopt(curl, CURLOPT_URL, strchar(url));
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-		CURLcode res = curl_easy_perform(curl);
+		curl_easy_perform(curl);
 		curl_easy_cleanup(curl);
 		fclose(fp);
 	}
@@ -174,30 +155,24 @@ Glib::ustring functions::get_time(int mode, bool gmt){
 	else
 		curl_grab("./time.txt", "http://www.timeapi.org/est/now?format=%25FT%25R");
 	ifstream read;
-	string dBuffer;
+	string isotime;
 	read.open("./time.txt");
-		getline (read,dBuffer);
-		Glib::ustring isotime = dBuffer;
+	getline (read,isotime);
 	read.close();
-	int iso_time;
-	if(mode == 0){
-		isotime = trim(isotime, 0, 6);
-		return isotime;
-	}
+	if(mode == 0)
+		return trim(isotime, 0, 6);
 	else if(mode == 1){
 		isotime = trim(isotime, 11, 3);
 		if(std::stoi(isotime, 0, 10)<13) isotime = "morning";
 		else isotime = "evening";
 		return isotime;
 	}
-	else if(mode == 2){
-		iso_time = 24 - std::stoi(trim(isotime, 11, 3), 0, 10);
+	else{
+		int iso_time = 24 - std::stoi(trim(isotime, 11, 3), 0, 10);
 		if(iso_time>12)
 			iso_time = iso_time - 12;
 		return std::to_string(iso_time);
 	}
-	else if(mode == 3)
-		return trim(isotime, 11, 0);
 }
 
 bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee){

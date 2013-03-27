@@ -15,8 +15,8 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GTKMM_EXAMPLE_GTEST_H
-#define GTKMM_EXAMPLE_GTEST_H
+#ifndef GTKMM_GTEST
+#define GTKMM_GTEST
 
 #include <gtkmm.h>
 #include "treeview.h"
