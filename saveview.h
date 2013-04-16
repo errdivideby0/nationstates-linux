@@ -20,12 +20,22 @@
 
 #include <gtkmm.h>
 #include "functions.h"
+#include "popup.h"
 
 class Save_View : public Gtk::TreeView{
 
-public:
+private:
+
 	Save_View();
-	virtual ~Save_View();
+	Save_View(const Save_View&);
+	Save_View& operator=(const Save_View&);
+
+public:
+
+	static Save_View& instance(){
+		static Save_View singleton;
+		return singleton;
+	}
 
 	void append_nation(Glib::ustring nation_pass, Glib::ustring n_dates);
 	void clear_save_list();
@@ -33,13 +43,15 @@ public:
 	void set_row(Glib::ustring text);
 	int number_selected();
 	void expand_category();
+	void save_menu_rename(Glib::ustring);
+
 protected:
 
 	virtual bool on_button_press_event(GdkEventButton *ev);
 
 	void save_menu_load();
 	void save_menu_delete();
-	void save_menu_nothing();
+	void pop_show();
 	void save_menu_print();
 	void save_title_menu_get();
 	void save_title_menu_delete_all();
@@ -63,6 +75,7 @@ protected:
 	Gtk::TreeModel::iterator parentrow, iter;
 	Gtk::Menu save_menu, save_title_menu;
 	functions fun;
+	popup pop;
 };
 
 #endif

@@ -17,6 +17,8 @@
 
 #include "saveview.h"
 #include "gtest.h"
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -34,6 +36,10 @@ Save_View::Save_View(){
 
 	item = Gtk::manage(new Gtk::MenuItem("Load", true));
 	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_load));
+	save_menu.append(*item);
+
+	item = Gtk::manage(new Gtk::MenuItem("Rename", true));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::pop_show));
 	save_menu.append(*item);
 
 	item = Gtk::manage(new Gtk::MenuItem("Delete", true));
@@ -54,9 +60,6 @@ Save_View::Save_View(){
 	save_menu.show_all();
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Save_View::on_button_press_event));
-}
-
-Save_View::~Save_View(){
 }
 
 bool Save_View::on_button_press_event(GdkEventButton* event){
@@ -95,7 +98,30 @@ void Save_View::save_menu_load(){
 	gTest::instance().goto_load(nation_data);
 }
 
-void Save_View::save_menu_nothing(){
+void Save_View::pop_show(){
+	pop.show();
+}
+
+void Save_View::save_menu_rename(Glib::ustring newname){
+	vector<Glib::ustring> datelist = fun.read("./nations-store/"+nation_data.at(1)+"/datelog.txt");
+	if(nation_data.at(0).at(0) == '*')
+		nation_data.at(0) = fun.trim(nation_data.at(0), 1, 0);
+	int datelistsize = datelist.size();
+	for(int i=0; i<datelistsize; i++){
+		if(nation_data.at(0) == datelist.at(i)){
+			datelist.at(i) = newname+".txt";
+			int result = rename(fun.strchar("./nations-store/"+nation_data.at(1)+"/"+nation_data.at(0)), fun.strchar("./nations-store/"+nation_data.at(1)+"/"+datelist.at(i)));
+			break;
+		}
+	}
+
+	ofstream savedate;
+	savedate.open(fun.strchar("./nations-store/"+nation_data.at(1)+"/datelog.txt"));
+	for(int i=0; i<datelistsize; i++)
+		savedate<<datelist.at(i)<<"\n";
+	savedate.close();
+
+	gTest::instance().force_notebook_refresh(5);
 }
 
 void Save_View::save_menu_delete(){

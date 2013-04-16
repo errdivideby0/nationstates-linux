@@ -1,2 +1,2 @@
 all:
-	g++ -O2 main.cc ploter.cc treeview.cc saveview.cc gtest.cc functions.cc -o nationstates-linux `pkg-config --cflags --libs gtkmm-3.0 libxml++-2.6 libcurl` -std=c++11
+	g++ -O2 main.cc popup.cc ploter.cc treeview.cc saveview.cc gtest.cc functions.cc -o nationstates-linux `pkg-config --cflags --libs gtkmm-3.0 libxml++-2.6 libcurl` -std=c++11

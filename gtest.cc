@@ -16,6 +16,7 @@
 */
 
 #include "gtest.h"
+#include "saveview.h"
 #include <cstdlib>
 #include <iostream>
 #include <exception>
@@ -34,6 +35,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	update_button.set_label("Update All");
 
+	Save_View& saves = Save_View::instance();
 	scrolled_save.add(saves);
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
@@ -188,6 +190,7 @@ Parameters
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
+	Save_View& saves = Save_View::instance();
 	if(page_num == 5){
 		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 		if(nation_list.size()>0){

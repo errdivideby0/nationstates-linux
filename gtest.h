@@ -21,7 +21,6 @@
 #include <gtkmm.h>
 #include "treeview.h"
 #include "functions.h"
-#include "saveview.h"
 #include "ploter.h"
 
 class gTest : public Gtk::Window{
@@ -64,7 +63,6 @@ protected:
 	Gtk::ScrolledWindow scrolled_save, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook;
 	Tree_View stats;
-	Save_View saves;
 	Census_Plot plotter;
 	functions fun;
 	Gtk::ButtonBox input_box, save_buttons;

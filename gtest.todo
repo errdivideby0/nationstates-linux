@@ -26,7 +26,12 @@
 [DONE] Add an update all button
 [DONE] If the data was saved before the hour end, make it load the latest one and compare to current_time
 
-Change title time to to minutes to 4:35
+DONE Add renaming of save files.
+
+Make oldname appear in popup window.
+Make saveview have two columns, one for nations, one for saves.
+Make refreshed nation selection the same as before operation.
+Add the latest events for that save below the saveview.
 Refine the UI size.
 Fix deaths not comparing nicely when different methods of death exist between data sets
 Make flag resize automatically to a standard size
