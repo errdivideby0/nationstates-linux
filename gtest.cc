@@ -17,6 +17,7 @@
 
 #include "gtest.h"
 #include "saveview.h"
+#include "nationview.h"
 #include <cstdlib>
 #include <iostream>
 #include <exception>
@@ -36,8 +37,12 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	update_button.set_label("Update All");
 
 	Save_View& saves = Save_View::instance();
+	Nation_View& nations = Nation_View::instance();
+
 	scrolled_save.add(saves);
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	scrolled_nation.add(nations);
+	scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 	scrolled_events.add(event_box);
 	scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -66,7 +71,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	notebook.append_page(scrolled_events, "Events");
 	notebook.append_page(save_box, "Saved Data");
 
-	save_box.pack_start(save_buttons);
+	save_box.pack_start(scrolled_nation);
 	save_box.pack_start(scrolled_save);
 
 	graph_box.pack_start(plotter);
@@ -180,37 +185,29 @@ void gTest::on_button_next(){
 		set_title("NationStates"); }
 }
 
-/* Use this to detect which rows are expanded
-bool Gtk::TreeView::row_expanded 	( 	const TreeModel::Path&  	path	)
-Returns true if the node pointed to by path is expanded in tree_view.
-Parameters
-    path	A Gtk::TreePath to test expansion state.
-*/
-
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
+	Nation_View& nations = Nation_View::instance();
 	Save_View& saves = Save_View::instance();
+	Glib::ustring select_nation = nations.get_selected_nation();
 	if(page_num == 5){
 		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 		if(nation_list.size()>0){
-			saves.clear_save_list();
-			for( int j=0; j<nation_list.size(); j++){
+			nations.clear_nation_list();
+			for(int j=0; j<nation_list.size(); j++){
 				previous_dates.clear();
 				previous_dates = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
-				int n_dates = previous_dates.size();
-				saves.append_nation(nation_list.at(j), std::to_string(n_dates));
-				for(signed int i=n_dates-1; i>-1; i--){
-					saves.append_row();
-					Glib::ustring pdate = fun.trim(previous_dates.at(i), 0, 4);
-					if((nation == nation_list.at(j))&&(current_time == previous_dates.at(i))){
-						saves.set_row("*"+pdate);
-						saves.expand_category();
-					}
-					else
-						saves.set_row(pdate);
-				}
+				nations.append_nation(nation_list.at(j), std::to_string(previous_dates.size()));
 			}
+		if(select_nation != ""){
+			nations.set_selection();
+			saves.clear_save_list();
+			previous_dates.clear();
+			previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
+			for(signed int i=previous_dates.size()-1; i>-1; i--)
+				saves.append_save(fun.trim(previous_dates.at(i), 0, 4));
+		}
 		// add an update all button to the button box left
 		update_button.show();
 		}

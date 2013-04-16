@@ -37,12 +37,9 @@ public:
 		return singleton;
 	}
 
-	void append_nation(Glib::ustring nation_pass, Glib::ustring n_dates);
 	void clear_save_list();
-	void append_row();
-	void set_row(Glib::ustring text);
+	void append_save(Glib::ustring);
 	int number_selected();
-	void expand_category();
 	void save_menu_rename(Glib::ustring);
 
 protected:
@@ -53,25 +50,23 @@ protected:
 	void save_menu_delete();
 	void pop_show();
 	void save_menu_print();
-	void save_title_menu_get();
-	void save_title_menu_delete_all();
 
 	class SaveColumns : public Gtk::TreeModel::ColumnRecord{
 		public:
 
 	 	SaveColumns(){
-			add(stat_date);
+			add(stat_save);
 		}
 
-	 	 Gtk::TreeModelColumn<Glib::ustring> stat_date;
+	 	 Gtk::TreeModelColumn<Glib::ustring> stat_save;
 	};
 	SaveColumns save_columns;
 
-	static std::vector<Glib::ustring> nation_data;
+	static Glib::ustring selected_save;
 
-	Glib::RefPtr<Gtk::TreeStore> SaveModel;
+	Glib::RefPtr<Gtk::ListStore> save_model;
 	Glib::RefPtr<Gtk::TreeSelection> selection;
-	Gtk::TreeModel::Row nation_row, save_row, selected_row, parent_row;
+	Gtk::TreeModel::Row save_row, selected_row;
 	Gtk::TreeModel::iterator parentrow, iter;
 	Gtk::Menu save_menu, save_title_menu;
 	functions fun;
