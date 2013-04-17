@@ -41,6 +41,7 @@ public:
 	void append_save(Glib::ustring);
 	int number_selected();
 	void save_menu_rename(Glib::ustring);
+	Glib::ustring get_selected_save();
 
 protected:
 

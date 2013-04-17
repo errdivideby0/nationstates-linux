@@ -30,6 +30,7 @@ public:
 protected:
 
 	void on_button_confirm();
+	void set_rename_text();
 
 	Gtk::Box main_box;
 	Gtk::HBox top_box;

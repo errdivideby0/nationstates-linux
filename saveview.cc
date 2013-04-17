@@ -84,6 +84,10 @@ void Save_View::pop_show(){
 	pop.show();
 }
 
+Glib::ustring Save_View::get_selected_save(){
+	return selected_save.substr(0, selected_save.length()-4);
+}
+
 void Save_View::save_menu_rename(Glib::ustring newname){
 	vector<Glib::ustring> datelist = fun.read("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt");
 	if(selected_save.at(0) == '*')

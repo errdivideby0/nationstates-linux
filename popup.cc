@@ -35,15 +35,19 @@ popup::popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"){
 
 	top_box.pack_start(rename_input);
 	bottom_box.pack_start(confirm_button, Gtk::PACK_SHRINK);
-	rename_input.set_placeholder_text("type save name");
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 
 	confirm_button.signal_clicked().connect(sigc::mem_fun(*this, &popup::on_button_confirm));
+	signal_show().connect(sigc::mem_fun(*this, &popup::set_rename_text));
 	show_all_children();
 }
 
 void popup::on_button_confirm(){
 	hide();
 	Save_View::instance().save_menu_rename(rename_input.get_text());
+}
+
+void popup::set_rename_text(){
+	rename_input.set_text(Save_View::instance().get_selected_save());
 }
