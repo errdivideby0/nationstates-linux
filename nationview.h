@@ -49,6 +49,7 @@ protected:
 	virtual bool on_button_press_event(GdkEventButton *ev);
 
 	void pop_show();
+	void on_selection_changed();
 	void save_title_menu_get();
 	void save_title_menu_delete_all();
 

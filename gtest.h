@@ -42,6 +42,7 @@ public:
 	void goto_delete_all(Glib::ustring nationer);
 	void goto_get_all(Glib::ustring nationer);
 	void force_notebook_refresh(int page);
+	void refresh_saves();
 	static std::vector<Glib::ustring> stat_vector;
 	static std::vector<double> values_vector;
 	std::vector<Glib::ustring> get_stat_vector();

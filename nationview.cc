@@ -41,6 +41,7 @@ Nation_View::Nation_View(){
 	save_title_menu.show_all();
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Nation_View::on_button_press_event));
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Nation_View::on_selection_changed));
 }
 
 bool Nation_View::on_button_press_event(GdkEventButton* event){
@@ -48,26 +49,21 @@ bool Nation_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
-	selected_nation.clear();
-	nation_selection = get_selection();
-	iter = nation_selection->get_selected();
-	selected_row = *iter;
-
-	// If user has clicked a row without a parent (the nation)
-	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0)){
-		Glib::ustring nname = selected_row[nation_columns.stat_nation];
-		selected_nation = nname.substr(0, nname.find(' '));
+	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0))
 		save_title_menu.popup(event->button, event->time);
-		gTest::instance().force_notebook_refresh(5);
-	}
-
-	else if((event->type == GDK_BUTTON_PRESS) && (selected_row->parent() == 0)){
-		Glib::ustring nname = selected_row[nation_columns.stat_nation];
-		selected_nation = nname.substr(0, nname.find(' '));
-		gTest::instance().force_notebook_refresh(5);
-	}
 
 	return return_value;
+}
+
+void Nation_View::on_selection_changed(){
+	if(get_selection()->count_selected_rows() >= 1){
+		selected_nation.clear();
+		iter = get_selection()->get_selected();
+		selected_row = *iter;
+		Glib::ustring nname = selected_row[nation_columns.stat_nation];
+		selected_nation = nname.substr(0, nname.find(' '));
+		gTest::instance().refresh_saves();
+	}
 }
 
 void Nation_View::clear_nation_list(){
@@ -93,15 +89,4 @@ void Nation_View::save_title_menu_delete_all(){
 
 void Nation_View::save_title_menu_get(){
 	gTest::instance().goto_get_all(selected_nation);
-}
-
-void Nation_View::set_selection(){
-	Gtk::TreeModel::Children nation_children = nation_model->children();
-	for(Gtk::TreeModel::Children::iterator titer = nation_children.begin(); titer != nation_children.end(); ++titer){
-		selected_row = *titer;
-		Glib::ustring nname = selected_row[nation_columns.stat_nation];
-		Glib::ustring sn = nname.substr(0, nname.find(' '));
-		if(sn == selected_nation)
-			nation_selection->select(selected_row);
-	}
 }

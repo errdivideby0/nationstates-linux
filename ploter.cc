@@ -59,13 +59,6 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		Glib::RefPtr<Pango::Layout> name_label;
 
-		if(stat_vector.size()==3){
-			name_label = create_pango_layout(stat_vector.at(0));
-			name_label->get_pixel_size(text_width, text_height);
-			cr->move_to(width/2 - (text_width/2), ysb/5 + (text_height/2));
-			name_label->show_in_cairo_context(cr);
-		}
-
 		std::vector<double> values_vector = gTest::instance().get_value_vector();
 		if(values_vector.size()>1){
 			int split = values_vector.size()/n_lines;
@@ -158,7 +151,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			for(int k=0; k<n_lines; k++){
 				cr->set_source_rgba(0.7/k, k*0.02, k*0.05, 0.8);
 				if(stat_vector.at(k*3).find('<')!=-1)
-					stat_vector.at(k*3) = fun.trim(stat_vector.at(k*3), 3, 4);
+					stat_vector.at(k*3) = stat_vector.at(k*3).substr(3, stat_vector.at(k*3).length() - 7);
 				name_label = create_pango_layout(stat_vector.at(k*3));
 				name_label->get_pixel_size(text_width, text_height);
 				if(miner>=0)
@@ -176,19 +169,21 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		//// Display the y-axis label
 		Glib::RefPtr<Pango::Layout> layout_vertical;
-		if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
-			layout_vertical = create_pango_layout(unit_vector.at(stoi(stat_vector.at(2))));
-		else
-			layout_vertical = create_pango_layout("Percent");
+		if(stat_vector.size() == 3){
+			if((stat_vector.at(1)=="Census Data")||(stat_vector.at(1)=="Manufacturing"))
+				layout_vertical = create_pango_layout(unit_vector.at(stoi(stat_vector.at(2))));
+			else
+				layout_vertical = create_pango_layout("Percent");
 
-		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
-		layout_vertical->get_pixel_size(text_width, text_height);
-		cr->move_to(xsb/1.5 - text_height, height/2 + text_width/2);
+			cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
+			layout_vertical->get_pixel_size(text_width, text_height);
+			cr->move_to(xsb/1.5 - text_height, height/2 + text_width/2);
 
-		Cairo::Matrix rotater = Cairo::identity_matrix();
-		rotater.rotate(4.71238898);
-		cr->set_matrix(rotater);
-		layout_vertical->show_in_cairo_context(cr);
+			Cairo::Matrix rotater = Cairo::identity_matrix();
+			rotater.rotate(4.71238898);
+			cr->set_matrix(rotater);
+			layout_vertical->show_in_cairo_context(cr);
+		}
 	}
 	return true;
 }

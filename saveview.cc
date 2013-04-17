@@ -103,7 +103,7 @@ void Save_View::save_menu_rename(Glib::ustring newname){
 		savedate<<datelist.at(i)<<"\n";
 	savedate.close();
 
-	gTest::instance().force_notebook_refresh(5);
+	gTest::instance().refresh_saves();
 }
 
 void Save_View::save_menu_delete(){

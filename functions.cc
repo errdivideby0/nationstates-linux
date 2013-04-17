@@ -33,6 +33,13 @@ const char * functions::strchar(string String){
 	return Char;
 }
 
+string functions::lowercase(string string){
+	string[0] = toupper(string[0]);
+	for(int i=1; i<string.length(); ++i)
+		string[i] = tolower(string[i]);
+	return string;
+}
+
 // Converts a string to a double
 double functions::strouble(string String){
 	stringstream data(String);

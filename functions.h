@@ -26,6 +26,7 @@ class functions{
 public:
 
 const char * strchar (std::string String);
+std::string lowercase(std::string string);
 double strouble(std::string String);
 std::string doubstr(double number);
 int count_lines(std::string file);

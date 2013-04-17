@@ -129,10 +129,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 void gTest::on_button_next(){
 
-	string nationer = nation_input.get_text().lowercase();
-	nationer[0] = toupper(nationer[0]);
-
-	nation = nationer;
+	nation = fun.lowercase(nation_input.get_text());
 
 	errorPopup = fun.error_setup();
 	errorPopup->set_transient_for(*this);
@@ -188,11 +185,10 @@ void gTest::on_button_next(){
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
-	Nation_View& nations = Nation_View::instance();
-	Save_View& saves = Save_View::instance();
-	Glib::ustring select_nation = nations.get_selected_nation();
 	if(page_num == 5){
+		Nation_View& nations = Nation_View::instance();
 		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
+
 		if(nation_list.size()>0){
 			nations.clear_nation_list();
 			for(int j=0; j<nation_list.size(); j++){
@@ -200,19 +196,11 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 				previous_dates = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
 				nations.append_nation(nation_list.at(j), std::to_string(previous_dates.size()));
 			}
-		if(select_nation != ""){
-			nations.set_selection();
-			saves.clear_save_list();
-			previous_dates.clear();
-			previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
-			for(signed int i=previous_dates.size()-1; i>-1; i--)
-				saves.append_save(fun.trim(previous_dates.at(i), 0, 4));
-		}
-		// add an update all button to the button box left
 		update_button.show();
 		}
 	}
 	else if(page_num == 3){
+		update_button.hide();
 		stat_vector.clear();
 		values_vector.clear();
 		stat_vector = stats.get_selected_stat();
@@ -281,6 +269,19 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 		update_button.hide();
 }
 
+void gTest::refresh_saves(){
+		Nation_View& nations = Nation_View::instance();
+		Save_View& saves = Save_View::instance();
+		Glib::ustring select_nation = nations.get_selected_nation();
+
+		if(select_nation != ""){
+			saves.clear_save_list();
+			vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
+			for(signed int i=previous_dates.size()-1; i>-1; i--)
+				saves.append_save(fun.trim(previous_dates.at(i), 0, 4));
+		}
+}
+
 void gTest::on_button_update(){
 	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 	if(nation_list.size()>0){
@@ -320,12 +321,6 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	flag.clear();
 	fun.curl_grab("./nations-store/"+nation+"/flag.jpg", all_data.at(25));
 	flag.set("./nations-store/"+nation+"/flag.jpg");
-
-	try{
-	set_title(nation+" | roughly "+fun.get_time(2, false)+" hours until update");
-	force_notebook_refresh(5);
-	}
-	catch(exception& e){cout<<"Is the error here?";}
 }
 
 void gTest::goto_delete_all(Glib::ustring nationer){
