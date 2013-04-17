@@ -51,6 +51,7 @@ protected:
 	void save_menu_delete();
 	void pop_show();
 	void save_menu_print();
+	void on_save_changed();
 
 	class SaveColumns : public Gtk::TreeModel::ColumnRecord{
 		public:

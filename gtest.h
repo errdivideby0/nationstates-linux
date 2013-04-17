@@ -39,6 +39,7 @@ public:
 
 	void goto_data(std::vector<Glib::ustring> nation_data);
 	void goto_load(std::vector<Glib::ustring> nation_data);
+	void update_latest_events(Glib::ustring selected_save);
 	void goto_delete_all(Glib::ustring nationer);
 	void goto_get_all(Glib::ustring nationer);
 	void force_notebook_refresh(int page);
@@ -59,8 +60,8 @@ protected:
 	Glib::ustring current_time, nation;
 
 	Gtk::Box main_box, big_box;
-	Gtk::VBox right_box, v_header;
-	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box;
+	Gtk::VBox right_box, v_header, save_box_big;
+	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook;
 	Tree_View stats;
@@ -68,7 +69,7 @@ protected:
 	functions fun;
 	Gtk::ButtonBox input_box, save_buttons;
 	Gtk::Image flag;
-	Gtk::Label fullname, events_label, description_label, rights, nation_label;
+	Gtk::Label fullname, events_label, description_label, rights, nation_label, latest_events_label;
 	Gtk::Entry nation_input;
 	Gtk::Button next_button, update_button;
 	Gtk::Window* errorPopup;

@@ -50,25 +50,31 @@ Save_View::Save_View(){
 	save_menu.show_all();
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Save_View::on_button_press_event));
+	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Save_View::on_save_changed));
 }
 
 bool Save_View::on_button_press_event(GdkEventButton* event){
-
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
-	selected_save.clear();
-	selection = get_selection();
-	iter = selection->get_selected();
-	selected_row = *iter;
+	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
+		save_menu.popup(event->button, event->time);
 
-	// If user has clicked a nation date in the nation tree
-	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)){
+	return return_value;
+}
+
+void Save_View::on_save_changed(){
+	if(get_selection()->count_selected_rows() >= 1){
+		selected_save.clear();
+		iter = get_selection()->get_selected();
+		selected_row = *iter;
 		Glib::ustring ndate = selected_row[save_columns.stat_save];
 		selected_save = ndate + ".txt";
-		save_menu.popup(event->button, event->time);
+		try{
+			gTest::instance().update_latest_events(selected_save);
+		}
+		catch(exception e){}
 	}
-	return return_value;
 }
 
 void Save_View::save_menu_load(){

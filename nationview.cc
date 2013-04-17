@@ -56,7 +56,7 @@ bool Nation_View::on_button_press_event(GdkEventButton* event){
 }
 
 void Nation_View::on_selection_changed(){
-	if(get_selection()->count_selected_rows() >= 1){
+	if(get_selection()->count_selected_rows() > 0){
 		selected_nation.clear();
 		iter = get_selection()->get_selected();
 		selected_row = *iter;

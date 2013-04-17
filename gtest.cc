@@ -69,7 +69,15 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
  	notebook.append_page(region_box, "Region");
 	notebook.append_page(graph_box, "Census Graph");
 	notebook.append_page(scrolled_events, "Events");
-	notebook.append_page(save_box, "Saved Data");
+	notebook.append_page(save_box_big, "Saved Data");
+
+	save_box_big.pack_start(save_box);
+	save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
+	latest_events_box.pack_start(latest_events_label);
+	latest_events_box.set_size_request(600, 152);
+	latest_events_box.set_border_width(8);
+	latest_events_label.set_justify(Gtk::JUSTIFY_LEFT);
+	latest_events_label.set_line_wrap();
 
 	save_box.pack_start(scrolled_nation);
 	save_box.pack_start(scrolled_save);
@@ -280,6 +288,38 @@ void gTest::refresh_saves(){
 			for(signed int i=previous_dates.size()-1; i>-1; i--)
 				saves.append_save(fun.trim(previous_dates.at(i), 0, 4));
 		}
+}
+
+void gTest::update_latest_events(Glib::ustring selected_save){
+	Glib::ustring selected_nation = Nation_View::instance().get_selected_nation();
+	vector<Glib::ustring> events_vector_temp = fun.read("./nations-store/"+selected_nation+"/"+selected_save);
+	vector<Glib::ustring> events_vector;
+	int point;
+	for(int i=200; i<events_vector_temp.size(); i++){
+		if(events_vector_temp.at(i).find("EVENT")!=-1){
+			point = i;
+			break;
+		}
+	}
+
+	for(int i=point; i<point+13; i++){
+		time_t thetime =  static_cast<time_t>(std::stod(events_vector_temp.at(i+2), 0));
+		struct tm * timeinfo = localtime(&thetime);
+		char buffer [80];
+		strftime(buffer, 80, "%d %B, %Y, %R", timeinfo);
+		events_vector.push_back(buffer);
+		while(events_vector_temp.at(i+4).find("@@")!=-1)
+			events_vector_temp.at(i+4) = events_vector_temp.at(i+4).replace(events_vector_temp.at(i+4).find("@@"), selected_nation.size() +4, selected_nation);
+		events_vector.push_back(events_vector_temp.at(i+4));
+		i = i+4;
+	}
+
+	Glib::ustring events_text = "<b>"+events_vector.at(0)+"</b>\n"+events_vector.at(1);
+	for(int i=2; i<6; i++){
+		events_text = events_text+"\n<b>"+events_vector.at(i)+"</b>\n"+events_vector.at(i+1);
+		i++;
+	}
+	latest_events_label.set_markup(events_text);
 }
 
 void gTest::on_button_update(){
