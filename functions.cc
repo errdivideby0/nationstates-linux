@@ -24,6 +24,7 @@
 #include <curl/curl.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
+#include "gtest.h"
 
 using namespace std;
 
@@ -251,6 +252,11 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 		savenation.open(strchar("./name-store/nation_list.txt"), fstream::in | fstream::out | fstream::app);
 		savenation<<nation<<"\n";
 		savenation.close();
+	}
+
+	if((newdata)||(previous_dates.size() == 0)){
+		gTest::instance().force_notebook_refresh(5);
+		gTest::instance().refresh_saves();
 	}
 }
 

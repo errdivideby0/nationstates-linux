@@ -278,9 +278,8 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 }
 
 void gTest::refresh_saves(){
-		Nation_View& nations = Nation_View::instance();
 		Save_View& saves = Save_View::instance();
-		Glib::ustring select_nation = nations.get_selected_nation();
+		Glib::ustring select_nation = Nation_View::instance().get_selected_nation();
 
 		if(select_nation != ""){
 			saves.clear_save_list();
