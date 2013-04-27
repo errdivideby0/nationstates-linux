@@ -46,6 +46,7 @@ Tree_View::Tree_View(){
 	append_column (*viewcol);
 	names.clear();
 
+	signal_button_press_event().connect(sigc::mem_fun(*this, &Tree_View::on_button_press_event));
 	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Tree_View::on_selection_changed));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
@@ -59,6 +60,16 @@ Tree_View::Tree_View(){
 }
 
 Tree_View::~Tree_View(){
+}
+
+bool Tree_View::on_button_press_event(GdkEventButton* event){
+	bool return_value = false;
+	return_value = TreeView::on_button_press_event(event);
+
+	if(event->type == GDK_2BUTTON_PRESS)
+		gTest::instance().force_notebook_refresh(3);
+
+	return return_value;
 }
 
 void Tree_View::clear_stat_list(){

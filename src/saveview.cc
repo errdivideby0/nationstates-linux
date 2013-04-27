@@ -57,7 +57,9 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
-	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
+	if(event->type == GDK_2BUTTON_PRESS)
+		save_menu_to_a();
+	else if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 		save_menu.popup(event->button, event->time);
 
 	return return_value;

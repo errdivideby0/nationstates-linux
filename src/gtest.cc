@@ -311,22 +311,15 @@ void gTest::update_latest_events(Glib::ustring selected_save){
 	}
 
 	for(int i=point; i<point+13; i++){
-		time_t thetime =  static_cast<time_t>(std::stod(events_vector_temp.at(i+2), 0));
-		struct tm * timeinfo = localtime(&thetime);
-		char buffer [80];
-		strftime(buffer, 80, "%d %B, %Y, %R", timeinfo);
-		events_vector.push_back(buffer);
 		while(events_vector_temp.at(i+4).find("@@")!=-1)
 			events_vector_temp.at(i+4) = events_vector_temp.at(i+4).replace(events_vector_temp.at(i+4).find("@@"), selected_nation.size() +4, selected_nation);
 		events_vector.push_back(events_vector_temp.at(i+4));
 		i = i+4;
 	}
 
-	Glib::ustring events_text = "<b>"+events_vector.at(0)+"</b>\n"+events_vector.at(1);
-	for(int i=2; i<6; i++){
-		events_text = events_text+"\n<b>"+events_vector.at(i)+"</b>\n"+events_vector.at(i+1);
-		i++;
-	}
+	Glib::ustring events_text = "•"+events_vector.at(1);
+	for(int i=1; i<4; i++)
+		events_text = events_text+"•"+events_vector.at(i+1);
 	latest_events_label.set_markup(events_text);
 }
 
@@ -423,13 +416,11 @@ void gTest::goto_get_all(Glib::ustring nationer){
 }
 
 void gTest::force_notebook_refresh(int page){
-	if(notebook.get_current_page() == page){
-		if(page>2)
-			notebook.set_current_page(page-1);
-		else
-			notebook.set_current_page(page+1);
-		notebook.set_current_page(page);
-	}
+	if(page>2)
+		notebook.set_current_page(page-1);
+	else
+		notebook.set_current_page(page+1);
+	notebook.set_current_page(page);
 }
 
 void gTest::on_menu_file_quit(){

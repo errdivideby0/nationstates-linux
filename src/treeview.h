@@ -34,6 +34,7 @@ public:
 
 protected:
 
+	virtual bool on_button_press_event(GdkEventButton *ev);
 	void append_category_row(Glib::ustring category_name);
 	void append_stat_row();
 	void set_stat_row(int index, Glib::ustring text, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4);
@@ -58,7 +59,6 @@ protected:
 
 	Gtk::TreeView TreeView;
 	Glib::RefPtr<Gtk::TreeStore> TreeModel;
-	//Glib::RefPtr<Gtk::TreeSelection> selected_row;
 	Gtk::TreeModel::Row category_row, stat_row, parent_row;
 	Gtk::TreeModel::iterator parentrow;
 	std::vector<Glib::ustring> names;

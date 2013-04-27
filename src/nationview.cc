@@ -50,7 +50,9 @@ bool Nation_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
-	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0))
+	if(event->type == GDK_2BUTTON_PRESS)
+		save_title_menu_load();
+	else if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0))
 		save_title_menu.popup(event->button, event->time);
 
 	return return_value;
