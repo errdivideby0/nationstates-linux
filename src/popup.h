@@ -29,6 +29,7 @@ public:
 
 protected:
 
+	void on_button_cancel();
 	void on_button_confirm();
 	void set_rename_text();
 
@@ -36,7 +37,7 @@ protected:
 	Gtk::HBox top_box;
 	Gtk::ButtonBox bottom_box;
 	Gtk::Entry rename_input;
-	Gtk::Button confirm_button;
+	Gtk::Button cancel_button, confirm_button;
 };
 
 #endif

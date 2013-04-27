@@ -19,7 +19,9 @@
 #include "saveview.h"
 #include "nationview.h"
 #include <cstdlib>
+#include <unistd.h>
 #include <iostream>
+#include <fstream>
 #include <exception>
 #include <gtkmm.h>
 #include <string>
@@ -387,7 +389,24 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 }
 
 void gTest::goto_delete_all(Glib::ustring nationer){
-	//delete nationer folder, and from nation_log
+	vector<Glib::ustring> delete_vector = fun.read("./name-store/nation_list.txt");
+	vector<Glib::ustring> deleter = fun.read("./nations-store/"+nationer+"/datelog.txt");
+	ofstream savenation;
+	savenation.open(fun.strchar("./name-store/nation_list.txt"));
+	for(int i=0; i<delete_vector.size(); i++){
+		if(delete_vector.at(i)==nationer){
+		}
+		else
+			savenation<<delete_vector.at(i)<<"\n";
+	}
+	savenation.close();
+	for(int i=0; i<deleter.size(); i++){
+		std::remove(fun.strchar("./nations-store/"+nationer+"/"+deleter.at(i)));
+	}
+	std::remove(fun.strchar("./nations-store/"+nationer+"/datelog.txt"));
+	std::remove(fun.strchar("./nations-store/"+nationer+"/flag.jpg"));
+	rmdir(fun.strchar("./nations-store/"+nationer));
+	force_notebook_refresh(0);
 }
 
 void gTest::goto_get_all(Glib::ustring nationer){

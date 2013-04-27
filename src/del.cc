@@ -15,49 +15,49 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "popup.h"
-#include "saveview.h"
-#include <cstdlib>
+#include "gtest.h"
+#include "del.h"
 #include <gtkmm.h>
+#include <cstdlib>
 
 using namespace std;
 
-popup::popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
+Glib::ustring Delete_Popup::select_nat;
 
+Delete_Popup::Delete_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), delete_button("Yes"), cancel_button("No"){
 	set_border_width(10);
-	set_default_size(200, 60);
+	set_default_size(200, 80);
 
 	add(main_box);
 	main_box.pack_start(top_box);
 	main_box.pack_start(bottom_box);
 
-	set_title("Rename Save");
+	set_title("Delete Nation");
 
-	top_box.pack_start(rename_input);
+	top_box.pack_start(text);
+	text.set_markup("Are you sure you want to delete this nation?");
+	text.set_line_wrap();
+	text.set_size_request(200,40);
 	bottom_box.pack_start(cancel_button, Gtk::PACK_SHRINK);
-	bottom_box.pack_start(confirm_button, Gtk::PACK_SHRINK);
-	set_focus_child(rename_input);
+	bottom_box.pack_start(delete_button, Gtk::PACK_SHRINK);
+	set_focus_child(cancel_button);
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 
-	cancel_button.signal_clicked().connect(sigc::mem_fun(*this, &popup::on_button_cancel));
-	confirm_button.signal_clicked().connect(sigc::mem_fun(*this, &popup::on_button_confirm));
-	signal_show().connect(sigc::mem_fun(*this, &popup::set_rename_text));
-	rename_input.signal_activate().connect(sigc::mem_fun(*this, &popup::on_button_confirm));
+	cancel_button.signal_clicked().connect(sigc::mem_fun(*this, &Delete_Popup::on_button_cancel));
+	delete_button.signal_clicked().connect(sigc::mem_fun(*this, &Delete_Popup::on_button_delete));
 	show_all_children();
 }
 
-void popup::on_button_cancel(){
+void Delete_Popup::on_button_cancel(){
 	hide();
 }
 
-void popup::on_button_confirm(){
+void Delete_Popup::on_button_delete(){
 	hide();
-	Save_View::instance().save_menu_rename(rename_input.get_text());
+	gTest::instance().goto_delete_all(select_nat);
 }
 
-void popup::set_rename_text(){
-	string name = Save_View::instance().get_selected_save();
-	rename_input.set_text(name);
-	rename_input.select_region(0, name.length());
+void Delete_Popup::saved(Glib::ustring selected_nation){
+	select_nat = selected_nation;
 }

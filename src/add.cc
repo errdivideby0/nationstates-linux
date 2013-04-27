@@ -22,9 +22,9 @@
 
 using namespace std;
 
-Add_Popup::Add_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"){
-	set_border_width(0);
-	set_default_size(180, 40);
+Add_Popup::Add_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
+	set_border_width(10);
+	set_default_size(200, 60);
 
 	add(main_box);
 	main_box.pack_start(top_box);
@@ -34,12 +34,20 @@ Add_Popup::Add_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Con
 
 	top_box.pack_start(nation_input);
 	nation_input.set_placeholder_text("input nation name");
+	bottom_box.pack_start(cancel_button, Gtk::PACK_SHRINK);
 	bottom_box.pack_start(confirm_button, Gtk::PACK_SHRINK);
+	set_focus_child(nation_input);
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 
+	cancel_button.signal_clicked().connect(sigc::mem_fun(*this, &Add_Popup::on_button_cancel));
 	confirm_button.signal_clicked().connect(sigc::mem_fun(*this, &Add_Popup::on_button_confirm));
+	nation_input.signal_activate().connect(sigc::mem_fun(*this, &Add_Popup::on_button_confirm));
 	show_all_children();
+}
+
+void Add_Popup::on_button_cancel(){
+	hide();
 }
 
 void Add_Popup::on_button_confirm(){

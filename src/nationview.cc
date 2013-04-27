@@ -17,8 +17,6 @@
 
 #include "nationview.h"
 #include "gtest.h"
-#include "saveview.h"
-#include <fstream>
 
 using namespace std;
 
@@ -87,7 +85,8 @@ int Nation_View::number_nation_selected(){
 }
 
 void Nation_View::save_title_menu_delete_all(){
-	gTest::instance().goto_delete_all(selected_nation);
+	dell.saved(selected_nation);
+	dell.show();
 }
 
 void Nation_View::save_title_menu_get(){

@@ -15,28 +15,30 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GTKMM_GTEST_ADD
-#define GTKMM_GTEST_ADD
+#ifndef GTKMM_GTEST_DEL
+#define GTKMM_GTEST_DEL
 
 #include <gtkmm.h>
 
-class Add_Popup : public Gtk::Window{
+class Delete_Popup : public Gtk::Window{
 private:
 
 public:
 
-	Add_Popup();
+	Delete_Popup();
+	void saved(Glib::ustring selected_nation);
 
 protected:
 
 	void on_button_cancel();
-	void on_button_confirm();
+	void on_button_delete();
 
 	Gtk::Box main_box;
 	Gtk::HBox top_box;
 	Gtk::ButtonBox bottom_box;
-	Gtk::Entry nation_input;
-	Gtk::Button confirm_button, cancel_button;
+	Gtk::Label text;
+	Gtk::Button delete_button, cancel_button;
+	static Glib::ustring select_nat;
 };
 
 #endif

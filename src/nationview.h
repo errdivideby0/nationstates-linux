@@ -19,7 +19,7 @@
 #define GTKMM_EXAMPLE_NATIONVIEW
 
 #include <gtkmm.h>
-#include "functions.h"
+#include "del.h"
 
 class Nation_View : public Gtk::TreeView{
 
@@ -70,7 +70,7 @@ protected:
 	Gtk::TreeModel::Row nation_row, selected_row;
 	Gtk::TreeModel::iterator iter;
 	Gtk::Menu save_title_menu;
-	functions fun;
+	Delete_Popup dell;
 };
 
 #endif
