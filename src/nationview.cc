@@ -30,7 +30,10 @@ Nation_View::Nation_View(){
 	set_model(nation_model);
 	append_column("Nation", nation_columns.stat_nation);
 
-	Gtk::MenuItem* title_item = Gtk::manage(new Gtk::MenuItem("Get Latest Data", true));
+	Gtk::MenuItem* title_item = Gtk::manage(new Gtk::MenuItem("Load Latest Change", true));
+	title_item->signal_activate().connect(sigc::mem_fun(*this, &Nation_View::save_title_menu_load));
+	save_title_menu.append(*title_item);
+	title_item = Gtk::manage(new Gtk::MenuItem("Get Latest Data", true));
 	title_item->signal_activate().connect(sigc::mem_fun(*this, &Nation_View::save_title_menu_get));
 	save_title_menu.append(*title_item);
 	title_item = Gtk::manage(new Gtk::MenuItem("Delete Nation's Data", true));
@@ -89,4 +92,8 @@ void Nation_View::save_title_menu_delete_all(){
 
 void Nation_View::save_title_menu_get(){
 	gTest::instance().goto_get_all(selected_nation);
+}
+
+void Nation_View::save_title_menu_load(){
+	gTest::instance().compare_latest(selected_nation);
 }

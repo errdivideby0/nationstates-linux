@@ -29,47 +29,105 @@ std::vector<double> gTest::values_vector;
 
 using namespace std;
 
-gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
+gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
-	set_border_width(0);
-	set_default_size(1040, 620);
+	set_position(Gtk::WIN_POS_CENTER);
+	set_default_size(1000, 600);
 
-	update_button.set_label("Update All");
+	add(mainmain);
 
-	Save_View& saves = Save_View::instance();
-	Nation_View& nations = Nation_View::instance();
-
-	scrolled_save.add(saves);
+	scrolled_save.add(Save_View::instance());
 	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_nation.add(nations);
+	scrolled_save.set_size_request(400, 0);
+	scrolled_nation.add(Nation_View::instance());
 	scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	scrolled_nation.set_size_request(200,0);
 
 	scrolled_events.add(event_box);
 	scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-	add(main_box);
+	mainmain.pack_start(menu_box, Gtk::PACK_SHRINK);
+	mainmain.pack_start(main_box);
+
+	action_group = Gtk::ActionGroup::create();
+
+	action_group->add(Gtk::Action::create("File", "File"));
+
+	action_group->add(Gtk::Action::create("AddNation", "Add Nation"), Gtk::AccelKey("<control>N"), sigc::mem_fun(*this, &gTest::on_menu_new_window));
+	action_group->add(Gtk::Action::create("Quit", Gtk::Stock::QUIT), sigc::mem_fun(*this, &gTest::on_menu_file_quit));
+
+	action_group->add(Gtk::Action::create("Edit", "Edit"));
+	action_group->add(Gtk::Action::create("Copy", Gtk::Stock::COPY), sigc::mem_fun(*this, &gTest::on_menu_others));
+	action_group->add(Gtk::Action::create("Paste", Gtk::Stock::PASTE), sigc::mem_fun(*this, &gTest::on_menu_others));
+	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &gTest::on_menu_pref));
+
+	action_group->add(Gtk::Action::create("Tools", "Tools"));
+	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &gTest::on_menu_update_all));
+
+	action_group->add(Gtk::Action::create("MenuHelp", "Help"));
+	action_group->add(Gtk::Action::create("Help", "Help"), Gtk::AccelKey("F1"), sigc::mem_fun(*this, &gTest::on_menu_help));
+	action_group->add(Gtk::Action::create("About", "About"), sigc::mem_fun(*this, &gTest::on_menu_about));
+
+
+	ui_manager = Gtk::UIManager::create();
+	ui_manager->insert_action_group(action_group);
+	add_accel_group(ui_manager->get_accel_group());
+
+	Glib::ustring ui_info =
+        "<ui>"
+        "  <menubar name='MenuBar'>"
+        "    <menu action='File'>"
+        "      <menuitem action='AddNation'/>"
+        "      <separator/>"
+        "      <menuitem action='Quit'/>"
+        "    </menu>"
+        "    <menu action='Edit'>"
+        "      <menuitem action='Copy'/>"
+        "      <menuitem action='Paste'/>"
+        "      <separator/>"
+        "      <menuitem action='Preferences'/>"
+        "    </menu>"
+        "    <menu action='Tools'>"
+        "      <menuitem action='UpdateAll'/>"
+        "    </menu>"
+        "    <menu action='MenuHelp'>"
+        "      <menuitem action='Help'/>"
+        "      <menuitem action='About'/>"
+        "    </menu>"
+        "  </menubar>"
+        "</ui>";
+
+	try{
+		ui_manager->add_ui_from_string(ui_info);
+	}
+	catch(const Glib::Error& ex){
+		std::cerr << "building menus failed: \n" <<  ex.what();
+	}
+
+	Gtk::Widget* pMenubar = ui_manager->get_widget("/MenuBar");
+	if(pMenubar)
+		menu_box.pack_start(*pMenubar, Gtk::PACK_SHRINK);
+
 	main_box.pack_start(scrolled_stats);
 	main_box.pack_start(right_box);
 
 	scrolled_stats.add(stats);
 	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(440, 570);
+	scrolled_stats.set_size_request(400, 348);
 
-	right_box.set_size_request(600, 570);
+	right_box.set_size_request(600, 500);
 	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
 	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
-	right_box.pack_start(input_box, Gtk::PACK_SHRINK);
 
-	v_header.set_size_request(600, 100);
+	v_header.set_size_request(600, 87);
 	v_header.pack_start(header_upper_box);
 	v_header.pack_start(header_box);
 
+	notebook.append_page(save_box_big, "Saved Data");
 	notebook.append_page(description_box, "Description");
-	notebook.append_page(issues_box, "Issues");
  	notebook.append_page(region_box, "Region");
 	notebook.append_page(graph_box, "Census Graph");
 	notebook.append_page(scrolled_events, "Events");
-	notebook.append_page(save_box_big, "Saved Data");
 
 	save_box_big.pack_start(save_box);
 	save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
@@ -84,10 +142,13 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 
 	graph_box.pack_start(plotter);
 
-	header_upper_box.set_border_width(5);
+	header_upper_box.set_border_width(2);
 	header_upper_box.pack_start(nation_label);
 
-	header_box.pack_start(flag, Gtk::PACK_SHRINK);
+	header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
+	flag_box.set_border_width(6);
+	flag_box.pack_start(flag, Gtk::PACK_SHRINK);
+	flag_box.set_size_request(130, 72);
 	header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
 
 	nation_label.set_selectable(true);
@@ -95,12 +156,12 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	nation_label.set_justify(Gtk::JUSTIFY_CENTER);
 
 	fullname.set_selectable(true);
-	fullname.set_markup("\"Motto\"\nCategory\nPopulation:");
+	fullname.set_markup("\"Motto\"\nCategory:\nPopulation:");
 	fullname.set_justify(Gtk::JUSTIFY_LEFT);
 	fullname.set_line_wrap();
 
 	rights.set_selectable(true);
-	rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:    ( )\nInfluence:    ");
+	rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:   ( )\nRegional Influence:   ( )");
 	rights.set_justify(Gtk::JUSTIFY_RIGHT);
 
 	description_box.pack_start(description_label, Gtk::PACK_SHRINK);
@@ -115,85 +176,35 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL), next_button("Next"){
 	event_box.set_border_width(8);
 	events_label.set_line_wrap();
 
-	nation_box.pack_start(fullname);
-	nation_box.pack_start(rights);
-	nation_box.set_border_width(5);
+	nation_box.pack_start(fullname, Gtk::PACK_SHRINK);
+	nation_box.pack_start(rights, Gtk::PACK_EXPAND_WIDGET);
 
 	set_title("NationStates");
-	nation_input.set_placeholder_text("Enter Nation Name");
 
-	input_box.pack_start(nation_input);
-	input_box.pack_start(next_button, Gtk::PACK_SHRINK);
-	input_box.pack_start(update_button);
-	input_box.set_border_width(5);
-	input_box.set_layout(Gtk::BUTTONBOX_END);
-
-	next_button.signal_clicked().connect(sigc::mem_fun(*this, &gTest::on_button_next));
-	update_button.signal_clicked().connect(sigc::mem_fun(*this, &gTest::on_button_update));
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_notebook_switch_page));
 
 	show_all_children();
 }
 
-void gTest::on_button_next(){
+void gTest::on_menu_new_window(){
+	adder.show();
+}
 
-	nation = fun.lowercase(nation_input.get_text());
-
-	errorPopup = fun.error_setup();
-	errorPopup->set_transient_for(*this);
-
+void gTest::on_menu_new(Glib::ustring nationer){
+	nation = fun.lowercase(nationer);
 	if(nation.length() > 0){
-
 		int nation_size = fun.get_nation_data(nation);
-
 		if(nation_size>69){
-
-			current_time.clear();
-			current_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".txt";
-
-			xmlpp::DomParser parser;
-			parser.parse_file("./nation.xml");
-
-			std::vector<Glib::ustring> all_data;
-			all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
-
-			fun.save_data(all_data, current_time, nation);
-
-			data_vectors.clear();
-			data_vectors = fun.vectors_generate(all_data, nation);
-
-			//loads the latest data saved
-			std::vector<Glib::ustring> nation_datar;
-			nation_datar.push_back(fun.read("./nations-store/"+nation+"/datelog.txt").back());
-			nation_datar.push_back(nation);
-			goto_load(nation_datar);
-
-			std::vector< std::vector<Glib::ustring> > last_vectors;
-			int lines = fun.count_lines("./nations-store/"+nation+"/datelog.txt");
-			if(lines>1){
-				last_vectors = fun.last_vectors_generate(fun.read("./nations-store/"+nation+"/"+fun.read("./nations-store/"+nation+"/datelog.txt").at(lines-2)));
-				stats.print_data(data_vectors, last_vectors, 1);
-			}
-			else
-				stats.print_data(data_vectors, last_vectors, 0);
-		}
-		else{
-			if(nation_size>0)
-				fun.set_error(errorPopup, "Invalid Nation", "No nation found with name "+nation+".");
-			else
-				fun.set_error(errorPopup, "Could Not Reach Server", "Please check your internet connection and try again.");
-			set_title("NationStates");
+			goto_get_all(nation);
+			compare_latest(nation);
 		}
 	}
-	else{
-		fun.set_error(errorPopup, "No Nation Input", "Please type a nation in the box.");
-		set_title("NationStates"); }
 }
 
 void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
-	if(page_num == 5){
+	if(page_num == 0){
 		Nation_View& nations = Nation_View::instance();
 		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 
@@ -204,11 +215,9 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 				previous_dates = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
 				nations.append_nation(nation_list.at(j), std::to_string(previous_dates.size()));
 			}
-		update_button.show();
 		}
 	}
 	else if(page_num == 3){
-		update_button.hide();
 		stat_vector.clear();
 		values_vector.clear();
 		stat_vector = stats.get_selected_stat();
@@ -273,8 +282,6 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 			}
 		}
 	}
-	else
-		update_button.hide();
 }
 
 void gTest::refresh_saves(){
@@ -321,12 +328,28 @@ void gTest::update_latest_events(Glib::ustring selected_save){
 	latest_events_label.set_markup(events_text);
 }
 
-void gTest::on_button_update(){
+void gTest::on_menu_update_all(){
 	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 	if(nation_list.size()>0){
 		for( int i=0; i<nation_list.size(); i++)
 			goto_get_all(nation_list.at(i));
 	}
+}
+
+void gTest::compare_latest(Glib::ustring nationed){
+	std::vector<Glib::ustring> nat;
+	nat.push_back(fun.read("./nations-store/"+nationed+"/datelog.txt").back());
+	nat.push_back(nationed);
+	goto_load(nat);
+
+	std::vector< std::vector<Glib::ustring> > last_vectors;
+	int lines = fun.count_lines("./nations-store/"+nation+"/datelog.txt");
+	if(lines>1){
+		last_vectors = fun.last_vectors_generate(fun.read("./nations-store/"+nation+"/"+fun.read("./nations-store/"+nation+"/datelog.txt").at(lines-2)));
+		stats.print_data(data_vectors, last_vectors, 1);
+	}
+	else
+		stats.print_data(data_vectors, last_vectors, 0);
 }
 
 std::vector<Glib::ustring> gTest::get_stat_vector(){
@@ -349,6 +372,7 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(all_data);
 	data_vectors.clear();
 	data_vectors = fun.vectors_generate(all_data, nation);
+	cout<<"size a ="<<all_data.size()<<" & size b = "<<last_vectors.at(0).size()<<"\n";
 
 	stats.print_data(data_vectors, last_vectors, 0);
 	nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");
@@ -376,7 +400,7 @@ void gTest::goto_get_all(Glib::ustring nationer){
 	std::vector<Glib::ustring> all_data;
 	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
 	fun.save_data(all_data, currenter_time, nationer);
-	force_notebook_refresh(5);
+	force_notebook_refresh(0);
 }
 
 void gTest::force_notebook_refresh(int page){
@@ -388,3 +412,20 @@ void gTest::force_notebook_refresh(int page){
 		notebook.set_current_page(page);
 	}
 }
+
+void gTest::on_menu_file_quit(){
+	hide();
+}
+
+void gTest::on_menu_others(){
+}
+
+void gTest::on_menu_pref(){
+}
+
+void gTest::on_menu_help(){
+}
+
+void gTest::on_menu_about(){
+}
+

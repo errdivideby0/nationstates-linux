@@ -28,14 +28,14 @@ Save_View::Save_View(){
 
 	save_model = Gtk::ListStore::create(save_columns);
 	set_model(save_model);
-	append_column("Date", save_columns.stat_save);
+	append_column("Save Name", save_columns.stat_save);
 
-	Gtk::MenuItem*  item = Gtk::manage(new Gtk::MenuItem("Compare", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_print));
+	Gtk::MenuItem*  item = Gtk::manage(new Gtk::MenuItem("Compare to B (A)", true));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_to_a));
 	save_menu.append(*item);
 
-	item = Gtk::manage(new Gtk::MenuItem("Load", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_load));
+	item = Gtk::manage(new Gtk::MenuItem("Load (B)", true));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_to_b));
 	save_menu.append(*item);
 
 	item = Gtk::manage(new Gtk::MenuItem("Rename", true));
@@ -77,7 +77,7 @@ void Save_View::on_save_changed(){
 	}
 }
 
-void Save_View::save_menu_load(){
+void Save_View::save_menu_to_b(){
 	if(selected_save.at(0) == '*')
 		selected_save = fun.trim(selected_save, 1, 0);
 	vector<Glib::ustring> nation_data;
@@ -132,7 +132,7 @@ int Save_View::number_selected(){
 	return get_selection()->count_selected_rows();
 }
 
-void Save_View::save_menu_print(){
+void Save_View::save_menu_to_a(){
 	if(selected_save.at(0) == '*')
 		selected_save = fun.trim(selected_save, 1, 0);
 	vector<Glib::ustring> nation_data;

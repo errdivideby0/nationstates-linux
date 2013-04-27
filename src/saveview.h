@@ -47,10 +47,10 @@ protected:
 
 	virtual bool on_button_press_event(GdkEventButton *ev);
 
-	void save_menu_load();
+	void save_menu_to_a();
+	void save_menu_to_b();
 	void save_menu_delete();
 	void pop_show();
-	void save_menu_print();
 	void on_save_changed();
 
 	class SaveColumns : public Gtk::TreeModel::ColumnRecord{

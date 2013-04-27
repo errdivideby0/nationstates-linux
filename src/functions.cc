@@ -83,11 +83,12 @@ Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from
 
 // Just placing some string formation out here to clean up the gtest class
 Glib::ustring functions::make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
-	return "\""+all_data.at(4)+"\"\n"+all_data.at(6)+"\n\n"+data_vectors.at(0).at(3)+" million citizens";
+	return "\""+all_data.at(4)+"\"\nCategory: "+all_data.at(6)+"\n"+data_vectors.at(0).at(3)+" million citizens";
 }
 Glib::ustring functions::make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
 	return "Civil Rights: "+data_vectors.at(6).at(0)+" ("+data_vectors.at(0).at(0)+")\nEconomy: "+data_vectors.at(6).at(1)+" ("+
-		data_vectors.at(0).at(1)+")\nPolitical Freedom: "+data_vectors.at(6).at(2)+" ("+data_vectors.at(0).at(2)+")\n\nInfluence: "+all_data.at(66);
+		data_vectors.at(0).at(1)+")\nPolitical Freedom: "+data_vectors.at(6).at(2)+" ("+data_vectors.at(0).at(2)+")\nRegional Influence: "+all_data.at(66)+
+		" ("+data_vectors.at(0).at(67)+")";
 }
 Glib::ustring functions::make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors){
 	Glib::ustring events_text;
@@ -255,7 +256,7 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	}
 
 	if((newdata)||(previous_dates.size() == 0)){
-		gTest::instance().force_notebook_refresh(5);
+		gTest::instance().force_notebook_refresh(0);
 		gTest::instance().refresh_saves();
 	}
 }

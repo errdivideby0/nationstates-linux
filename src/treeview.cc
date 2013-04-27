@@ -32,16 +32,16 @@ Tree_View::Tree_View(){
 	set_model(TreeModel);
 
 	Gtk::CellRendererText *render = Gtk::manage(new Gtk::CellRendererText());
-	Gtk::TreeView::Column *viewcol = Gtk::manage( new Gtk::TreeView::Column ("Nation Statistic", *render));
+	Gtk::TreeView::Column *viewcol = Gtk::manage( new Gtk::TreeView::Column (" Nation Statistic", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_name);
 	append_column (*viewcol);
-	viewcol = Gtk::manage( new Gtk::TreeView::Column ("Old", *render));
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (" A", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_value2);
 	append_column (*viewcol);
-	viewcol = Gtk::manage( new Gtk::TreeView::Column ("Current", *render));
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (" B", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_value);
 	append_column (*viewcol);
-	viewcol = Gtk::manage( new Gtk::TreeView::Column ("+/-", *render));
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (" +/-", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_update);
 	append_column (*viewcol);
 	names.clear();
