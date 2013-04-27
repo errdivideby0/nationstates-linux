@@ -1,16 +1,11 @@
-To compile on archlinux install the packages:
-	pacman -Sy libxml++ gtkmm3 curl base-devel
-
-Select all, install, and then use the build command:
+Archlinux
+	sudo pacman -Sy libxml++ gtkmm3 glib2 curl base-devel
 	make
-
-Run with 
+	cd bin
 	./nationstates-linux
 
-----
-
-If you can not build it, or want to build it on another distro, use your preferred package manager to install the packages named something like these:
-	libxml++ gtkmm3 curl
-
-Then run double click the nationstates-linux file in the bin folder.
-	./bin/nationstates-linux
+Ubuntu
+	sudo apt-get install libcurl4-openssl-dev libgtkmm-3.0-dev libglib2.0-dev libxml++2.6-dev
+	make
+	cd bin
+	./nationstates-linux
