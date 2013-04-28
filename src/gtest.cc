@@ -134,7 +134,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	save_box_big.pack_start(save_box);
 	save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
 	latest_events_box.pack_start(latest_events_label);
-	latest_events_box.set_size_request(600, 152);
+	latest_events_box.set_size_request(600, 120);
 	latest_events_box.set_border_width(8);
 	latest_events_label.set_justify(Gtk::JUSTIFY_LEFT);
 	latest_events_label.set_line_wrap();
@@ -300,26 +300,33 @@ void gTest::refresh_saves(){
 
 void gTest::update_latest_events(Glib::ustring selected_save){
 	Glib::ustring selected_nation = Nation_View::instance().get_selected_nation();
-	vector<Glib::ustring> events_vector_temp = fun.read("./nations-store/"+selected_nation+"/"+selected_save);
-	vector<Glib::ustring> events_vector;
+	vector<Glib::ustring> save_vector = fun.read("./nations-store/"+selected_nation+"/"+selected_save);
+	vector<Glib::ustring> events_vector, time_vector;
 	int point;
-	for(int i=200; i<events_vector_temp.size(); i++){
-		if(events_vector_temp.at(i).find("EVENT")!=-1){
+	for(int i=200; i<save_vector.size(); i++){
+		if(save_vector.at(i).find("EVENT")!=-1){
 			point = i;
 			break;
 		}
 	}
 
 	for(int i=point; i<point+13; i++){
-		while(events_vector_temp.at(i+4).find("@@")!=-1)
-			events_vector_temp.at(i+4) = events_vector_temp.at(i+4).replace(events_vector_temp.at(i+4).find("@@"), selected_nation.size() +4, selected_nation);
-		events_vector.push_back(events_vector_temp.at(i+4));
+		while(save_vector.at(i+4).find("@@")!=-1)
+			save_vector.at(i+4) = save_vector.at(i+4).replace(save_vector.at(i+4).find("@@"), selected_nation.size() +4, selected_nation);
+		events_vector.push_back(save_vector.at(i+4));
+
+		time_t thetime =  static_cast<time_t>(std::stod(save_vector.at(i+2), 0));
+		struct tm * timeinfo = localtime(&thetime);
+		char buffer [80];
+		strftime(buffer, 80, "%b %d, %R", timeinfo);
+		time_vector.push_back(buffer);
 		i = i+4;
 	}
 
-	Glib::ustring events_text = "•"+events_vector.at(1);
-	for(int i=1; i<4; i++)
-		events_text = events_text+"•"+events_vector.at(i+1);
+	Glib::ustring events_text = "•<b>"+time_vector.at(0)+"</b> - "+events_vector.at(0);
+	cout<<events_vector.at(0)<<"\n";
+	for(int i=1; i<3; i++)
+		events_text = events_text+"\n•<b>"+time_vector.at(i)+"</b> - "+events_vector.at(i);
 	latest_events_label.set_markup(events_text);
 }
 
@@ -367,7 +374,6 @@ void gTest::goto_load(std::vector<Glib::ustring> nation_data){
 	std::vector< std::vector<Glib::ustring> > last_vectors = fun.last_vectors_generate(all_data);
 	data_vectors.clear();
 	data_vectors = fun.vectors_generate(all_data, nation);
-	cout<<"size a ="<<all_data.size()<<" & size b = "<<last_vectors.at(0).size()<<"\n";
 
 	stats.print_data(data_vectors, last_vectors, 0);
 	nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");

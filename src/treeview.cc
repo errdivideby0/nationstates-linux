@@ -59,9 +59,6 @@ Tree_View::Tree_View(){
 	reader.close();
 }
 
-Tree_View::~Tree_View(){
-}
-
 bool Tree_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
@@ -237,6 +234,8 @@ void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
 }
 
 void Tree_View::on_selection_changed(){
+	//if(get_selection()->count_selected_rows()<=1)
+		//srand(time(NULL));
 	stat_vector.clear();
 	get_selection()->selected_foreach_iter(sigc::mem_fun(*this, &Tree_View::selected_row_callback));
 	gTest::instance().force_notebook_refresh(3);

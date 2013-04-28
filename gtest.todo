@@ -1,4 +1,7 @@
-Array of colours for the graph.
+Add more colours.
+Colours stay unique until one selected.
+Labels do not overlap in graph.
+If nation has selected treeview, refreshing moves to census tab.
 Save data data as .csv files.
 Add world average to graph.
 Ability to compare two nations.

@@ -26,11 +26,11 @@ class Census_Plot : public Gtk::DrawingArea
 {
 public:
 	Census_Plot();
-	virtual ~Census_Plot();
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
 
 protected:
 	functions fun;
+	std::string to_precision(double num, int n);
 	static std::vector<Glib::ustring> unit_vector;
 };
 

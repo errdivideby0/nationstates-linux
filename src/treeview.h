@@ -25,7 +25,6 @@ class Tree_View : public Gtk::TreeView{
 
 public:
 	Tree_View();
-	virtual ~Tree_View();
 
 	Glib::ustring get_name_at(int place);
 	void print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode);
