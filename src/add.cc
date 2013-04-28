@@ -52,5 +52,5 @@ void Add_Popup::on_button_cancel(){
 
 void Add_Popup::on_button_confirm(){
 	hide();
-	gTest::instance().on_menu_new(nation_input.get_text());
+	gTest::instance().new_nation(nation_input.get_text());
 }

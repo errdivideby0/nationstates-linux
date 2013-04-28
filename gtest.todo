@@ -1,6 +1,6 @@
-Add more colours.
 Colours stay unique until one selected.
 Labels do not overlap in graph.
+Link to nation.
 If nation has selected treeview, refreshing moves to census tab.
 Save data data as .csv files.
 Add world average to graph.
@@ -16,6 +16,5 @@ Add region data to region tab
 // http://www.nationstates.net/cgi-bin/api.cgi?region=(name)&q=(shard1)+(shard2)+(...)
 // name factbook numnations nations delegate delegatevotes gavote scvote founder power flag embassies tags happenings messages*
 
-Implement a new Window class for are you sure delete data options
 Parse description for %%area%%, @@leader@@ and such tags
 Start saving events

@@ -55,7 +55,7 @@ void Delete_Popup::on_button_cancel(){
 
 void Delete_Popup::on_button_delete(){
 	hide();
-	gTest::instance().goto_delete_all(select_nat);
+	gTest::instance().delete_nation(select_nat);
 }
 
 void Delete_Popup::saved(Glib::ustring selected_nation){

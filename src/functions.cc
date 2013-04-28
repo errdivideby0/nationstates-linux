@@ -65,7 +65,7 @@ int functions::count_lines(string file){
 	while (read.good()){
 		getline (read,nline);
 		nlines++;
-		}
+	}
 	read.close();
 	return nlines;
 }
@@ -111,9 +111,8 @@ std::vector<Glib::ustring> functions::read(string file){
 	ifstream read;
 	std::vector<Glib::ustring> t_vector;
 	read.open(strchar(file));
-	while(getline(read,file)){
+	while(getline(read,file))
 		t_vector.push_back(file);
-	}
 	read.close();
 	return t_vector;
 }
@@ -261,23 +260,6 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 	}
 }
 
-// Sets the error message for a popup window and shows it.
-void functions::set_error(Gtk::Window* errorPopup, Glib::ustring title, Glib::ustring error_message){
-	errorPopup->set_title(title);
-	errorPopup->add_label(error_message, false, 0.5, 0.5);
-	errorPopup->show_all();
-}
-
-// Sets up the error popup window.
-Gtk::Window* functions::error_setup(){
-	Gtk::Window* errorPopup;
-	errorPopup = Gtk::manage (new Gtk::Window());
-	errorPopup->set_position (Gtk::WIN_POS_CENTER_ON_PARENT);
-	errorPopup->set_modal(true);
-	errorPopup->set_border_width(10);;
-	return errorPopup;
-}
-
 // This parses the nation.xml and forms a vector of all the values and titles. Best to pretend this does not exist
 std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first){
 
@@ -311,7 +293,7 @@ std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::v
 }
 
 // Takes the data vector formed by print_node and searches for certain elements that we want. Pushes them to new vectors to later print.
-std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector<Glib::ustring> all_data, Glib::ustring nation){
+std::vector<std::vector<Glib::ustring> > functions::vectors_generate(Glib::ustring save, Glib::ustring nation){
 
 	std::vector<std::vector<Glib::ustring> > data_vectors;
 	std::vector<Glib::ustring> census;
@@ -321,6 +303,8 @@ std::vector<std::vector<Glib::ustring> > functions::vectors_generate(std::vector
 	std::vector<Glib::ustring> budget;
 	std::vector<Glib::ustring> economy;
 	std::vector<Glib::ustring> freedoms;
+
+	std::vector<Glib::ustring> all_data = read("./nations-store/"+nation+"/"+save);
 
 	for(int i=0; i<all_data.size(); i++){
 		if(all_data.at(i).find("CENSUS")!=-1){

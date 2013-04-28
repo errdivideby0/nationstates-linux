@@ -51,7 +51,7 @@ bool Nation_View::on_button_press_event(GdkEventButton* event){
 	return_value = TreeView::on_button_press_event(event);
 
 	if(event->type == GDK_2BUTTON_PRESS)
-		save_title_menu_load();
+		gTest::instance().compare_latest(selected_nation);
 	else if((event->type == GDK_BUTTON_PRESS) && (event->button == 3) && (selected_row->parent() == 0))
 		save_title_menu.popup(event->button, event->time);
 
@@ -98,3 +98,4 @@ void Nation_View::save_title_menu_get(){
 void Nation_View::save_title_menu_load(){
 	gTest::instance().compare_latest(selected_nation);
 }
+

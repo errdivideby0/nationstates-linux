@@ -45,10 +45,8 @@ Glib::ustring make_description_text(std::vector<Glib::ustring> all_data, std::ve
 Glib::ustring make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors);
 
 void save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation);
-void set_error(Gtk::Window* errorPopup, Glib::ustring title, Glib::ustring error_message);
-Gtk::Window* error_setup();
 std::vector<Glib::ustring> print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first);
-std::vector<std::vector<Glib::ustring> > vectors_generate(std::vector<Glib::ustring> all_data, Glib::ustring nation);
+std::vector<std::vector<Glib::ustring> > vectors_generate(Glib::ustring save, Glib::ustring nation);
 std::vector<std::vector<Glib::ustring> > last_vectors_generate(std::vector<Glib::ustring> last_data);
 
 };

@@ -80,12 +80,7 @@ void Save_View::on_save_changed(){
 }
 
 void Save_View::save_menu_to_b(){
-	if(selected_save.at(0) == '*')
-		selected_save = fun.trim(selected_save, 1, 0);
-	vector<Glib::ustring> nation_data;
-	nation_data.push_back(selected_save);
-	nation_data.push_back(Nation_View::instance().selected_nation);
-	gTest::instance().goto_load(nation_data);
+	gTest::instance().goto_load(selected_save, Nation_View::instance().selected_nation, 0);
 }
 
 void Save_View::pop_show(){
@@ -98,8 +93,6 @@ Glib::ustring Save_View::get_selected_save(){
 
 void Save_View::save_menu_rename(Glib::ustring newname){
 	vector<Glib::ustring> datelist = fun.read("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt");
-	if(selected_save.at(0) == '*')
-		selected_save = fun.trim(selected_save, 1, 0);
 	int datelistsize = datelist.size();
 	for(int i=0; i<datelistsize; i++){
 		if(selected_save == datelist.at(i)){
@@ -135,10 +128,5 @@ int Save_View::number_selected(){
 }
 
 void Save_View::save_menu_to_a(){
-	if(selected_save.at(0) == '*')
-		selected_save = fun.trim(selected_save, 1, 0);
-	vector<Glib::ustring> nation_data;
-	nation_data.push_back(selected_save);
-	nation_data.push_back(Nation_View::instance().selected_nation);
-	gTest::instance().goto_data(nation_data);
+	gTest::instance().compare_to_loaded(selected_save, Nation_View::instance().selected_nation);
 }

@@ -30,6 +30,7 @@ public:
 	void print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode);
 	void clear_stat_list();
 	std::vector<Glib::ustring> get_selected_stat();
+	void print_blank();
 
 protected:
 
@@ -63,7 +64,6 @@ protected:
 	std::vector<Glib::ustring> names;
 	static std::vector<Glib::ustring> stat_vector;
 	functions fun;
-
 };
 
 #endif

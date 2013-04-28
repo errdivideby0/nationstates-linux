@@ -38,11 +38,12 @@ public:
 		return singleton;
 	}
 
-	void on_menu_new(Glib::ustring nationer);
-	void goto_data(std::vector<Glib::ustring> nation_data);
-	void goto_load(std::vector<Glib::ustring> nation_data);
+	void new_nation(Glib::ustring nationer);
+	void set_notebook_page(int page);
+	void compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation);
+	void goto_load(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print);
 	void update_latest_events(Glib::ustring selected_save);
-	void goto_delete_all(Glib::ustring nationer);
+	void delete_nation(Glib::ustring nationer);
 	void goto_get_all(Glib::ustring nationer);
 	void compare_latest(Glib::ustring nationed);
 	void force_notebook_refresh(int page);
@@ -55,7 +56,7 @@ public:
 
 protected:
 
-	void on_menu_new_window();
+	void new_nation_window();
 	void on_menu_pref();
 	void on_menu_help();
 	void on_menu_about();
