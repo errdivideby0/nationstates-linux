@@ -3,7 +3,7 @@ CFLAGS=-O3
 LDFLAGS=`pkg-config --cflags --libs glib-2.0 gtkmm-3.0 libxml++-2.6 libcurl` -std=c++11
 A=src/
 
-OBJECTS = main.o gtest.o functions.o nationview.o treeview.o saveview.o ploter.o popup.o add.o del.o
+OBJECTS = main.o gtest.o functions.o nationview.o treeview.o saveview.o ploter.o popup.o add.o del.o preferences.o
 
 all : $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o bin/nationstates-linux $(LDFLAGS)
@@ -11,7 +11,7 @@ all : $(OBJECTS)
 main.o: $(A)main.cc $(A)gtest.cc
 	$(CC) $(CFLAGS) -c $(A)main.cc $(LDFLAGS)
 
-gtest.o: $(A)gtest.cc $(A)functions.cc $(A)nationview.cc $(A)saveview.cc $(A)treeview.cc $(A)ploter.cc $(A)add.cc
+gtest.o: $(A)gtest.cc $(A)functions.cc $(A)nationview.cc $(A)saveview.cc $(A)treeview.cc $(A)ploter.cc $(A)add.cc $(A)preferences.cc
 	$(CC) $(CFLAGS) -c $(A)gtest.cc $(LDFLAGS)
 
 functions.o: $(A)functions.cc
@@ -37,6 +37,9 @@ add.o: $(A)add.cc $(A)gtest.cc
 
 del.o: $(A)del.cc $(A)gtest.cc
 	$(CC) $(CFLAGS) -c $(A)del.cc $(LDFLAGS)
+
+preferences.o: $(A)preferences.cc
+	$(CC) $(CFLAGS) -c $(A)preferences.cc $(LDFLAGS)
 
 clean:
 	rm *.o
