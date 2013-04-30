@@ -66,8 +66,9 @@ protected:
 
 	Glib::ustring nation, loaded;
 
+	Gtk::Entry search_entry;
 	Gtk::Box main_box, big_box, flag_box;
-	Gtk::VBox right_box, v_header, save_box_big, menu_box, mainmain;
+	Gtk::VBox right_box, v_header, save_box_big, menu_box, mainmain, left_box;
 	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook;
