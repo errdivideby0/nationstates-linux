@@ -37,15 +37,16 @@ public:
 		return singleton;
 	}
 
-	void append_save(Glib::ustring);
+	void append_save(Glib::ustring text);
 	void refresh_saves();
-	void save_menu_rename(Glib::ustring);
+	void save_menu_rename(Glib::ustring newname);
 	Glib::ustring get_selected_save();
 	void select_default();
 
 protected:
 
 	virtual bool on_button_press_event(GdkEventButton *ev);
+	virtual bool on_key_press_event(GdkEventKey *ev);
 
 	void save_menu_to_a();
 	void save_menu_to_b();

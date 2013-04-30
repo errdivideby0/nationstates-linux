@@ -51,6 +51,7 @@ Save_View::Save_View(){
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Save_View::on_button_press_event));
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Save_View::on_save_changed));
+	signal_key_press_event().connect(sigc::mem_fun(*this, &Save_View::on_key_press_event));
 }
 
 bool Save_View::on_button_press_event(GdkEventButton* event){
@@ -72,6 +73,8 @@ void Save_View::on_save_changed(){
 		selected_save = ndate + ".csv";
 		gTest::instance().update_event_preview(selected_save);
 	}
+	else
+		selected_save.clear();
 }
 
 void Save_View::refresh_saves(){
@@ -123,12 +126,21 @@ void Save_View::select_default(){
 	Gtk::TreeModel::iterator iter = save_model->children().begin();
 	if(iter)
 		selection->select(iter);
-
 }
 
 void Save_View::append_save(Glib::ustring text){
 	save_row = *(save_model->append());
 	save_row[save_columns.stat_save] = text;
+}
+
+bool Save_View::on_key_press_event(GdkEventKey* event){
+	bool return_value = false;
+	return_value = TreeView::on_key_press_event(event);
+	if((selected_save.length()>0)&&(event->keyval == GDK_KEY_F2))
+		pop_show();
+	else if((selected_save.length()>0)&&(event->keyval == GDK_KEY_Delete))
+		save_menu_delete();
+	return return_value;
 }
 
 void Save_View::save_menu_to_a(){

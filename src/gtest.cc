@@ -39,16 +39,6 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	add(mainmain);
 
-	scrolled_save.add(Save_View::instance());
-	scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_save.set_size_request(400, 0);
-	scrolled_nation.add(Nation_View::instance());
-	scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_nation.set_size_request(200,0);
-
-	scrolled_events.add(event_box);
-	scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
 	mainmain.pack_start(menu_box, Gtk::PACK_SHRINK);
 	mainmain.pack_start(main_box);
 
@@ -111,76 +101,71 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	if(pMenubar)
 		menu_box.pack_start(*pMenubar, Gtk::PACK_SHRINK);
 
-	main_box.pack_start(scrolled_stats);
+	main_box.pack_start(left_box);
+		left_box.pack_start(scrolled_stats);
+				scrolled_stats.add(stats);
+				scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+				scrolled_stats.set_size_request(400, 348);
+		left_box.pack_start(search_entry, Gtk::PACK_SHRINK);
 	main_box.pack_start(right_box);
-
-	scrolled_stats.add(stats);
-	scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolled_stats.set_size_request(400, 348);
-
-	right_box.set_size_request(600, 500);
-	right_box.pack_start(v_header, Gtk::PACK_SHRINK);
-	right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
-
-	v_header.set_size_request(600, 87);
-	v_header.pack_start(header_upper_box);
-	v_header.pack_start(header_box);
-
-	notebook.append_page(save_box_big, "Saved Data");
-	notebook.append_page(description_box, "Description");
- 	notebook.append_page(region_box, "Region");
-	notebook.append_page(graph_box, "Census Graph");
-	notebook.append_page(scrolled_events, "Events");
-
-	save_box_big.pack_start(save_box);
-	save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
-	latest_events_box.pack_start(latest_events_label);
-	latest_events_box.set_size_request(600, 120);
-	latest_events_box.set_border_width(8);
-	latest_events_label.set_justify(Gtk::JUSTIFY_LEFT);
-	latest_events_label.set_line_wrap();
-
-	save_box.pack_start(scrolled_nation);
-	save_box.pack_start(scrolled_save);
-
-	graph_box.pack_start(plotter);
-
-	header_upper_box.set_border_width(2);
-	header_upper_box.pack_start(nation_label);
-
-	header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
-	flag_box.set_border_width(6);
-	flag_box.pack_start(flag, Gtk::PACK_SHRINK);
-	flag_box.set_size_request(130, 72);
-	header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
-
-	nation_label.set_selectable(true);
-	nation_label.set_markup("<b><big>Nation</big></b>");
-	nation_label.set_justify(Gtk::JUSTIFY_CENTER);
-
-	fullname.set_selectable(true);
-	fullname.set_markup("\"Motto\"\nCategory:\nPopulation:");
-	fullname.set_justify(Gtk::JUSTIFY_LEFT);
-	fullname.set_line_wrap();
-
-	rights.set_selectable(true);
-	rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:   ( )\nRegional Influence:   ( )");
-	rights.set_justify(Gtk::JUSTIFY_RIGHT);
-
-	description_box.pack_start(description_label, Gtk::PACK_SHRINK);
-	description_box.set_valign(Gtk::ALIGN_START);
-	description_box.set_halign(Gtk::ALIGN_START);
-	description_box.set_border_width(8);
-	description_label.set_line_wrap();
-
-	event_box.set_valign(Gtk::ALIGN_START);
-	event_box.set_halign(Gtk::ALIGN_START);
-	event_box.pack_start(events_label);
-	event_box.set_border_width(8);
-	events_label.set_line_wrap();
-
-	nation_box.pack_start(fullname, Gtk::PACK_SHRINK);
-	nation_box.pack_start(rights, Gtk::PACK_EXPAND_WIDGET);
+		right_box.set_size_request(600, 500);
+		right_box.pack_start(v_header, Gtk::PACK_SHRINK);
+			v_header.set_size_request(600, 87);
+			v_header.pack_start(header_upper_box);
+				header_upper_box.set_border_width(2);
+				header_upper_box.pack_start(nation_label);
+					nation_label.set_selectable(true);
+					nation_label.set_markup("<b><big>Nation</big></b>");
+					nation_label.set_justify(Gtk::JUSTIFY_CENTER);
+			v_header.pack_start(header_box);
+				header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
+					flag_box.set_border_width(6);
+					flag_box.pack_start(flag, Gtk::PACK_SHRINK);
+					flag_box.set_size_request(130, 72);
+				header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
+					nation_box.pack_start(fullname, Gtk::PACK_SHRINK);
+						fullname.set_selectable(true);
+						fullname.set_markup("\"Motto\"\nCategory:\nPopulation:");
+						fullname.set_justify(Gtk::JUSTIFY_LEFT);
+						fullname.set_line_wrap();
+					nation_box.pack_start(rights, Gtk::PACK_EXPAND_WIDGET);
+						rights.set_selectable(true);
+						rights.set_markup("Civil Rights:   ( )\nEconomy:   ( )\nPolitical Freedom:   ( )\nRegional Influence:   ( )");
+						rights.set_justify(Gtk::JUSTIFY_RIGHT);
+		right_box.pack_start(notebook, Gtk::PACK_EXPAND_WIDGET);
+			notebook.append_page(save_box_big, "Saved Data");
+				save_box_big.pack_start(save_box);
+					save_box.pack_start(scrolled_nation);
+						scrolled_nation.add(Nation_View::instance());
+						scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+						scrolled_nation.set_size_request(200,0);
+					save_box.pack_start(scrolled_save);
+						scrolled_save.add(Save_View::instance());
+						scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+						scrolled_save.set_size_request(400, 0);
+				save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
+					latest_events_box.set_size_request(600, 120);
+					latest_events_box.set_border_width(8);
+					latest_events_box.pack_start(latest_events_label);
+						latest_events_label.set_justify(Gtk::JUSTIFY_LEFT);
+						latest_events_label.set_line_wrap();
+			notebook.append_page(description_box, "Description");
+				description_box.set_valign(Gtk::ALIGN_START);
+				description_box.set_halign(Gtk::ALIGN_START);
+				description_box.set_border_width(8);
+				description_box.pack_start(description_label, Gtk::PACK_SHRINK);
+					description_label.set_line_wrap();
+			notebook.append_page(region_box, "Region");
+			notebook.append_page(graph_box, "Census Graph");
+				graph_box.pack_start(plotter);
+			notebook.append_page(scrolled_events, "Events");
+				scrolled_events.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+				scrolled_events.add(event_box);
+					event_box.set_valign(Gtk::ALIGN_START);
+					event_box.set_halign(Gtk::ALIGN_START);
+					event_box.pack_start(events_label);
+					event_box.set_border_width(8);
+					events_label.set_line_wrap();
 
 	set_title("NationStates");
 
