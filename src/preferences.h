@@ -30,12 +30,13 @@ public:
 protected:
 
 	void on_close_button();
-	Gtk::ScrolledWindow general_tab, test_two;
 	Gtk::Notebook pref_notebook;
 	Gtk::Box main_box;
+	Gtk::HBox general_tab, test_two, general_tab_hbox_one, general_tab_hbox_two;
+	//Gtk::VBox general_tab_vbox_one, general_tab_vbox_two;
 	Gtk::ButtonBox bbox_one;
 	Gtk::Button confirm_button, close_button;
-	Gtk::Label ltest_one, ltest_two;
+	Gtk::CheckButton one, two, three;
 };
 
 #endif

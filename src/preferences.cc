@@ -28,11 +28,15 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), c
 	add(main_box);
 	main_box.pack_start(pref_notebook);
 	pref_notebook.append_page(general_tab,"General");
-	pref_notebook.append_page(test_two,"Test Two");
-	general_tab.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	test_two.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	general_tab.add(ltest_one);
-	test_two.add(ltest_two);
+	pref_notebook.append_page(test_two,"????");
+	general_tab.pack_start(general_tab_hbox_one);
+	general_tab.pack_start(general_tab_hbox_two);
+	general_tab_hbox_one.pack_start(one);
+	one.set_label("potato");
+	general_tab_hbox_one.pack_start(two);
+	two.set_label("baked potato");
+	general_tab_hbox_two.pack_start(three);
+	three.set_label("not a potato");
 	main_box.pack_start(bbox_one, Gtk::PACK_SHRINK);
 	bbox_one.set_border_width(5);
 	bbox_one.set_layout(Gtk::BUTTONBOX_END);
@@ -42,7 +46,7 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), c
 	show_all_children();
 }
 
-void on_close_button(){
+void Preferences_Window::on_close_button(){
 	hide();
 }
 
