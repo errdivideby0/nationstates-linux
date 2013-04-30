@@ -9,14 +9,14 @@
 
 using namespace std;
 
-const char * strchar(Glib::ustring String){
+const char * strchar(string String){
 	const char * Char = String.c_str();
 	return Char;
 }
 
-vector<Glib::ustring> read(Glib::ustring file){
+vector<string> read(string file){
 	ifstream read;
-	vector<Glib::ustring> t_vector;
+	vector<string> t_vector;
 	read.open(strchar(file));
 	while(getline(read,file))
 		t_vector.push_back(file);
@@ -24,26 +24,26 @@ vector<Glib::ustring> read(Glib::ustring file){
 	return t_vector;
 }
 
-string trim(Glib::ustring the_string, int from_start, int from_end){
+string trim(string the_string, int from_start, int from_end){
 	return the_string.substr(from_start, the_string.size() - from_start - from_end);
 }
 
-vector< vector<Glib::ustring> > convert(vector<Glib::ustring> all_data, Glib::ustring nation){
+vector< vector<string> > convert(vector<string> all_data, string nation){
 
-	vector<vector<Glib::ustring> > data_vectors;
-	vector<Glib::ustring> census;
+	vector<vector<string> > data_vectors;
+	vector<string> census;
 	deque<string> manufacturing;
-	vector<Glib::ustring> man;
-	vector<Glib::ustring> deaths;
-	vector<Glib::ustring> events;
-	vector<Glib::ustring> events_times;
-	vector<Glib::ustring> descriptions (14, "");
-	vector<Glib::ustring> budget;
-	vector<Glib::ustring> economy;
-	vector<Glib::ustring> freedoms;
-	vector<Glib::ustring> basics;
-	vector<Glib::ustring> man_vector {"E-10", "E-11", "E-12", "E-13", "E-14", "E-15", "E-16", "E-17", "E-18", "E-19", "E-20", "E-21", "E-22", "E-23", "E-24", "E-25"};
-	vector<Glib::ustring> basics_vector {"FULLNAME", "MOTTO", "CATEGORY", "REGION", "FLAG"};
+	vector<string> man;
+	vector<string> deaths;
+	vector<string> events;
+	vector<string> events_times;
+	vector<string> descriptions (14, "");
+	vector<string> budget;
+	vector<string> economy;
+	vector<string> freedoms;
+	vector<string> basics;
+	vector<string> man_vector {"E-10", "E-11", "E-12", "E-13", "E-14", "E-15", "E-16", "E-17", "E-18", "E-19", "E-20", "E-21", "E-22", "E-23", "E-24", "E-25"};
+	vector<string> basics_vector {"FULLNAME", "MOTTO", "CATEGORY", "REGION", "FLAG"};
 	bool found = false;
 
 	for(int i=0; i<all_data.size(); i++){
@@ -153,8 +153,8 @@ vector< vector<Glib::ustring> > convert(vector<Glib::ustring> all_data, Glib::us
 
 int main(){
 
-	vector<Glib::ustring> nation_list = read("./name-store/nation_list.txt");
-	vector<Glib::ustring> previous_dates;
+	vector<string> nation_list = read("./name-store/nation_list.txt");
+	vector<string> previous_dates;
 
 	for(int j=0; j<nation_list.size();j++){
 
@@ -162,10 +162,10 @@ int main(){
 		previous_dates = read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
 
 		for(int k=0; k<previous_dates.size(); k++){
-			vector<Glib::ustring> old_data = read(strchar("./nations-store/"+nation_list.at(j)+"/"+previous_dates.at(k)));
+			vector<string> old_data = read(strchar("./nations-store/"+nation_list.at(j)+"/"+previous_dates.at(k)));
 
 			if(old_data.size()>10){
-				vector<vector<Glib::ustring> > new_data = convert(old_data, nation_list.at(j));
+				vector<vector<string> > new_data = convert(old_data, nation_list.at(j));
 
 				ofstream save;
 				save.open(strchar("./nations-store/"+nation_list.at(j)+"/"+previous_dates.at(k)));
