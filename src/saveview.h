@@ -37,11 +37,11 @@ public:
 		return singleton;
 	}
 
-	void clear_save_list();
 	void append_save(Glib::ustring);
-	int number_selected();
+	void refresh_saves();
 	void save_menu_rename(Glib::ustring);
 	Glib::ustring get_selected_save();
+	void select_default();
 
 protected:
 

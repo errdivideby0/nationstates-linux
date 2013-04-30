@@ -17,7 +17,7 @@ gtest.o: $(A)gtest.cc $(A)functions.cc $(A)nationview.cc $(A)saveview.cc $(A)tre
 functions.o: $(A)functions.cc
 	$(CC) $(CFLAGS) -c $(A)functions.cc $(LDFLAGS)
 
-nationview.o: $(A)nationview.cc $(A)gtest.cc $(A)saveview.cc $(A)del.cc
+nationview.o: $(A)nationview.cc $(A)gtest.cc $(A)saveview.cc $(A)del.cc $(A)functions.cc
 	$(CC) $(CFLAGS) -c $(A)nationview.cc $(LDFLAGS)
 
 treeview.o: $(A)treeview.cc $(A)gtest.cc $(A)functions.cc

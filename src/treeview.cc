@@ -52,7 +52,7 @@ Tree_View::Tree_View(){
 
 	ifstream reader;
 	string dBuffer;
-	reader.open("./name-store/stat_names.txt");
+	reader.open("./name-store/blank_names.txt");
 	while(getline(reader, dBuffer)){
 		names.push_back(dBuffer);
 	}
@@ -98,35 +98,39 @@ Glib::ustring Tree_View::get_name_at(int place){
 	return names.at(place);
 }
 
-void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode){
+void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustring> compare, int shift){
+	double change_value = 0.0;
+	for( int i=0; i<main_vector.size(); i++){
+		append_stat_row();
+		change_value = fun.strouble(main_vector.at(i)) - fun.strouble(compare.at(i));
+		if(change_value != 0)
+			set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i+shift)+"</b>", "<b>"+main_vector.at(i)+"</b>", "<b>"+compare.at(i)+"</b>");
+		else
+			set_stat_row(i, "", names.at(i+shift), main_vector.at(i), main_vector.at(i));
+	}
+}
 
-	std::vector<Glib::ustring> previous_dates;
-	double change_value = 0;
+void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, int print_mode){
 
 	clear_stat_list();
-	if(print_mode == 1){
-		previous_dates.push_back("one");
-		previous_dates.push_back("two");
-	}
+	double change_value = 0.0;
 
 	try{
+		vector<Glib::ustring> main_deaths = fun.load_data(main_nation, main_save, 3);
+		vector<Glib::ustring> compare_deaths = fun.load_data(compare_nation, compare_save, 3);
 		append_category_row("Deaths");
-		for( int i=0; i<comparor.at(1).size(); i++){
+		for(int i=0; i<main_deaths.size(); i++){
 			append_stat_row();
-			if(previous_dates.size()>1){
-				for( int j=0; j<comparee.at(1).size(); j++){
-					if(comparor.at(1).at(i) == comparee.at(1).at(j)){
-						change_value = fun.strouble(comparor.at(1).at(i+1)) - fun.strouble(comparee.at(1).at(j+1));
-						if(change_value != 0)
-								set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+comparor.at(1).at(i)+"</b>", "<b>"+comparor.at(1).at(i+1)+"</b>%", "<b>"+comparee.at(1).at(j+1)+"</b>%");
-						j = comparee.at(1).size()-1;
-					}
+			for(int j=0; j<compare_deaths.size(); j++){
+				if(main_deaths.at(i) == compare_deaths.at(j)){
+					change_value = fun.strouble(main_deaths.at(i+1)) - fun.strouble(compare_deaths.at(j+1));
+					if(change_value != 0)
+						set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+main_deaths.at(i)+"</b>", "<b>"+main_deaths.at(i+1)+"</b>%", "<b>"+compare_deaths.at(j+1)+"</b>%");
+					else
+						set_stat_row(i, "", main_deaths.at(i), main_deaths.at(i+1)+"%", main_deaths.at(i+1)+"%");
+					j = compare_deaths.size()-1;
 				}
 			}
-			if((change_value==0)&&(previous_dates.size()>1))
-				set_stat_row(i, "", comparor.at(1).at(i), comparor.at(1).at(i+1)+"%", comparor.at(1).at(i+1)+"%");
-			else if(previous_dates.size() == 0)
-				set_stat_row(i, "", comparor.at(1).at(i), comparor.at(1).at(i+1)+"%", "");
 			i++;
 		}
 	}
@@ -134,69 +138,32 @@ void Tree_View::print_data(std::vector<std::vector<Glib::ustring> > comparor, st
 		cout<<"error in deaths\n";
 	}
 	append_category_row("Economy");
-	for( int i=0; i<comparor.at(5).size(); i++){
+	vector<Glib::ustring> eco_main = fun.load_data(main_nation, main_save, 8);
+	vector<Glib::ustring> eco_compare = fun.load_data(compare_nation, compare_save, 8);
+	for( int i=0; i<eco_main.size(); i++){
 		append_stat_row();
-		if(previous_dates.size()>1){
-			change_value = fun.strouble(comparor.at(5).at(i)) - fun.strouble(comparee.at(2).at(i));
-			if(change_value != 0)
-				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(80+i)+"</b>", "<b>"+comparor.at(5).at(i)+"</b>%", "<b>"+comparee.at(2).at(i)+"</b>%");
-		}
-		if((change_value==0)&&(previous_dates.size()>1))
-			set_stat_row(i, "", names.at(80+i), comparor.at(5).at(i)+"%", comparor.at(5).at(i)+"%");
-		else if(previous_dates.size() == 0)
-			set_stat_row(i, "", names.at(80+i), comparor.at(5).at(i)+"%", "");
+		change_value = fun.strouble(eco_main.at(i)) - fun.strouble(eco_compare.at(i));
+		if(change_value != 0)
+			set_stat_row(i, "<b>"+fun.doubstr(change_value)+"%</b>", "<b>"+names.at(i+10)+"</b>", "<b>"+eco_main.at(i)+"%</b>", "<b>"+eco_compare.at(i)+"%</b>");
+		else
+			set_stat_row(i, "", names.at(i+10), eco_main.at(i)+"%", eco_main.at(i)+"%");
 	}
+
 	append_category_row("Budget");
-	for( int i=0; i<comparor.at(4).size(); i++){
-		append_stat_row();
-		if(previous_dates.size()>1){
-			change_value = fun.strouble(fun.trim(comparor.at(4).at(i), 0, 1)) - fun.strouble(fun.trim(comparee.at(3).at(i), 0, 1));
-			if(change_value != 0)
-				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+names.at(69+i)+"</b>", "<b>"+comparor.at(4).at(i)+"</b>", "<b>"+comparee.at(3).at(i)+"</b>");
-		}
-		if((change_value==0)&&(previous_dates.size()>1))
-			set_stat_row(i, "", names.at(69+i), comparor.at(4).at(i), comparor.at(4).at(i));
-		else if(previous_dates.size() == 0)
-			set_stat_row(i, "", names.at(69+i), comparor.at(4).at(i), "");
-	}
+	append_all(fun.load_data(main_nation, main_save, 7), fun.load_data(compare_nation, compare_save, 7), 13);
+
 	append_category_row("Census Data");
-	for( int i=0; i<comparor.at(0).size(); i++){
-		append_stat_row();
-		if(previous_dates.size()>1){
-			change_value = fun.strouble(comparor.at(0).at(i)) - fun.strouble(comparee.at(0).at(i));
-			if(change_value != 0)
-				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
-		}
-		if((change_value==0)&&(previous_dates.size()>1))
-			set_stat_row(i, "", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
-		else if(previous_dates.size() == 0)
-			set_stat_row(i, "", names.at(i), comparor.at(0).at(i), "");
-		if(i == 9)
-			i = i + 17;
-	}
+	append_all(fun.load_data(main_nation, main_save, 1), fun.load_data(compare_nation, compare_save, 1), 24);
+
 	append_category_row("Manufacturing");
-	for( int i=9; i<26; i++){
-		append_stat_row();
-		if(i==9)
-			i = 26;
-		if(previous_dates.size()>1){
-			change_value = fun.strouble(comparor.at(0).at(i)) - fun.strouble(comparee.at(0).at(i));
-			if(change_value != 0)
-				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i)+"</b>", "<b>"+comparor.at(0).at(i)+"</b>", "<b>"+comparee.at(0).at(i)+"</b>");
-		}
-		if((change_value==0)&&(previous_dates.size()>1))
-			set_stat_row(i, "", names.at(i), comparor.at(0).at(i), comparor.at(0).at(i));
-		else if(previous_dates.size() == 0)
-			set_stat_row(i, "", names.at(i), comparor.at(0).at(i), "");
-		if(i==26)
-			i = 9;
-		}
+	append_all(fun.load_data(main_nation, main_save, 2), fun.load_data(compare_nation, compare_save, 2), 76);
+
 	expand_stat_list();
 }
 
 void Tree_View::print_blank(){
 
-	vector<Glib::ustring> names = fun.read("./name-store/blank_names.txt");
+	clear_stat_list();
 
 	append_category_row("Deaths");
 	for(int i=0; i<10; i++){
@@ -205,13 +172,13 @@ void Tree_View::print_blank(){
 	}
 
 	append_category_row("Economy");
-	for(int i=10; i<14; i++){
+	for(int i=10; i<13; i++){
 		append_stat_row();
 		stat_row[stat_columns.stat_name] = names.at(i);
 	}
 
 	append_category_row("Budget");
-	for(int i=14; i<24; i++){
+	for(int i=13; i<24; i++){
 		append_stat_row();
 		stat_row[stat_columns.stat_name] = names.at(i);
 	}

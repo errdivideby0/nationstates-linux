@@ -17,6 +17,7 @@
 
 #include <sstream>
 #include <vector>
+#include <deque>
 #include <cmath>
 #include <stdio.h>
 #include <fstream>
@@ -28,21 +29,21 @@
 
 using namespace std;
 
-// Converts a string to a char*
-const char * functions::strchar(string String){
+// Converts a Glib::ustring to a char*
+const char * functions::strchar(Glib::ustring String){
 	const char * Char = String.c_str();
 	return Char;
 }
 
-string functions::lowercase(string string){
-	string[0] = toupper(string[0]);
-	for(int i=1; i<string.length(); ++i)
-		string[i] = tolower(string[i]);
-	return string;
+string functions::lowercase(string stringer){
+	stringer[0] = toupper(stringer[0]);
+	for(int i=1; i<stringer.length(); ++i)
+		stringer[i] = tolower(stringer[i]);
+	return stringer;
 }
 
-// Converts a string to a double
-double functions::strouble(string String){
+// Converts a Glib::ustring to a double
+double functions::strouble(Glib::ustring String){
 	stringstream data(String);
 	double Double;
 	data >> Double;
@@ -50,14 +51,14 @@ double functions::strouble(string String){
 }
 
 // I am using this because it output as 0.53 instead of 0.5300000
-string functions::doubstr(double number){
+Glib::ustring functions::doubstr(double number){
 	ostringstream ss;
 	ss << number;
 	return ss.str();
 }
 
 // Counts the number of lines in a file (1, 2, 3, ...)
-int functions::count_lines(string file){
+int functions::count_lines(Glib::ustring file){
 	ifstream read;
 	read.open(strchar(file));
 	int nlines = -1;
@@ -76,57 +77,29 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 		return written;
 }
 
-// Trim a string (string, # of chars to remove from begining, # of chars to remove from end)
+// Trim a Glib::ustring (string, # of chars to remove from begining, # of chars to remove from end)
 Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from_end){
 	return the_string.substr(from_start, the_string.size() - from_start - from_end);
 }
 
-// Just placing some string formation out here to clean up the gtest class
-Glib::ustring functions::make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
-	return "\""+all_data.at(4)+"\"\nCategory: "+all_data.at(6)+"\n"+data_vectors.at(0).at(3)+" million citizens";
-}
-Glib::ustring functions::make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors){
-	return "Civil Rights: "+data_vectors.at(6).at(0)+" ("+data_vectors.at(0).at(0)+")\nEconomy: "+data_vectors.at(6).at(1)+" ("+
-		data_vectors.at(0).at(1)+")\nPolitical Freedom: "+data_vectors.at(6).at(2)+" ("+data_vectors.at(0).at(2)+")\nRegional Influence: "+all_data.at(66)+
-		" ("+data_vectors.at(0).at(65)+")";
-}
-Glib::ustring functions::make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors){
-	Glib::ustring events_text;
-	for(int i=0; i<data_vectors.at(2).size(); i++){
-		events_text = events_text+"<b>"+data_vectors.at(2).at(i)+"</b>\n"+data_vectors.at(2).at(i+1)+"\n\n"; i++;}
-	return events_text;
-}
-Glib::ustring functions::make_description_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors, Glib::ustring nation){
-	string stringer = data_vectors.at(3).at(6);
-	stringer.at(0) = toupper(stringer.at(0));
-	Glib::ustring description = all_data.at(2)+" is a "+data_vectors.at(3).at(0)+" nation, renowned for its "+data_vectors.at(3).at(1)+", and "+
-		data_vectors.at(3).at(2)+" citizens.\n\n"+data_vectors.at(3).at(4)+" "+data_vectors.at(3).at(5)+"\n\n"+stringer+", "+data_vectors.at(3).at(7)+
-		", "+data_vectors.at(3).at(8)+", and "+data_vectors.at(3).at(9)+". "+data_vectors.at(3).at(10)+" "+nation+"\'s national animal is the "+
-		data_vectors.at(3).at(11)+", which "+data_vectors.at(3).at(12)+", and its currency is the "+data_vectors.at(3).at(13)+".";
-	return description;
-}
-
 // Write all the lines of a file to a ustring vector that is returned
-std::vector<Glib::ustring> functions::read(string file){
+std::vector<Glib::ustring> functions::read(Glib::ustring file){
 	ifstream read;
+	string filer = file;
 	std::vector<Glib::ustring> t_vector;
-	read.open(strchar(file));
-	while(getline(read,file))
-		t_vector.push_back(file);
+	read.open(strchar(filer));
+	while(getline(read,filer))
+		t_vector.push_back(filer);
 	read.close();
 	return t_vector;
 }
 
-std::string functions::read_single(const char * file, Glib::ustring term){
+Glib::ustring functions::read_single_line(const char * file, int line){
 	ifstream read;
 	read.open(file);
 	string filer;
-	while(getline(read,filer)){
-		if(filer == term){
-			getline(read,filer);
-			break;
-		}
-	}
+	for(int i=0; i<line+1; i++)
+		getline(read,filer);
 	read.close();
 	return filer;
 }
@@ -143,6 +116,17 @@ void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 		curl_easy_cleanup(curl);
 		fclose(fp);
 	}
+}
+
+vector<Glib::ustring> functions::convert_times(vector<Glib::ustring> times, Glib::ustring format){
+	for(int i=0; i<times.size(); i++){
+		time_t thetime =  static_cast<time_t>(std::stod(times.at(i), 0));
+		struct tm * timeinfo = localtime(&thetime);
+		char buffer [80];
+		strftime(buffer, 80, format.c_str(), timeinfo);
+		times.at(i) = buffer;
+	}
+	return times;
 }
 
 // Takes the nation name and forms a file called nation.xml that contains all the nation data, also returns the number of lines in the file
@@ -183,29 +167,169 @@ Glib::ustring functions::get_time(int mode, bool gmt){
 	}
 }
 
-bool functions::check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee){
+bool functions::check_for_new_data(vector<Glib::ustring> comparor, std::vector<Glib::ustring> comparee){
 	bool return_value = false;
-	for(int i=0; i<comparor.at(0).size(); i++){
-		if(comparor.at(0).at(i) != comparee.at(0).at(i)){
+	for(int i=0; i<comparor.size(); i++){
+		if(comparor.at(i) != comparee.at(i)){
 			return_value = true;
+			break;
 		}
 	}
 	return return_value;
 }
 
+vector< vector<Glib::ustring> > functions::convert_data(vector<Glib::ustring> all_data, Glib::ustring nation){
+	vector< vector<Glib::ustring> > data_vectors;
+	vector<Glib::ustring> census;
+	deque<string> manufacturing;
+	vector<Glib::ustring> man;
+	vector<Glib::ustring> deaths;
+	vector<Glib::ustring> events;
+	vector<Glib::ustring> events_times;
+	vector<Glib::ustring> descriptions (14, "");
+	vector<Glib::ustring> budget;
+	vector<Glib::ustring> economy;
+	vector<Glib::ustring> freedoms;
+	vector<Glib::ustring> basics;
+	vector<Glib::ustring> man_vector {"E-10", "E-11", "E-12", "E-13", "E-14", "E-15", "E-16", "E-17", "E-18", "E-19", "E-20", "E-21", "E-22", "E-23", "E-24", "E-25"};
+	vector<Glib::ustring> basics_vector {"FULLNAME", "MOTTO", "CATEGORY", "REGION", "FLAG"};
+	bool found = false;
+
+	for(int i=0; i<all_data.size(); i++){
+		found = false;
+		for(int j=0; j<basics_vector.size(); j++){
+			if(all_data.at(i).find(basics_vector.at(j))!=-1){
+				basics.push_back(all_data.at(i+1));
+				i++;
+				break;
+			}
+		}
+		if(all_data.at(i).find("INFLUENCE")!=-1){
+			basics.push_back(all_data.at(i+1));
+			i++;
+		}
+		else if(all_data.at(i).find("CENSUS")!=-1){
+			for(int j=0; j<man_vector.size(); j++){
+				if(all_data.at(i).find(man_vector.at(j))!=-1){
+					manufacturing.push_back(all_data.at(i+1));
+					found = true;
+					break;
+				}
+			}
+			if(all_data.at(i).find("E-26")!=-1)
+				manufacturing.push_front(all_data.at(i+1));
+			else if((all_data.at(i).find("E-3")!=-1)&&(found==false)){
+				descriptions.at(3) = all_data.at(i+1);
+				census.push_back(all_data.at(i+1));
+				found = true;
+			}
+			else if(found == false)
+				census.push_back(all_data.at(i+1));
+			i++;
+		}
+		else if(all_data.at(i).find("CAUSE")!=-1){
+			deaths.push_back(all_data.at(i).erase(0,6));
+			deaths.push_back(trim(all_data.at(i+1), 0, 1));
+			i++;
+		}
+		else if(all_data.at(i).find("EVENT")!=-1){
+			events_times.push_back(all_data.at(i+2));
+			while(all_data.at(i+4).find("@@")!=-1)
+				all_data.at(i+4) = all_data.at(i+4).replace(all_data.at(i+4).find("@@"), nation.size() +4, nation);
+			events.push_back(all_data.at(i+4));
+			i = i+4;
+		}
+		else if(all_data.at(i) == "ADMIRABLE"){
+			descriptions.at(0) = all_data.at(i+1);
+			i++;
+		}
+		else if(all_data.at(i) == "NOTABLE"){
+			descriptions.at(1) = all_data.at(i+1);
+			i++;
+		}
+		else if(all_data.at(i) == "SENSIBILITIES"){
+			descriptions.at(2) = all_data.at(i+1);
+			i++;
+		}
+		else if(all_data.at(i) == "GOVTDESC"){
+			descriptions.at(4) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "INDUSTRYDESC"){
+			descriptions.at(5) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "LAW"){
+			descriptions.at(6) = all_data.at(i+1); descriptions.at(7) = all_data.at(i+3);
+			descriptions.at(8) = all_data.at(i+5); descriptions.at(9) = all_data.at(i+7); i=i+7;}
+		else if(all_data.at(i) == "CRIME"){
+			descriptions.at(10) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "ANIMAL"){
+			descriptions.at(11) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "ANIMALTRAIT"){
+			descriptions.at(12) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "CURRENCY"){
+			descriptions.at(13) = all_data.at(i+1); i++;}
+		else if(all_data.at(i) == "ENVIRONMENT"){
+			for(int j=0; j<11; j++)
+				budget.push_back(all_data.at(i+1+(j*2)));
+			i=i+21;
+		}
+		else if(all_data.at(i) == "TAX"){
+			economy.push_back(all_data.at(i+1)); i++;}
+		else if(all_data.at(i) == "PUBLICSECTOR"){
+			economy.push_back(trim(all_data.at(i+1), 0, 1));
+			economy.push_back(std::to_string(100-std::stoi(all_data.at(i+1), 0, 10))); i++;}
+		else if(all_data.at(i) == "FREEDOM"){
+			for(int j=0; j<3; j++)
+				freedoms.push_back(all_data.at(i+2+(j*2)));
+		i=i+6;
+		}
+
+	}
+
+	for(int i=0; i<manufacturing.size(); i++)
+		man.push_back(manufacturing.at(i));
+
+	data_vectors.push_back(basics);
+	data_vectors.push_back(census);
+	data_vectors.push_back(man);
+	data_vectors.push_back(deaths);
+	data_vectors.push_back(events_times);
+	data_vectors.push_back(events);
+	data_vectors.push_back(descriptions);
+	data_vectors.push_back(budget);
+	data_vectors.push_back(economy);
+	data_vectors.push_back(freedoms);
+	return data_vectors;
+}
+
+vector<Glib::ustring> functions::load_data(Glib::ustring nation, Glib::ustring save, int bas_cen_man_de_evt_ev_de_bu_ec_fr){
+	string line = read_single_line(strchar("./nations-store/"+nation+"/"+save), bas_cen_man_de_evt_ev_de_bu_ec_fr);
+	vector<Glib::ustring> new_vector;
+	while(line.find(";")!=-1){
+		new_vector.push_back(line.substr(0, line.find(";")));
+		line = trim(line, line.find(";")+2, 0);
+	}
+	new_vector.push_back(line);
+	return new_vector;
+}
+
 // Try to save data if it finds a change value that is != 0 and then add one to the current time if it is before 5, else, use the current time.
-void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation){
+void functions::save_data(Glib::ustring current_time, Glib::ustring nation){
+
+	xmlpp::DomParser parser;
+	parser.parse_file("./nation.xml");
+
+	vector<Glib::ustring> to_data;
+	to_data = print_node(parser.get_document()->get_root_node(), to_data);
+
+	vector< vector<Glib::ustring> > all_data = convert_data(to_data, nation);
 
 	if(access("./name-store/nation_list.txt", F_OK) == -1)
 		mkdir("nations-store", S_IRWXU);
 
-	std::vector<Glib::ustring> previous_dates = read("./nations-store/"+nation+"/datelog.txt");
+	vector<Glib::ustring> previous_dates = read("./nations-store/"+nation+"/datelog.txt");
 	bool newdata = false;
-	if(previous_dates.size()>0){
-		std::vector<std::vector<Glib::ustring> > comparor = last_vectors_generate(all_data);
-		std::vector<std::vector<Glib::ustring> > comparee = last_vectors_generate(read("./nations-store/"+nation+"/"+previous_dates.back()));
-		newdata = check_for_new_data(comparor, comparee);
-	}
+
+	if(previous_dates.size()>0)
+		newdata = check_for_new_data(all_data.at(1), load_data(nation, previous_dates.back(), 1));
 	//If it does not match or there are no previous dates, it writes a new file
 	if((newdata)||(previous_dates.size() == 0)){
 
@@ -218,12 +342,16 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 		// If the current time is the same as the latest saved and there is new data, save with gmt mode which will force a save with the next filename
 		if(previous_dates.size()>0){
 			if(current_time == previous_dates.back())
-				current_time = get_time(0, true)+"-"+get_time(1, true)+".txt";
+				current_time = get_time(0, true)+"-"+get_time(1, true)+".csv";
 		}
 
 		save.open(strchar("./nations-store/"+nation+"/"+current_time));
-		for(int i=0; i<all_data.size(); i++)
-			save<<all_data.at(i)<<"\n";
+
+		for(int l=0; l<all_data.size(); l++){
+			for(int i=0; i<all_data.at(l).size()-1; i++)
+				save<<all_data.at(l).at(i)<<"; ";
+			save<<all_data.at(l).back()<<"\n";
+		}
 
 		//Opens the nations datelog file and adds current_date to a new line (a log of data points)
 		savedate.open(strchar("./nations-store/"+nation+"/datelog.txt"), fstream::in | fstream::out | fstream::app);
@@ -252,11 +380,6 @@ void functions::save_data(std::vector<Glib::ustring> all_data, Glib::ustring cur
 		savenation.open(strchar("./name-store/nation_list.txt"), fstream::in | fstream::out | fstream::app);
 		savenation<<nation<<"\n";
 		savenation.close();
-	}
-
-	if((newdata)||(previous_dates.size() == 0)){
-		gTest::instance().force_notebook_refresh(0);
-		gTest::instance().refresh_saves();
 	}
 }
 
@@ -290,135 +413,5 @@ std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::v
 			new_data_first = print_node(*iter, new_data_first);
 	}
 	return new_data_first;
-}
-
-// Takes the data vector formed by print_node and searches for certain elements that we want. Pushes them to new vectors to later print.
-std::vector<std::vector<Glib::ustring> > functions::vectors_generate(Glib::ustring save, Glib::ustring nation){
-
-	std::vector<std::vector<Glib::ustring> > data_vectors;
-	std::vector<Glib::ustring> census;
-	std::vector<Glib::ustring> deaths;
-	std::vector<Glib::ustring> events;
-	std::vector<Glib::ustring> descriptions (14, "");
-	std::vector<Glib::ustring> budget;
-	std::vector<Glib::ustring> economy;
-	std::vector<Glib::ustring> freedoms;
-
-	std::vector<Glib::ustring> all_data = read("./nations-store/"+nation+"/"+save);
-
-	for(int i=0; i<all_data.size(); i++){
-		if(all_data.at(i).find("CENSUS")!=-1){
-			census.push_back(all_data.at(i+1)); i++;}
-		else if(all_data.at(i).find("CAUSE")!=-1){
-			deaths.push_back(all_data.at(i).erase(0,6));
-			deaths.push_back(trim(all_data.at(i+1), 0, 1)); i++;}
-		else if(all_data.at(i).find("EVENT")!=-1){
-			time_t thetime =  static_cast<time_t>(std::stod(all_data.at(i+2), 0));
-			struct tm * timeinfo = localtime(&thetime);
-			char buffer [80];
-			strftime(buffer, 80, "%d %B, %Y, %R", timeinfo);
-			events.push_back(buffer);
-			while(all_data.at(i+4).find("@@")!=-1)
-				all_data.at(i+4) = all_data.at(i+4).replace(all_data.at(i+4).find("@@"), nation.size() +4, nation);
-			events.push_back(all_data.at(i+4)); i = i+4;}
-		else if(all_data.at(i) == "ADMIRABLE"){
-			descriptions.at(0) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "NOTABLE"){
-			descriptions.at(1) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "SENSIBILITIES"){
-			descriptions.at(2) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "POPULATION"){
-			descriptions.at(3) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "GOVTDESC"){
-			descriptions.at(4) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "INDUSTRYDESC"){
-			descriptions.at(5) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "LAW"){
-			descriptions.at(6) = all_data.at(i+1); descriptions.at(7) = all_data.at(i+3);
-			descriptions.at(8) = all_data.at(i+5); descriptions.at(9) = all_data.at(i+7); i=i+7;}
-		else if(all_data.at(i) == "CRIME"){
-			descriptions.at(10) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "ANIMAL"){
-			descriptions.at(11) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "ANIMALTRAIT"){
-			descriptions.at(12) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "CURRENCY"){
-			descriptions.at(13) = all_data.at(i+1); i++;}
-		else if(all_data.at(i) == "ENVIRONMENT"){
-			for(int j=0; j<11; j++)
-				budget.push_back(all_data.at(i+1+(j*2)));
-			i=i+21;
-		}
-		else if(all_data.at(i) == "TAX"){
-			economy.push_back(all_data.at(i+1)); i++;}
-		else if(all_data.at(i) == "PUBLICSECTOR"){
-			economy.push_back(trim(all_data.at(i+1), 0, 1));
-			economy.push_back(std::to_string(100-std::stoi(all_data.at(i+1), 0, 10))); i++;}
-		else if(all_data.at(i) == "FREEDOM"){
-			for(int j=0; j<3; j++)
-				freedoms.push_back(all_data.at(i+2+(j*2)));
-		i=i+6;
-		}
-	}
-	data_vectors.push_back(census);
-	data_vectors.push_back(deaths);
-	data_vectors.push_back(events);
-	data_vectors.push_back(descriptions);
-	data_vectors.push_back(budget);
-	data_vectors.push_back(economy);
-	data_vectors.push_back(freedoms);
-	return data_vectors;
-}
-
-// Does the same as generate vectors but without some things.
-std::vector<std::vector<Glib::ustring> > functions::last_vectors_generate(std::vector<Glib::ustring> last_data){
-
-	std::vector<std::vector<Glib::ustring> > last_vectors;
-	std::vector<Glib::ustring> last_census;
-	std::vector<Glib::ustring> last_deaths;
-	std::vector<Glib::ustring> last_budget;
-	std::vector<Glib::ustring> last_economy;
-	for(int i=0; i<last_data.size(); i++){
-		if(last_data.at(i).find("CENSUS")!=-1){
-			last_census.push_back(last_data.at(i+1)); i++;}
-		else if(last_data.at(i).find("CAUSE")!=-1){
-			last_deaths.push_back(last_data.at(i).erase(0,6));
-			last_deaths.push_back(trim(last_data.at(i+1), 0, 1)); i++;}
-		else if(last_data.at(i) == "TAX"){
-			last_economy.push_back(last_data.at(i+1)); i++;}
-		else if(last_data.at(i) == "PUBLICSECTOR"){
-			last_economy.push_back(trim(last_data.at(i+1), 0, 1));
-			last_economy.push_back(std::to_string(100-std::stoi(last_data.at(i+1), 0, 10))); i++;}
-		else if(last_data.at(i) == "ENVIRONMENT"){
-			for(int j=0; j<11; j++)
-				last_budget.push_back(last_data.at(i+1+(j*2)));
-			i=i+21;
-		}
-	}
-	last_vectors.push_back(last_census);
-	last_vectors.push_back(last_deaths);
-	last_vectors.push_back(last_economy);
-	last_vectors.push_back(last_budget);
-	return last_vectors;
-}
-
-std::vector<Glib::ustring> functions::get_deaths(const char * latest_deaths, Glib::ustring nation){
-	ifstream read_death;
-	read_death.open("./nations-store/"+nation+"/"+latest_deaths);
-	string dBuffer;
-	std::vector<Glib::ustring> all_deaths;
-	while(getline(read_death, dBuffer)){
-		if(dBuffer.find("CAUSE-")!=-1){
-			while(dBuffer.find("CAUSE-")!=-1){
-				for(int i=0; i<2; i++){
-					all_deaths.push_back(dBuffer);
-					getline(read_death, dBuffer);
-				}
-			}
-		break;
-		}
-	}
-	read_death.close();
-	return all_deaths;
 }
 

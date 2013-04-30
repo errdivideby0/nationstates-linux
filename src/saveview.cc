@@ -66,21 +66,27 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 }
 
 void Save_View::on_save_changed(){
-	if(get_selection()->count_selected_rows() >= 1){
-		selected_save.clear();
-		iter = get_selection()->get_selected();
-		selected_row = *iter;
+	if(get_selection()->count_selected_rows()>0){
+		selected_row = *(get_selection()->get_selected());
 		Glib::ustring ndate = selected_row[save_columns.stat_save];
-		selected_save = ndate + ".txt";
-		try{
-			gTest::instance().update_latest_events(selected_save);
-		}
-		catch(exception e){}
+		selected_save = ndate + ".csv";
+		gTest::instance().update_event_preview(selected_save);
+	}
+}
+
+void Save_View::refresh_saves(){
+	Glib::ustring select_nation = Nation_View::instance().get_selected_nation();
+
+	if(select_nation != ""){
+		save_model->clear();
+		vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
+		for(signed int i=previous_dates.size()-1; i>-1; i--)
+			append_save(fun.trim(previous_dates.at(i), 0, 4));
 	}
 }
 
 void Save_View::save_menu_to_b(){
-	gTest::instance().goto_load(selected_save, Nation_View::instance().selected_nation, 0);
+	gTest::instance().load_main(selected_save, Nation_View::instance().selected_nation, 0);
 }
 
 void Save_View::pop_show(){
@@ -93,10 +99,9 @@ Glib::ustring Save_View::get_selected_save(){
 
 void Save_View::save_menu_rename(Glib::ustring newname){
 	vector<Glib::ustring> datelist = fun.read("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt");
-	int datelistsize = datelist.size();
-	for(int i=0; i<datelistsize; i++){
+	for(int i=0; i<datelist.size(); i++){
 		if(selected_save == datelist.at(i)){
-			datelist.at(i) = newname+".txt";
+			datelist.at(i) = newname+".csv";
 			int result = rename(fun.strchar("./nations-store/"+Nation_View::instance().selected_nation+"/"+selected_save), fun.strchar("./nations-store/"+Nation_View::instance().selected_nation+"/"+datelist.at(i)));
 			break;
 		}
@@ -104,27 +109,25 @@ void Save_View::save_menu_rename(Glib::ustring newname){
 
 	ofstream savedate;
 	savedate.open(fun.strchar("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt"));
-	for(int i=0; i<datelistsize; i++)
+	for(int i=0; i<datelist.size(); i++)
 		savedate<<datelist.at(i)<<"\n";
 	savedate.close();
 
-	gTest::instance().refresh_saves();
+	Save_View::instance().refresh_saves();
 }
 
 void Save_View::save_menu_delete(){
 }
 
-void Save_View::clear_save_list(){
-	save_model->clear();
+void Save_View::select_default(){
+	Gtk::TreeModel::iterator iter = save_model->children().begin();
+	if(iter)
+		selection->select(iter);
 }
 
 void Save_View::append_save(Glib::ustring text){
 	save_row = *(save_model->append());
 	save_row[save_columns.stat_save] = text;
-}
-
-int Save_View::number_selected(){
-	return get_selection()->count_selected_rows();
 }
 
 void Save_View::save_menu_to_a(){

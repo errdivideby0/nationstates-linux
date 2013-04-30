@@ -30,7 +30,7 @@ public:
 
 protected:
 	functions fun;
-	std::string to_precision(double num, int n);
+	Glib::ustring to_precision(double num, int n);
 	static std::vector<Glib::ustring> unit_vector;
 };
 

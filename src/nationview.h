@@ -20,6 +20,7 @@
 
 #include <gtkmm.h>
 #include "del.h"
+#include "functions.h"
 
 class Nation_View : public Gtk::TreeView{
 
@@ -38,8 +39,7 @@ public:
 
 	static Glib::ustring selected_nation;
 	void append_nation(Glib::ustring nation_pass, Glib::ustring n_dates);
-	void clear_nation_list();
-	int number_nation_selected();
+	void refresh_nations();
 	Glib::ustring get_selected_nation();
 	void set_selection();
 
@@ -68,9 +68,11 @@ protected:
 	Glib::RefPtr<Gtk::ListStore> nation_model;
 	Glib::RefPtr<Gtk::TreeSelection> nation_selection;
 	Gtk::TreeModel::Row nation_row, selected_row;
-	Gtk::TreeModel::iterator iter;
 	Gtk::Menu save_title_menu;
 	Delete_Popup dell;
+	functions fun;
+	bool check;
+
 };
 
 #endif

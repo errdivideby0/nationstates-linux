@@ -1,7 +1,12 @@
 Colours stay unique until one selected.
 Labels do not overlap in graph.
 Link to nation.
-If nation has selected treeview, refreshing moves to census tab.
+Enviroment does not work.
+Make events_previewing group he last events.
+If you select deaths with other things, the labels mess up.
+Some times selecting a death crashes it.
+Sort by save name.
+If new data, update views.
 Save data data as .csv files.
 Add world average to graph.
 Ability to compare two nations.

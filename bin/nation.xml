@@ -1,0 +1,138 @@
+<NATION id="jisatsu_kurabu"><FULLNAME>The Protectorate of Jisatsu Kurabu</FULLNAME><MOTTO>Desu desu desu desu desu desu desu desu desu</MOTTO><CATEGORY>Iron Fist Consumerists</CATEGORY><FREEDOM>
+ <CIVILRIGHTS>Outlawed</CIVILRIGHTS>
+ <ECONOMY>Strong</ECONOMY>
+ <POLITICALFREEDOM>Outlawed</POLITICALFREEDOM>
+</FREEDOM><REGION>The North Pacific</REGION><TAX>39</TAX><ANIMAL>desu desu desu</ANIMAL><ANIMALTRAIT>frolics freely in the nation's many lush forests</ANIMALTRAIT><CURRENCY>desu</CURRENCY><FLAG>http://www.nationstates.net/images/flags/North_Korea.png</FLAG><CRIME>Crime -- especially youth-related --  is well under control, thanks to the all-pervasive police force. </CRIME><SENSIBILITIES>hard-nosed, hard-working, cynical</SENSIBILITIES><GOVT>
+ <ENVIRONMENT>0%</ENVIRONMENT>
+ <SOCIALEQUALITY>0%</SOCIALEQUALITY>
+ <EDUCATION>0%</EDUCATION>
+ <LAWANDORDER>40%</LAWANDORDER>
+ <ADMINISTRATION>49%</ADMINISTRATION>
+ <WELFARE>0%</WELFARE>
+ <SPIRITUALITY>0%</SPIRITUALITY>
+ <DEFENCE>9%</DEFENCE>
+ <PUBLICTRANSPORT>0%</PUBLICTRANSPORT>
+ <HEALTHCARE>0%</HEALTHCARE>
+ <COMMERCE>2%</COMMERCE>
+</GOVT><GOVTDESC><![CDATA[It is difficult to tell where the omnipresent, corrupt, moralistic government stops and the rest of society begins, but it is effectively ruled by the Department of Law & Order, with areas such as Religion & Spirituality and Social Welfare receiving almost no funds by comparison.]]></GOVTDESC><INDUSTRYDESC>Private enterprise is illegal, but for those in the know there is a slick and highly efficient black market in Arms Manufacturing.</INDUSTRYDESC><NOTABLE>compulsory military service</NOTABLE><ADMIRABLE>environmentally stunning</ADMIRABLE><FOUNDED>2 days 13 hours ago</FOUNDED><LASTACTIVITY>19 hours ago</LASTACTIVITY><INFLUENCE>Minnow</INFLUENCE><PUBLICSECTOR>79%</PUBLICSECTOR><DEATHS>
+ <CAUSE type="Lost in Wilderness">4%</CAUSE>
+ <CAUSE type="Exposure">4%</CAUSE>
+ <CAUSE type="Suicide While in Police Custody">1%</CAUSE>
+ <CAUSE type="Murder">3%</CAUSE>
+ <CAUSE type="Heart Disease">45%</CAUSE>
+ <CAUSE type="Old Age">41%</CAUSE>
+ <CAUSE type="Acts of God">2%</CAUSE>
+</DEATHS>
+<CENSUSSCORE id="0">6</CENSUSSCORE>
+<CENSUSSCORE id="1">72</CENSUSSCORE>
+<CENSUSSCORE id="2">0</CENSUSSCORE>
+<CENSUSSCORE id="3">8</CENSUSSCORE>
+<CENSUSSCORE id="4">143</CENSUSSCORE>
+<CENSUSSCORE id="5">-13</CENSUSSCORE>
+<CENSUSSCORE id="6">-7</CENSUSSCORE>
+<CENSUSSCORE id="7">26</CENSUSSCORE>
+<CENSUSSCORE id="8">94</CENSUSSCORE>
+<CENSUSSCORE id="9">12</CENSUSSCORE>
+<CENSUSSCORE id="10">1</CENSUSSCORE>
+<CENSUSSCORE id="11">1</CENSUSSCORE>
+<CENSUSSCORE id="12">2</CENSUSSCORE>
+<CENSUSSCORE id="13">1</CENSUSSCORE>
+<CENSUSSCORE id="14">1</CENSUSSCORE>
+<CENSUSSCORE id="15">1</CENSUSSCORE>
+<CENSUSSCORE id="16">3</CENSUSSCORE>
+<CENSUSSCORE id="17">2</CENSUSSCORE>
+<CENSUSSCORE id="18">1</CENSUSSCORE>
+<CENSUSSCORE id="19">1</CENSUSSCORE>
+<CENSUSSCORE id="20">1</CENSUSSCORE>
+<CENSUSSCORE id="21">1</CENSUSSCORE>
+<CENSUSSCORE id="22">1</CENSUSSCORE>
+<CENSUSSCORE id="23">2</CENSUSSCORE>
+<CENSUSSCORE id="24">1</CENSUSSCORE>
+<CENSUSSCORE id="25">1</CENSUSSCORE>
+<CENSUSSCORE id="26">4</CENSUSSCORE>
+<CENSUSSCORE id="27">11</CENSUSSCORE>
+<CENSUSSCORE id="28">18</CENSUSSCORE>
+<CENSUSSCORE id="29">26</CENSUSSCORE>
+<CENSUSSCORE id="30">47</CENSUSSCORE>
+<CENSUSSCORE id="31">1</CENSUSSCORE>
+<CENSUSSCORE id="32">-9</CENSUSSCORE>
+<CENSUSSCORE id="33">57</CENSUSSCORE>
+<CENSUSSCORE id="34">1</CENSUSSCORE>
+<CENSUSSCORE id="35">-6.6</CENSUSSCORE>
+<CENSUSSCORE id="36">23</CENSUSSCORE>
+<CENSUSSCORE id="37">12</CENSUSSCORE>
+<CENSUSSCORE id="38">0</CENSUSSCORE>
+<CENSUSSCORE id="39">2</CENSUSSCORE>
+<CENSUSSCORE id="40">10</CENSUSSCORE>
+<CENSUSSCORE id="41">-16</CENSUSSCORE>
+<CENSUSSCORE id="42">21</CENSUSSCORE>
+<CENSUSSCORE id="43">104</CENSUSSCORE>
+<CENSUSSCORE id="44">13</CENSUSSCORE>
+<CENSUSSCORE id="45">36</CENSUSSCORE>
+<CENSUSSCORE id="46">31</CENSUSSCORE>
+<CENSUSSCORE id="47">-3</CENSUSSCORE>
+<CENSUSSCORE id="48">12.8</CENSUSSCORE>
+<CENSUSSCORE id="49">6</CENSUSSCORE>
+<CENSUSSCORE id="50">-6</CENSUSSCORE>
+<CENSUSSCORE id="51">71</CENSUSSCORE>
+<CENSUSSCORE id="52">-71</CENSUSSCORE>
+<CENSUSSCORE id="53">2.804</CENSUSSCORE>
+<CENSUSSCORE id="54">-2</CENSUSSCORE>
+<CENSUSSCORE id="55">2</CENSUSSCORE>
+<CENSUSSCORE id="56">70</CENSUSSCORE>
+<CENSUSSCORE id="57">26</CENSUSSCORE>
+<CENSUSSCORE id="58">50.5</CENSUSSCORE>
+<CENSUSSCORE id="59">-37</CENSUSSCORE>
+<CENSUSSCORE id="60">26</CENSUSSCORE>
+<CENSUSSCORE id="61">-28</CENSUSSCORE>
+<CENSUSSCORE id="62">25</CENSUSSCORE>
+<CENSUSSCORE id="63">50.5</CENSUSSCORE>
+<CENSUSSCORE id="64">-1.5</CENSUSSCORE>
+<CENSUSSCORE id="65">2</CENSUSSCORE>
+<CENSUSSCORE id="66">0</CENSUSSCORE>
+<CENSUSSCORE id="67">392</CENSUSSCORE>
+<CENSUSSCORE id="68">56</CENSUSSCORE>
+<LEGISLATION>
+<LAW><![CDATA[a dictator has seized power and outlawed elections]]></LAW>
+<LAW><![CDATA[the government is avowedly atheist]]></LAW>
+<LAW><![CDATA[citizens are barcoded to keep track of their movements]]></LAW>
+<LAW><![CDATA[thieves are flogged in public for their crimes]]></LAW>
+</LEGISLATION><HAPPENINGS>
+<EVENT>
+<TIMESTAMP>1367294940</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, thieves are flogged in public for their crimes.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367251719</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, citizens are barcoded to keep track of their movements.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367208546</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, the government is avowedly atheist.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367122144</TIMESTAMP>
+<TEXT>@@jisatsu_kurabu@@ was reclassified from "Psychotic Dictatorship" to "Iron Fist Consumerists".</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367122144</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, a dictator has seized power and outlawed elections.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367122144</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, employers may fire workers without giving any reason.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367122144</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, Animal Liberationists are regularly jailed.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367122144</TIMESTAMP>
+<TEXT>Following new legislation in @@jisatsu_kurabu@@, elections have been outlawed.</TEXT>
+</EVENT>
+<EVENT>
+<TIMESTAMP>1367116502</TIMESTAMP>
+<TEXT>@@jisatsu_kurabu@@ was founded.</TEXT>
+</EVENT>
+
+</HAPPENINGS></NATION>

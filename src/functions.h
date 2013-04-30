@@ -25,29 +25,25 @@ class functions{
 
 public:
 
-const char * strchar (std::string String);
-std::string lowercase(std::string string);
-double strouble(std::string String);
-std::string doubstr(double number);
-int count_lines(std::string file);
-Glib::ustring trim(Glib::ustring the_string, int from_start, int from_end);
-std::vector<Glib::ustring> read(std::string file);
-std::string read_single(const char * file, Glib::ustring term);
-void curl_grab(Glib::ustring filed, Glib::ustring url);
-int get_nation_data(Glib::ustring nation);
-Glib::ustring get_time(int mode, bool gmt);
-bool check_for_new_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee);
-std::vector<Glib::ustring> get_deaths(const char * latest_deaths, Glib::ustring nation);
+	const char * strchar (Glib::ustring String);
+	std::string lowercase(std::string string);
+	double strouble(Glib::ustring String);
+	Glib::ustring doubstr(double number);
+	int count_lines(Glib::ustring file);
+	Glib::ustring trim(Glib::ustring the_string, int from_start, int from_end);
+	std::vector<Glib::ustring> read(Glib::ustring file);
+	Glib::ustring read_single_line(const char * file, int line);
+	void curl_grab(Glib::ustring filed, Glib::ustring url);
+	int get_nation_data(Glib::ustring nation);
+	Glib::ustring get_time(int mode, bool gmt);
+	bool check_for_new_data(std::vector<Glib::ustring> comparor, std::vector<Glib::ustring> comparee);
+	std::vector<Glib::ustring> load_data(Glib::ustring nation, Glib::ustring save, int bas_cen_man_de_evt_ev_de_bu_ec_fr);
+	std::vector<Glib::ustring> convert_times(std::vector<Glib::ustring> times, Glib::ustring format);
+	void save_data(Glib::ustring current_time, Glib::ustring nation);
+	std::vector<Glib::ustring> print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first);
 
-Glib::ustring make_fullname_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);
-Glib::ustring make_rights_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors);
-Glib::ustring make_description_text(std::vector<Glib::ustring> all_data, std::vector< std::vector<Glib::ustring> > data_vectors, Glib::ustring nation);
-Glib::ustring make_events_text(std::vector< std::vector<Glib::ustring> > data_vectors);
-
-void save_data(std::vector<Glib::ustring> all_data, Glib::ustring current_time, Glib::ustring nation);
-std::vector<Glib::ustring> print_node(const xmlpp::Node* node, std::vector<Glib::ustring> new_data_first);
-std::vector<std::vector<Glib::ustring> > vectors_generate(Glib::ustring save, Glib::ustring nation);
-std::vector<std::vector<Glib::ustring> > last_vectors_generate(std::vector<Glib::ustring> last_data);
+private:
+	std::vector< std::vector<Glib::ustring> > convert_data(std::vector<Glib::ustring> all_data, Glib::ustring nation);
 
 };
 

@@ -30,7 +30,7 @@ using namespace std;
 
 std::vector<Glib::ustring> Census_Plot::unit_vector;
 
-std::string Census_Plot::to_precision(double num, int n) {
+Glib::ustring Census_Plot::to_precision(double num, int n) {
     if(num == 0)
       return "0";
 

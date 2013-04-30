@@ -41,33 +41,30 @@ public:
 	void new_nation(Glib::ustring nationer);
 	void set_notebook_page(int page);
 	void compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation);
-	void goto_load(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print);
-	void update_latest_events(Glib::ustring selected_save);
+	void load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print);
+	void update_event_preview(Glib::ustring selected_save);
 	void delete_nation(Glib::ustring nationer);
-	void goto_get_all(Glib::ustring nationer);
+	void fetch(Glib::ustring nationer);
 	void compare_latest(Glib::ustring nationed);
 	void force_notebook_refresh(int page);
-	void refresh_saves();
 	static std::vector<Glib::ustring> stat_vector;
 	static std::vector<double> values_vector;
 	std::vector<Glib::ustring> get_stat_vector();
 	std::vector<double> get_value_vector();
-	std::vector<Glib::ustring> get_units();
 
 protected:
 
-	void new_nation_window();
+	void on_add_nation();
 	void on_menu_pref();
 	void on_menu_help();
 	void on_menu_about();
-	void on_menu_update_all();
+	void fetch_all();
 	void on_menu_file_quit();
 	void on_menu_file_new_generic();
 	void on_menu_others();
-	void on_notebook_switch_page(Gtk::Widget* page, guint page_num);
+	void on_page_switch(Gtk::Widget* page, guint page_num);
 
-	std::vector< std::vector<Glib::ustring> > data_vectors;
-	Glib::ustring current_time, nation;
+	Glib::ustring nation, loaded;
 
 	Gtk::Box main_box, big_box, flag_box;
 	Gtk::VBox right_box, v_header, save_box_big, menu_box, mainmain;

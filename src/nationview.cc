@@ -17,6 +17,7 @@
 
 #include "nationview.h"
 #include "gtest.h"
+#include "saveview.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ Nation_View::Nation_View(){
 
 	save_title_menu.accelerate(*this);
 	save_title_menu.show_all();
+	check = false;
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &Nation_View::on_button_press_event));
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Nation_View::on_selection_changed));
@@ -59,18 +61,24 @@ bool Nation_View::on_button_press_event(GdkEventButton* event){
 }
 
 void Nation_View::on_selection_changed(){
-	if(get_selection()->count_selected_rows() > 0){
-		selected_nation.clear();
-		iter = get_selection()->get_selected();
-		selected_row = *iter;
+	if(get_selection()->count_selected_rows()>0){
+		selected_row = *(get_selection()->get_selected());
 		Glib::ustring nname = selected_row[nation_columns.stat_nation];
 		selected_nation = nname.substr(0, nname.find(' '));
-		gTest::instance().refresh_saves();
+		Save_View::instance().refresh_saves();
 	}
 }
 
-void Nation_View::clear_nation_list(){
-	nation_model->clear();
+void Nation_View::refresh_nations(){
+	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
+
+	if(nation_list.size()>0){
+		nation_model->clear();
+		for(int j=0; j<nation_list.size(); j++){
+			vector<Glib::ustring> number = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
+			append_nation(nation_list.at(j), std::to_string(number.size()));
+		}
+	}
 }
 
 Glib::ustring Nation_View::get_selected_nation(){
@@ -82,17 +90,13 @@ void Nation_View::append_nation(Glib::ustring nation_pass, Glib::ustring n_dates
 	nation_row[nation_columns.stat_nation] = nation_pass+" ("+n_dates+")";
 }
 
-int Nation_View::number_nation_selected(){
-	return get_selection()->count_selected_rows();
-}
-
 void Nation_View::save_title_menu_delete_all(){
 	dell.saved(selected_nation);
 	dell.show();
 }
 
 void Nation_View::save_title_menu_get(){
-	gTest::instance().goto_get_all(selected_nation);
+	gTest::instance().fetch(selected_nation);
 }
 
 void Nation_View::save_title_menu_load(){

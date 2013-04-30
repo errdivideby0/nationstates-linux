@@ -55,7 +55,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	action_group->add(Gtk::Action::create("File", "File"));
 
-	action_group->add(Gtk::Action::create("AddNation", "Add Nation"), Gtk::AccelKey("<control>N"), sigc::mem_fun(*this, &gTest::new_nation_window));
+	action_group->add(Gtk::Action::create("AddNation", "Add Nation"), Gtk::AccelKey("<control>N"), sigc::mem_fun(*this, &gTest::on_add_nation));
 	action_group->add(Gtk::Action::create("Quit", Gtk::Stock::QUIT), sigc::mem_fun(*this, &gTest::on_menu_file_quit));
 
 	action_group->add(Gtk::Action::create("Edit", "Edit"));
@@ -64,7 +64,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &gTest::on_menu_pref));
 
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
-	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &gTest::on_menu_update_all));
+	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &gTest::fetch_all));
 
 	action_group->add(Gtk::Action::create("MenuHelp", "Help"));
 	action_group->add(Gtk::Action::create("Help", "Help"), Gtk::AccelKey("F1"), sigc::mem_fun(*this, &gTest::on_menu_help));
@@ -183,14 +183,15 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	set_title("NationStates");
 
-	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_notebook_switch_page));
+	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_page_switch));
 
 	stats.print_blank();
+	Nation_View::instance().refresh_nations();
 
 	show_all_children();
 }
 
-void gTest::new_nation_window(){
+void gTest::on_add_nation(){
 	adder.show();
 }
 
@@ -199,29 +200,17 @@ void gTest::new_nation(Glib::ustring nationer){
 	if(nation.length() > 0){
 		int nation_size = fun.get_nation_data(nation);
 		if(nation_size>69){
-			goto_get_all(nation);
-			compare_latest(nation);
+			fetch(nation);
+			Nation_View::instance().refresh_nations();
 		}
 	}
 }
 
-void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
+void gTest::on_page_switch(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
-	if(page_num == 0){
-		Nation_View& nations = Nation_View::instance();
-		std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 
-		if(nation_list.size()>0){
-			nations.clear_nation_list();
-			for(int j=0; j<nation_list.size(); j++){
-				previous_dates.clear();
-				previous_dates = fun.read("./nations-store/"+nation_list.at(j)+"/datelog.txt");
-				nations.append_nation(nation_list.at(j), std::to_string(previous_dates.size()));
-			}
-		}
-	}
-	else if((page_num == 3)&&(nation.length()>0)){
+	if((page_num == 3)&&(nation.length()>0)){
 		stat_vector.clear();
 		values_vector.clear();
 		stat_vector = stats.get_selected_stat();
@@ -229,129 +218,110 @@ void gTest::on_notebook_switch_page(Gtk::Widget*, guint page_num){
 		if(stat_vector.size()>1){
 			for(int j=0; j<stat_vector.size()/3; j++){
 				previous_dates.clear();
-				Glib::ustring name = stat_vector.at((j*3)+0);
-				std::vector<Glib::ustring> death_names;
-				std::vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
+				Glib::ustring name = stat_vector.at(j*3);
+				vector<Glib::ustring> death_names;
+				vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
 
-				if(stat_vector.at((j*3)+1)=="Deaths")
-					death_names = fun.get_deaths(previous_dates.back().c_str(), nation);
+				/*if(stat_vector.at((j*3)+1)=="Deaths"){
+					vector<Glib::ustring> death_temp = fun.load_data(nation, previous_dates.back(), 3);
+					for(int k=0; k<death_temp.size()/2; k++)
+						death_names.push_back(death_temp.at(k*2));
+				}*/
 
 				for(int i=0; i<previous_dates.size(); i++){
-					// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
 
-					Glib::ustring date = "./nations-store/"+nation+"/"+previous_dates.at(i);
-					if((stat_vector.at((j*3)+1)=="Census Data")||(stat_vector.at((j*3)+1)=="Manufacturing"))
-						values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "CENSUSSCORE-"+stat_vector.at((j*3)+2))));
+					// This makes loading the graphs much faster and efficent by loading the files only till it finds the line it wants.
+					if(stat_vector.at((j*3)+1)=="Census Data"){
+						vector<Glib::ustring> cen = fun.load_data(nation, previous_dates.at(i), 1);
+						values_vector.push_back(fun.strouble(cen.at(std::stoi(stat_vector.at((j*3)+2)))));
+					}
+					else if(stat_vector.at((j*3)+1)=="Manufacturing"){
+						vector<Glib::ustring> man = fun.load_data(nation, previous_dates.at(i), 2);
+						values_vector.push_back(fun.strouble(man.at(std::stoi(stat_vector.at((j*3)+2)))));
+					}
 
 					else if(stat_vector.at((j*3)+1)=="Economy"){
+						vector<Glib::ustring> eco = fun.load_data(nation, previous_dates.at(i), 8);
 						if(name.find("Tax") != -1)
-							values_vector.push_back(fun.strouble(fun.read_single(date.c_str(), "TAX")));
+							values_vector.push_back(fun.strouble(eco.at(0)));
 						else if(name.find("Public") != -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
+							values_vector.push_back(fun.strouble(eco.at(1)));
 						else
-							values_vector.push_back(100.0 - fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICSECTOR"), 0, 1)));
+							values_vector.push_back(fun.strouble(eco.at(2)));
 					}
 
 					else if(stat_vector.at((j*3)+1)=="Budget"){
+						vector<Glib::ustring> bud = fun.load_data(nation, previous_dates.at(i), 7);
 						if(name.find("Enviroment")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ENVIROMENT"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(0), 0, 1)));
 						else if(name.find("Social")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SOCIALEQUALITY"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(1), 0, 1)));
 						else if(name.find("Education")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "EDUCATION"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(2), 0, 1)));
 						else if(name.find("Law")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "LAWANDORDER"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(3), 0, 1)));
 						else if(name.find("Admin")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "ADMINISTRATION"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(4), 0, 1)));
 						else if(name.find("Welfare")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "WELFARE"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(5), 0, 1)));
 						else if(name.find("Spirit")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "SPIRITUALITY"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(6), 0, 1)));
 						else if(name.find("Defence")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "DEFENCE"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(7), 0, 1)));
 						else if(name.find("Public")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "PUBLICTRANSPORT"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(8), 0, 1)));
 						else if(name.find("Health")!= -1)
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "HEALTHCARE"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(9), 0, 1)));
 						else
-							values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), "COMMERCE"), 0, 1)));
+							values_vector.push_back(fun.strouble(fun.trim(bud.at(10), 0, 1)));
 					}
-					else{
-						for(int k=0; k<death_names.size()/2; k++){
-							if(death_names.at(k*2).find(name)!=-1)
-								values_vector.push_back(fun.strouble(fun.trim(fun.read_single(date.c_str(), death_names.at(k*2)), 0, 1)));
+					/*else{
+						vector<Glib::ustring> det = fun.load_data(nation, previous_dates.at(i), 3);
+						for(int k=0; k<death_names.size(); k++){
+							if(death_names.at(k).find(name)!=-1)
+								values_vector.push_back(fun.strouble(det.at((k*2)+1)));
 						}
-					}
+					}*/
 				}
 			}
 		}
 	}
 }
 
-void gTest::refresh_saves(){
-		Save_View& saves = Save_View::instance();
-		Glib::ustring select_nation = Nation_View::instance().get_selected_nation();
+void gTest::update_event_preview(Glib::ustring selected_save){
+	try{
+		if(selected_save.length()>0){
+			Glib::ustring selected_nation = Nation_View::instance().get_selected_nation();
+			vector<Glib::ustring> events_times = 	fun.convert_times(fun.load_data(selected_nation, selected_save, 4), "%b %d, %R");
+			vector<Glib::ustring> events = 				fun.load_data(selected_nation, selected_save, 5);
 
-		if(select_nation != ""){
-			saves.clear_save_list();
-			vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
-			for(signed int i=previous_dates.size()-1; i>-1; i--)
-				saves.append_save(fun.trim(previous_dates.at(i), 0, 4));
+			Glib::ustring events_text = "•<b>"+events_times.at(0)+"</b> - "+events.at(0);
+			for(int i=1; i<3; i++)
+				events_text = events_text+"\n•<b>"+events_times.at(i)+"</b> - "+events.at(i);
+			latest_events_label.set_markup(events_text);
 		}
+	}catch(exception e){
+		//Save_View::instance().select_default();
+	}
 }
 
-void gTest::update_latest_events(Glib::ustring selected_save){
-	Glib::ustring selected_nation = Nation_View::instance().get_selected_nation();
-	vector<Glib::ustring> save_vector = fun.read("./nations-store/"+selected_nation+"/"+selected_save);
-	vector<Glib::ustring> events_vector, time_vector;
-	int point;
-	for(int i=200; i<save_vector.size(); i++){
-		if(save_vector.at(i).find("EVENT")!=-1){
-			point = i;
-			break;
-		}
-	}
-
-	for(int i=point; i<point+13; i++){
-		while(save_vector.at(i+4).find("@@")!=-1)
-			save_vector.at(i+4) = save_vector.at(i+4).replace(save_vector.at(i+4).find("@@"), selected_nation.size() +4, selected_nation);
-		events_vector.push_back(save_vector.at(i+4));
-
-		time_t thetime =  static_cast<time_t>(std::stod(save_vector.at(i+2), 0));
-		struct tm * timeinfo = localtime(&thetime);
-		char buffer [80];
-		strftime(buffer, 80, "%b %d, %R", timeinfo);
-		time_vector.push_back(buffer);
-		i = i+4;
-	}
-
-	Glib::ustring events_text = "•<b>"+time_vector.at(0)+"</b> - "+events_vector.at(0);
-	cout<<events_vector.at(0)<<"\n";
-	for(int i=1; i<3; i++)
-		events_text = events_text+"\n•<b>"+time_vector.at(i)+"</b> - "+events_vector.at(i);
-	latest_events_label.set_markup(events_text);
-}
-
-void gTest::on_menu_update_all(){
+void gTest::fetch_all(){
 	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 	if(nation_list.size()>0){
 		for( int i=0; i<nation_list.size(); i++)
-			goto_get_all(nation_list.at(i));
+			fetch(nation_list.at(i));
 	}
 }
 
 void gTest::compare_latest(Glib::ustring nationed){
+	load_main(fun.read("./nations-store/"+nationed+"/datelog.txt").back(), nationed, 1);
 
-	goto_load(fun.read("./nations-store/"+nationed+"/datelog.txt").back(), nationed, 1);
-
-	std::vector< std::vector<Glib::ustring> > last_vectors;
-	int lines = fun.count_lines("./nations-store/"+nationed+"/datelog.txt");
-	if(lines>1){
-		last_vectors = fun.last_vectors_generate(fun.read("./nations-store/"+nationed+"/"+fun.read("./nations-store/"+nationed+"/datelog.txt").at(lines-2)));
-		stats.print_data(data_vectors, last_vectors, 1);
-	}
+	vector<Glib::ustring> previous_dates = fun.read(fun.strchar("./nations-store/"+nationed+"/datelog.txt"));
+	int lines = previous_dates.size();
+	if(lines>1)
+		stats.print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  1);
 	else
-		stats.print_data(data_vectors, last_vectors, 0);
+		stats.print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), 0);
 }
 
 std::vector<Glib::ustring> gTest::get_stat_vector(){
@@ -363,31 +333,46 @@ std::vector<double> gTest::get_value_vector(){
 }
 
 void gTest::compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation){;
-	if(data_vectors.size()>0)
-		stats.print_data(data_vectors, fun.last_vectors_generate(fun.read("./nations-store/"+selected_nation+"/"+selected_save)), 1);
+	if(nation.length()>0)
+		stats.print_data(nation, loaded, selected_nation, selected_save, 0);
 }
 
-void gTest::goto_load(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
+void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
 
-	data_vectors.clear();
 	nation = selected_nation;
-	data_vectors = fun.vectors_generate(selected_save, selected_nation);
-	std::vector<Glib::ustring> all_data = fun.read("./nations-store/"+selected_nation+"/"+selected_save);
+	loaded = selected_save;
 
-	if(skip_tree_print==0){
-		std::vector< std::vector<Glib::ustring> > last_vectors;
-		stats.print_data(data_vectors, last_vectors, 0);
-	}
+	if(skip_tree_print==0)
+		stats.print_data(selected_nation, selected_save, selected_nation, selected_save, 0);
 
-	nation_label		.set_markup("<b><big>"+all_data.at(2)+"</big></b>");
-	fullname			.set_markup(fun.make_fullname_text(all_data, data_vectors));
-	rights				.set_markup(fun.make_rights_text(all_data, data_vectors));
-	description_label	.set_label(fun.make_description_text(all_data, data_vectors, selected_nation));
-	events_label		.set_markup(fun.make_events_text(data_vectors));
+	vector<Glib::ustring> basics = 			fun.load_data(nation, loaded, 0);
+	vector<Glib::ustring> census = 			fun.load_data(nation, loaded, 1);
+	vector<Glib::ustring> des = 			fun.load_data(nation, loaded, 6);
+	vector<Glib::ustring> events_times = 	fun.load_data(nation, loaded, 4);
+	vector<Glib::ustring> events = 			fun.load_data(nation, loaded, 5);
+	vector<Glib::ustring> rights_v = 		fun.load_data(nation, loaded, 9);
+
+
+	Glib::ustring events_text;
+	for(int i=0; i<events.size(); i++)
+		events_text = events_text+"<b>"+events_times.at(i)+"</b>\n"+events.at(i)+"\n\n";
+
+	Glib::ustring rights_text = "Civil Rights: "+rights_v.at(0)+" ("+census.at(0)+")\nEconomy: "+rights_v.at(1)+" ("+census.at(1)+")\nPolitical Freedom: "+
+									rights_v.at(2)+" ("+census.at(2)+")\nRegional Influence: "+basics.at(5)+" ("+census.at(40)+")";
+
+	Glib::ustring description = nation+" is a "+des.at(0)+" nation, renowned for its "+des.at(1)+", and "+des.at(2)+" citizens.\n\n"+des.at(4)+" "+
+								des.at(5)+"\n\n"+nation+", "+des.at(7)+ ", "+des.at(8)+", and "+des.at(9)+". "+des.at(10)+" "+nation+
+								"\'s national animal is the "+des.at(11)+", which "+des.at(12)+", and its currency is the "+des.at(13)+".";
+
+	nation_label		.set_markup("<b><big>"+basics.at(0)+"</big></b>");
+	fullname			.set_markup("\""+basics.at(1)+"\"\n"+basics.at(2)+"\n"+basics.at(3));
+	rights				.set_markup(rights_text);
+	description_label	.set_label(description);
+	events_label		.set_markup(events_text);
 
 	flag.clear();
-	fun.curl_grab("./nations-store/"+selected_nation+"/flag.jpg", all_data.at(25));
-	flag.set("./nations-store/"+selected_nation+"/flag.jpg");
+	fun.curl_grab("./nations-store/"+nation+"/flag.jpg", basics.at(4));
+	flag.set("./nations-store/"+nation+"/flag.jpg");
 }
 
 void gTest::delete_nation(Glib::ustring nationer){
@@ -402,26 +387,20 @@ void gTest::delete_nation(Glib::ustring nationer){
 			savenation<<delete_vector.at(i)<<"\n";
 	}
 	savenation.close();
-	for(int i=0; i<deleter.size(); i++){
+	for(int i=0; i<deleter.size(); i++)
 		std::remove(fun.strchar("./nations-store/"+nationer+"/"+deleter.at(i)));
-	}
+
 	std::remove(fun.strchar("./nations-store/"+nationer+"/datelog.txt"));
 	std::remove(fun.strchar("./nations-store/"+nationer+"/flag.jpg"));
 	rmdir(fun.strchar("./nations-store/"+nationer));
-	force_notebook_refresh(0);
+	Nation_View::instance().refresh_nations();
 }
 
-void gTest::goto_get_all(Glib::ustring nationer){
-	Glib::ustring currenter_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".txt";
-
+void gTest::fetch(Glib::ustring nationer){
+	Glib::ustring currenter_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".csv";
 	fun.get_nation_data(nationer);
-	xmlpp::DomParser parser;
-	parser.parse_file("./nation.xml");
-
-	std::vector<Glib::ustring> all_data;
-	all_data = fun.print_node(parser.get_document()->get_root_node(), all_data);
-	fun.save_data(all_data, currenter_time, nationer);
-	force_notebook_refresh(0);
+	fun.save_data(currenter_time, nationer);
+	Nation_View::instance().refresh_nations();
 }
 
 void gTest::force_notebook_refresh(int page){

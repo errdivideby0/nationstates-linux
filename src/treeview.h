@@ -27,7 +27,7 @@ public:
 	Tree_View();
 
 	Glib::ustring get_name_at(int place);
-	void print_data(std::vector<std::vector<Glib::ustring> > comparor, std::vector<std::vector<Glib::ustring> > comparee, int print_mode);
+	void print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, int print_mode);
 	void clear_stat_list();
 	std::vector<Glib::ustring> get_selected_stat();
 	void print_blank();
@@ -37,6 +37,7 @@ protected:
 	virtual bool on_button_press_event(GdkEventButton *ev);
 	void append_category_row(Glib::ustring category_name);
 	void append_stat_row();
+	void append_all(std::vector<Glib::ustring> main_vector, std::vector<Glib::ustring> compare, int shift);
 	void set_stat_row(int index, Glib::ustring text, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4);
 	void expand_stat_list();
 	void on_selection_changed();
