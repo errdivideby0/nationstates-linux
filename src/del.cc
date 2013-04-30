@@ -25,7 +25,7 @@ using namespace std;
 Glib::ustring Delete_Popup::select_nat;
 
 Delete_Popup::Delete_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), delete_button("Yes"), cancel_button("No"){
-	set_border_width(10);
+	set_border_width(6);
 	set_default_size(200, 80);
 
 	add(main_box);

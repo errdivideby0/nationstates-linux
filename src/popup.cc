@@ -24,8 +24,7 @@ using namespace std;
 
 popup::popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
 
-	set_border_width(10);
-	set_default_size(200, 60);
+	set_border_width(6);
 
 	add(main_box);
 	main_box.pack_start(top_box);
@@ -60,4 +59,12 @@ void popup::set_rename_text(){
 	string name = Save_View::instance().get_selected_save();
 	rename_input.set_text(name);
 	rename_input.select_region(0, name.length());
+	set_focus_child(rename_input);
+}
+
+void popup::set_width(){
+	string name = Save_View::instance().get_selected_save();
+	int text_width, text_height;
+	create_pango_layout(name)->get_pixel_size(text_width, text_height);
+	set_default_size(text_width*1.2, 60);
 }

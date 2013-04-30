@@ -26,6 +26,7 @@ private:
 public:
 
 	popup();
+	void set_width();
 
 protected:
 
