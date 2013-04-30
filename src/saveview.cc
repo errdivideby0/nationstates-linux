@@ -85,6 +85,7 @@ void Save_View::refresh_saves(){
 		vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
 		for(signed int i=previous_dates.size()-1; i>-1; i--)
 			append_save(fun.trim(previous_dates.at(i), 0, 4));
+		gTest::instance().update_event_preview(previous_dates.back());
 	}
 }
 
@@ -121,12 +122,6 @@ void Save_View::save_menu_rename(Glib::ustring newname){
 }
 
 void Save_View::save_menu_delete(){
-}
-
-void Save_View::select_default(){
-	Gtk::TreeModel::iterator iter = save_model->children().begin();
-	if(iter)
-		selection->select(iter);
 }
 
 void Save_View::append_save(Glib::ustring text){
