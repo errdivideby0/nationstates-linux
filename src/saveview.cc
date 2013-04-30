@@ -121,7 +121,7 @@ void Save_View::save_menu_delete(){
 
 void Save_View::select_default(){
 	Gtk::TreeModel::iterator iter = save_model->children().begin();
-	if(iter)
+	if(iter2)
 		selection->select(iter);
 }
 
