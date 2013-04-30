@@ -120,15 +120,10 @@ void Save_View::save_menu_delete(){
 }
 
 void Save_View::select_default(){
-<<<<<<< HEAD
 	Gtk::TreeModel::iterator iter = save_model->children().begin();
-	if(iter2)
+	if(iter)
 		selection->select(iter);
-=======
-	//Gtk::TreeModel::iterator iter = save_model->children().begin();
-	//if(iter)
-	//	selection->select(iter);
->>>>>>> 863ef2e606868bb8b8c5b1e532aa0405d862033b
+
 }
 
 void Save_View::append_save(Glib::ustring text){
