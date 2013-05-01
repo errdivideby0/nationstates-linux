@@ -18,6 +18,7 @@
 #ifndef GTKMM_GTEST_PREFERENCES
 #define GTKMM_GTEST_PREFERENCES
 
+#include "functions.h"
 #include <gtkmm.h>
 
 class Preferences_Window : public Gtk::Window{
@@ -29,14 +30,21 @@ public:
 
 protected:
 
+	std::vector<Glib::ustring> pref_settings;
+	void set_pref();
 	void on_close_button();
+	void on_apply_button();
+	void on_potato_clicked();
+	void on_baked_potato_clicked();
+	void on_not_a_potato_clicked();
 	Gtk::Notebook pref_notebook;
 	Gtk::Box main_box;
-	Gtk::HBox general_tab, test_two, general_tab_hbox_one, general_tab_hbox_two;
-	//Gtk::VBox general_tab_vbox_one, general_tab_vbox_two;
+	Gtk::HBox general_tab, test_two;
+	Gtk::VBox general_tab_vbox_one, general_tab_vbox_two;
 	Gtk::ButtonBox bbox_one;
-	Gtk::Button confirm_button, close_button;
-	Gtk::CheckButton one, two, three;
+	Gtk::Button apply_button, close_button;
+	Gtk::CheckButton potato, baked_potato, not_a_potato;
+	functions fun;
 };
 
 #endif

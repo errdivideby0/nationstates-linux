@@ -18,10 +18,12 @@
 #include "preferences.h"
 #include <cstdlib>
 #include <gtkmm.h>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
-Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), close_button("Close"){
+Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), apply_button("Apply"), close_button("Close"){
 	set_border_width(5);
 	set_default_size(400, 400);
 	set_title("Preferences");
@@ -29,21 +31,81 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), c
 	main_box.pack_start(pref_notebook);
 	pref_notebook.append_page(general_tab,"General");
 	pref_notebook.append_page(test_two,"????");
-	general_tab.pack_start(general_tab_hbox_one);
-	general_tab.pack_start(general_tab_hbox_two);
-	general_tab_hbox_one.pack_start(one);
-	one.set_label("potato");
-	general_tab_hbox_one.pack_start(two);
-	two.set_label("baked potato");
-	general_tab_hbox_two.pack_start(three);
-	three.set_label("not a potato");
+	general_tab.pack_start(general_tab_vbox_one);
+	general_tab.pack_start(general_tab_vbox_two);
+	general_tab_vbox_one.pack_start(potato);
+	potato.set_label("potato");
+	general_tab_vbox_one.pack_start(baked_potato);
+	baked_potato.set_label("baked potato");
+	general_tab_vbox_two.pack_start(not_a_potato);
+	not_a_potato.set_label("not a potato");
+	signal_show().connect(sigc::mem_fun(*this, &Preferences_Window::set_pref));
+	potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_potato_clicked));
+	baked_potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_baked_potato_clicked));
+	not_a_potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_not_a_potato_clicked));
 	main_box.pack_start(bbox_one, Gtk::PACK_SHRINK);
 	bbox_one.set_border_width(5);
 	bbox_one.set_layout(Gtk::BUTTONBOX_END);
-	bbox_one.pack_start(confirm_button, Gtk::PACK_SHRINK);
+	bbox_one.pack_start(apply_button, Gtk::PACK_SHRINK);
 	bbox_one.pack_start(close_button, Gtk::PACK_SHRINK);
 	close_button.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_close_button));
+	apply_button.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_apply_button));
 	show_all_children();
+}
+
+void Preferences_Window::set_pref(){
+	pref_settings = fun.read("./settings.conf");
+	if (pref_settings.size() == 0){
+		for(int i=0;i<3;i++)
+			pref_settings.push_back("");
+	}
+	cout<<pref_settings.size()<<"\n";
+	for(int i=0;i<pref_settings.size();i++)
+		cout<<pref_settings.at(i)<<"\n";
+	//setvaluesofboxthingy
+}
+
+void Preferences_Window::on_potato_clicked(){
+	if (potato.get_active()){
+		cout<<"potato true\n";
+		pref_settings.at(0) = "true";
+	}
+	else{
+		cout<<"potato false\n";
+		pref_settings.at(0) = "false";
+	}
+}
+
+void Preferences_Window::on_baked_potato_clicked(){
+	if (baked_potato.get_active()){
+		cout<<"baked potato true\n";
+		pref_settings.at(1) = "true";
+	}
+	else{
+		cout<<"baked potato false\n";
+		pref_settings.at(1) = "false";
+	}
+}
+
+void Preferences_Window::on_not_a_potato_clicked(){
+	if (not_a_potato.get_active()){
+		cout<<"not a potato true\n";
+		pref_settings.at(2) = "true";
+	}
+	else{
+		cout<<"not a potato false\n";
+		pref_settings.at(2) = "false";
+	}
+}
+
+void Preferences_Window::on_apply_button(){
+	ofstream save;
+	save.open("./settings.conf");
+	for(int i=0;i<pref_settings.size();i++){
+		cout<<pref_settings.at(i)<<"\n";
+		save<<pref_settings.at(i)<<"\n";
+	}
+	save.close();
 }
 
 void Preferences_Window::on_close_button(){

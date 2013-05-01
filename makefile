@@ -38,7 +38,7 @@ add.o: $(A)add.cc $(A)gtest.cc
 del.o: $(A)del.cc $(A)gtest.cc
 	$(CC) $(CFLAGS) -c $(A)del.cc $(LDFLAGS)
 
-preferences.o: $(A)preferences.cc
+preferences.o: $(A)preferences.cc $(A)functions.cc
 	$(CC) $(CFLAGS) -c $(A)preferences.cc $(LDFLAGS)
 
 clean:
