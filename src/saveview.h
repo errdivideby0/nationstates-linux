@@ -41,7 +41,6 @@ public:
 	void refresh_saves();
 	void save_menu_rename(Glib::ustring newname);
 	Glib::ustring get_selected_save();
-	void select_default();
 
 protected:
 

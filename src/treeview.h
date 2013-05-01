@@ -23,14 +23,24 @@
 
 class Tree_View : public Gtk::TreeView{
 
-public:
+private:
 	Tree_View();
+	Tree_View(const Tree_View&);
+	Tree_View& operator=(const Tree_View&);
+
+public:
+
+	static Tree_View& instance(){
+		static Tree_View singleton;
+		return singleton;
+	}
 
 	Glib::ustring get_name_at(int place);
 	void print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, int print_mode);
 	void clear_stat_list();
 	std::vector<Glib::ustring> get_selected_stat();
 	void print_blank();
+	void print_hide(Glib::ustring search_text);
 
 protected:
 

@@ -7,7 +7,6 @@ If you select deaths with other things, the labels mess up.
 Some times selecting a death crashes it.
 Sort by save name.
 If new data, update views.
-Save data data as .csv files.
 Add world average to graph.
 Ability to compare two nations.
 Fix deaths not comparing nicely when different methods of death exist between data sets
@@ -16,6 +15,9 @@ Make flag resize automatically to a standard size
 Add column for world data
 // http://www.nationstates.net/cgi-bin/api.cgi?q=(shard1)+(shard2)+(...)
 // numnations numregions census censusid censussize censusscale censusmedian featuredregion newnations
+
+
+		Nou-3		Dar-0
 
 Add region data to region tab
 // http://www.nationstates.net/cgi-bin/api.cgi?region=(name)&q=(shard1)+(shard2)+(...)

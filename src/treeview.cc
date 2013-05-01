@@ -121,6 +121,7 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 		append_category_row("Deaths");
 		for(int i=0; i<main_deaths.size(); i++){
 			append_stat_row();
+			bool find = false;
 			for(int j=0; j<compare_deaths.size(); j++){
 				if(main_deaths.at(i) == compare_deaths.at(j)){
 					change_value = fun.strouble(main_deaths.at(i+1)) - fun.strouble(compare_deaths.at(j+1));
@@ -129,8 +130,11 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 					else
 						set_stat_row(i, "", main_deaths.at(i), main_deaths.at(i+1)+"%", main_deaths.at(i+1)+"%");
 					j = compare_deaths.size()-1;
+					find = true;
 				}
 			}
+			if(find == false)
+				set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
 			i++;
 		}
 	}
@@ -159,6 +163,7 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 	append_all(fun.load_data(main_nation, main_save, 2), fun.load_data(compare_nation, compare_save, 2), 76);
 
 	expand_stat_list();
+	columns_autosize();
 }
 
 void Tree_View::print_blank(){
@@ -195,6 +200,7 @@ void Tree_View::print_blank(){
 		stat_row[stat_columns.stat_name] = names.at(i);
 	}
 	expand_stat_list();
+	columns_autosize();
 }
 
 void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
@@ -222,4 +228,8 @@ void Tree_View::on_selection_changed(){
 
 std::vector<Glib::ustring> Tree_View::get_selected_stat(){
 	return stat_vector;
+}
+
+void Tree_View::print_hide(Glib::ustring search_text){
+	cout<<search_text<<"\n";
 }
