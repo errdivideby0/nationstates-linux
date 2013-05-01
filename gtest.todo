@@ -16,6 +16,9 @@ Add column for world data
 // http://www.nationstates.net/cgi-bin/api.cgi?q=(shard1)+(shard2)+(...)
 // numnations numregions census censusid censussize censusscale censusmedian featuredregion newnations
 
+
+		Nou-3		Dar-0
+
 Add region data to region tab
 // http://www.nationstates.net/cgi-bin/api.cgi?region=(name)&q=(shard1)+(shard2)+(...)
 // name factbook numnations nations delegate delegatevotes gavote scvote founder power flag embassies tags happenings messages*
