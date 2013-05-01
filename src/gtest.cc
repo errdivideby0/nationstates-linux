@@ -36,6 +36,7 @@ using namespace std;
 gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	set_position(Gtk::WIN_POS_CENTER);
+	set_events(Gdk::BUTTON_RELEASE_MASK);
 	set_default_size(1000, 600);
 
 	add(mainmain);
@@ -171,7 +172,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	set_title("NationStates");
 
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_page_switch));
-	search_entry.signal_key_press_event().connect(sigc::mem_fun(*this, &gTest::on_search_key));
+	search_entry.signal_key_release_event().connect(sigc::mem_fun(*this, &gTest::on_search_key));
 
 	Tree_View::instance().print_blank();
 	Nation_View::instance().refresh_nations();
@@ -406,12 +407,10 @@ void gTest::set_notebook_page(int page){
 }
 
 bool gTest::on_search_key(GdkEventKey* event){
-	bool return_value = true;
-	//return_value = Entry::on_key_press_event(event);
 	Glib::ustring search_text = search_entry.get_text();
 	if(search_text.length()>0)
 		Tree_View::instance().print_hide(search_text);
-	return return_value;
+	return false;
 }
 
 void gTest::on_menu_file_quit(){
