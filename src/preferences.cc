@@ -33,14 +33,14 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), a
 	pref_notebook.append_page(test_two,"????");
 	general_tab.pack_start(general_tab_vbox_one);
 	general_tab.pack_start(general_tab_vbox_two);
-	general_tab_vbox_one.pack_start(potato);
-	potato.set_label("potato");
+	general_tab_vbox_one.pack_start(info_box_check);
+	info_box_check.set_label("Hide Information/Flag box");
 	general_tab_vbox_one.pack_start(baked_potato);
 	baked_potato.set_label("baked potato");
-	general_tab_vbox_two.pack_start(not_a_potato);
+	general_tab_vbox_one.pack_start(not_a_potato);
 	not_a_potato.set_label("not a potato");
 	signal_show().connect(sigc::mem_fun(*this, &Preferences_Window::set_pref));
-	potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_potato_clicked));
+	info_box_check.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_info_box_check_clicked));
 	baked_potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_baked_potato_clicked));
 	not_a_potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_not_a_potato_clicked));
 	main_box.pack_start(bbox_one, Gtk::PACK_SHRINK);
@@ -62,38 +62,37 @@ void Preferences_Window::set_pref(){
 	cout<<pref_settings.size()<<"\n";
 	for(int i=0;i<pref_settings.size();i++)
 		cout<<pref_settings.at(i)<<"\n";
-	//setvaluesofboxthingy
+	if (pref_settings.at(0) == "Hide Info/Flag box: false")
+		info_box_check.set_active(true);
+	if (pref_settings.at(1) == "true")
+		baked_potato.set_active(true);
+	if (pref_settings.at(2) == "true")
+		not_a_potato.set_active(true);
 }
 
-void Preferences_Window::on_potato_clicked(){
-	if (potato.get_active()){
-		cout<<"potato true\n";
-		pref_settings.at(0) = "true";
+void Preferences_Window::on_info_box_check_clicked(){
+	if (info_box_check.get_active()){
+		pref_settings.at(0) = "Info/Flag box: true";
 	}
 	else{
-		cout<<"potato false\n";
-		pref_settings.at(0) = "false";
+		pref_settings.at(0) = "Info/Flag box: false";
 	}
 }
 
 void Preferences_Window::on_baked_potato_clicked(){
 	if (baked_potato.get_active()){
-		cout<<"baked potato true\n";
 		pref_settings.at(1) = "true";
 	}
 	else{
-		cout<<"baked potato false\n";
 		pref_settings.at(1) = "false";
 	}
 }
 
 void Preferences_Window::on_not_a_potato_clicked(){
 	if (not_a_potato.get_active()){
-		cout<<"not a potato true\n";
 		pref_settings.at(2) = "true";
 	}
 	else{
-		cout<<"not a potato false\n";
 		pref_settings.at(2) = "false";
 	}
 }

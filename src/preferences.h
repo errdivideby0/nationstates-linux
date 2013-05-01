@@ -34,7 +34,7 @@ protected:
 	void set_pref();
 	void on_close_button();
 	void on_apply_button();
-	void on_potato_clicked();
+	void on_info_box_check_clicked();
 	void on_baked_potato_clicked();
 	void on_not_a_potato_clicked();
 	Gtk::Notebook pref_notebook;
@@ -43,7 +43,7 @@ protected:
 	Gtk::VBox general_tab_vbox_one, general_tab_vbox_two;
 	Gtk::ButtonBox bbox_one;
 	Gtk::Button apply_button, close_button;
-	Gtk::CheckButton potato, baked_potato, not_a_potato;
+	Gtk::CheckButton info_box_check, baked_potato, not_a_potato;
 	functions fun;
 };
 
