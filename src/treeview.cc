@@ -127,8 +127,10 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 	four = compare_save;
 	string text_upper = text_string;
 	string text_lower = text_string;
-	text_upper[0] = toupper(text_upper[0]);
-	text_lower[0] = tolower(text_lower[0]);
+	if(text_string!=""){
+		text_upper[0] = toupper(text_upper[0]);
+		text_lower[0] = tolower(text_lower[0]);
+	}
 
 	try{
 		vector<Glib::ustring> main_deaths = fun.load_data(main_nation, main_save, 3);
@@ -136,7 +138,7 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 		append_category_row("Deaths");
 		bool death_count = false;
 		for(int i=0; i<main_deaths.size(); i++){
-			if((main_deaths.at(i).find(text_upper)!=-1)||(main_deaths.at(i).find(text_lower)!=-1)||(text_upper=="")){
+			if((main_deaths.at(i).find(text_upper)!=-1)||(main_deaths.at(i).find(text_lower)!=-1)||(text_string=="")){
 				append_stat_row();
 				bool find = false;
 				for(int j=0; j<compare_deaths.size(); j++){
@@ -161,20 +163,19 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 			}
 			i++;
 		}
-		if(death_count == false){
+		if(death_count == false)
 			TreeModel->erase(category_row);
-		}
-
 	}
 	catch(exception& e){
 		cout<<"error in deaths\n";
 	}
+
 	append_category_row("Economy");
 	vector<Glib::ustring> eco_main = fun.load_data(main_nation, main_save, 8);
 	vector<Glib::ustring> eco_compare = fun.load_data(compare_nation, compare_save, 8);
 	bool eco_count = false;
 	for( int i=0; i<eco_main.size(); i++){
-		if((names.at(i+10).find(text_upper)!=-1)||(names.at(i+10).find(text_lower)!=-1)||(text_upper=="")){
+		if((names.at(i+10).find(text_upper)!=-1)||(names.at(i+10).find(text_lower)!=-1)||(text_string=="")){
 			append_stat_row();
 			change_value = fun.strouble(eco_main.at(i)) - fun.strouble(eco_compare.at(i));
 			if(change_value != 0)
@@ -200,39 +201,34 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 	columns_autosize();
 }
 
-void Tree_View::print_blank(){
+void Tree_View::print_blank(Glib::ustring text_string){
 
 	clear_stat_list();
+	string text_upper = text_string;
+	string text_lower = text_string;
 
-	append_category_row("Deaths");
-	for(int i=0; i<10; i++){
-		append_stat_row();
-		stat_row[stat_columns.stat_name] = names.at(i);
+	if(text_string!=""){
+		text_upper[0] = toupper(text_upper[0]);
+		text_lower[0] = tolower(text_lower[0]);
 	}
 
-	append_category_row("Economy");
-	for(int i=10; i<13; i++){
-		append_stat_row();
-		stat_row[stat_columns.stat_name] = names.at(i);
+	vector<Glib::ustring> title_vector {"Deaths", "Economy", "Budget", "Census Data", "Manufacturing"};
+	vector<int> stop_size {0, 10, 13, 24, 76, 93};
+
+	for(int j=0; j<title_vector.size(); j++){
+		append_category_row(title_vector.at(j));
+		bool blank_count = false;
+		for(int i=stop_size.at(j); i<stop_size.at(j+1); i++){
+			if((names.at(i).find(text_upper)!=-1)||(names.at(i).find(text_lower)!=-1)||(text_string=="")){
+				append_stat_row();
+				stat_row[stat_columns.stat_name] = names.at(i);
+				blank_count = true;
+			}
+		}
+		if(blank_count == false)
+			TreeModel->erase(category_row);
 	}
 
-	append_category_row("Budget");
-	for(int i=13; i<24; i++){
-		append_stat_row();
-		stat_row[stat_columns.stat_name] = names.at(i);
-	}
-
-	append_category_row("Census Data");
-	for( int i=24; i<76; i++){
-		append_stat_row();
-		stat_row[stat_columns.stat_name] = names.at(i);
-	}
-
-	append_category_row("Manufacturing");
-	for( int i=76; i<93; i++){
-		append_stat_row();
-		stat_row[stat_columns.stat_name] = names.at(i);
-	}
 	expand_stat_list();
 	columns_autosize();
 }

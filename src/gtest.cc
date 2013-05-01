@@ -179,7 +179,7 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	// possibly just disable
 	Tree_View::instance().set_enable_search(false);
 
-	Tree_View::instance().print_blank();
+	Tree_View::instance().print_blank("");
 	Nation_View::instance().refresh_nations();
 
 	show_all_children();
@@ -314,9 +314,9 @@ void gTest::compare_latest(Glib::ustring nationed){
 	vector<Glib::ustring> previous_dates = fun.read(fun.strchar("./nations-store/"+nationed+"/datelog.txt"));
 	int lines = previous_dates.size();
 	if(lines>1)
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  "");
+		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  search_entry.get_text());
 	else
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), "");
+		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), search_entry.get_text());
 }
 
 std::vector<Glib::ustring> gTest::get_stat_vector(){
@@ -329,7 +329,7 @@ std::vector<double> gTest::get_value_vector(){
 
 void gTest::compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation){;
 	if(nation.length()>0)
-		Tree_View::instance().print_data(nation, loaded, selected_nation, selected_save, "");
+		Tree_View::instance().print_data(nation, loaded, selected_nation, selected_save, search_entry.get_text());
 }
 
 void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
@@ -337,8 +337,9 @@ void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation
 	nation = selected_nation;
 	loaded = selected_save;
 
-	if(skip_tree_print==0)
-		Tree_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, "");
+	if(skip_tree_print==0){
+		Tree_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, search_entry.get_text());
+	}
 
 	vector<Glib::ustring> basics = 			fun.load_data(nation, loaded, 0);
 	vector<Glib::ustring> census = 			fun.load_data(nation, loaded, 1);
@@ -366,7 +367,7 @@ void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation
 	events_label		.set_markup(events_text);
 
 	flag.clear();
-	fun.curl_grab("./nations-store/"+nation+"/flag.jpg", basics.at(4));
+	//fun.curl_grab("./nations-store/"+nation+"/flag.jpg", basics.at(4));
 	flag.set("./nations-store/"+nation+"/flag.jpg");
 }
 
@@ -413,18 +414,23 @@ void gTest::set_notebook_page(int page){
 }
 
 bool gTest::on_tree_key(GdkEventKey* event){
-	search_entry.set_text(event->string);
-	on_search_key(event);
-	set_focus(search_entry);
-	//Glib::RefPtr< Gtk::Adjustment > adj = search_entry.get_cursor_hadjustment();
-	//adj->set_value(1.0);
-	//search_entry.set_cursor_hadjustment(adj);
-	search_entry.set_position(1);
+	vector<Glib::ustring> st_vect {" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "-", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+	for(int i=0; i<st_vect.size(); i++){
+		if(event->string==st_vect.at(i)){
+			search_entry.set_text(event->string);
+			on_search_key(event);
+			break;
+		}
+	}
 }
 
 bool gTest::on_search_key(GdkEventKey* event){
-	Glib::ustring search_text = search_entry.get_text();
-	Tree_View::instance().print_hide(search_text);
+	if(nation!="")
+		Tree_View::instance().print_hide(search_entry.get_text());
+	else
+		Tree_View::instance().print_blank(search_entry.get_text());
+	set_focus(search_entry);
+	search_entry.set_position(search_entry.get_text().length());
 	return false;
 }
 

@@ -2,16 +2,17 @@ Colours stay unique until one selected.
 Labels do not overlap in graph.
 Link to nation.
 Enviroment does not work.
+make preference to force refresh flag download.
+Treeview losses selection on search and exists, or change nation.
 Graphs replot on every search.
-search, load different nation should use same search.
-Make events_previewing group he last events.
+reordering nationlist on reorder of nationview rows.
+Make latest save row be selected on selection of a nation row.
 If you select deaths with other things, the labels mess up.
 Some times selecting a death crashes it.
 Sort by save name.
 If new data, update views.
 Add world average to graph.
 Ability to compare two nations.
-Fix deaths not comparing nicely when different methods of death exist between data sets
 Make flag resize automatically to a standard size
 
 Add column for world data
