@@ -66,12 +66,13 @@ protected:
 	void on_page_switch(Gtk::Widget* page, guint page_num);
 	void load_preferences();
 
-	Glib::ustring nation, loaded;
-
+	virtual bool on_tree_key(GdkEventKey* event);
 	virtual bool on_search_key(GdkEventKey* event);
 
-	Gtk::Entry search_entry;
+	Glib::ustring nation, loaded;
+
 	Gtk::Box main_box, big_box, flag_box;
+	Gtk::Entry search_entry;
 	Gtk::VBox right_box, v_header, save_box_big, menu_box, mainmain, left_box;
 	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;

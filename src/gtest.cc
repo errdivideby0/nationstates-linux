@@ -63,7 +63,6 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Help", "Help"), Gtk::AccelKey("F1"), sigc::mem_fun(*this, &gTest::on_menu_help));
 	action_group->add(Gtk::Action::create("About", "About"), sigc::mem_fun(*this, &gTest::on_menu_about));
 
-
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
 	add_accel_group(ui_manager->get_accel_group());
@@ -174,7 +173,11 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_page_switch));
 	preferences.signal_hide().connect(sigc::mem_fun(*this, &gTest::load_preferences));
 	search_entry.signal_key_release_event().connect(sigc::mem_fun(*this, &gTest::on_search_key));
+	Tree_View::instance().signal_key_release_event().connect(sigc::mem_fun(*this, &gTest::on_tree_key));
 
+
+	// possibly just disable
+	Tree_View::instance().set_enable_search(false);
 
 	Tree_View::instance().print_blank();
 	Nation_View::instance().refresh_nations();
@@ -407,6 +410,16 @@ void gTest::force_notebook_refresh(int page){
 
 void gTest::set_notebook_page(int page){
 	notebook.set_current_page(page);
+}
+
+bool gTest::on_tree_key(GdkEventKey* event){
+	search_entry.set_text(event->string);
+	on_search_key(event);
+	set_focus(search_entry);
+	//Glib::RefPtr< Gtk::Adjustment > adj = search_entry.get_cursor_hadjustment();
+	//adj->set_value(1.0);
+	//search_entry.set_cursor_hadjustment(adj);
+	search_entry.set_position(1);
 }
 
 bool gTest::on_search_key(GdkEventKey* event){

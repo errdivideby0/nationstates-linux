@@ -36,7 +36,7 @@ Add_Popup::Add_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Con
 	nation_input.set_placeholder_text("input nation name");
 	bottom_box.pack_start(cancel_button, Gtk::PACK_SHRINK);
 	bottom_box.pack_start(confirm_button, Gtk::PACK_SHRINK);
-	set_focus_child(nation_input);
+	set_focus(nation_input);
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 

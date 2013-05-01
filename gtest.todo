@@ -3,6 +3,7 @@ Labels do not overlap in graph.
 Link to nation.
 Enviroment does not work.
 Graphs replot on every search.
+search, load different nation should use same search.
 Make events_previewing group he last events.
 If you select deaths with other things, the labels mess up.
 Some times selecting a death crashes it.

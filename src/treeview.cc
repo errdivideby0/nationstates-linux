@@ -150,8 +150,13 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 						find = true;
 					}
 				}
-				if(find == false)
-					set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
+				if(find == false){
+					if(main_deaths.at(i+1)!=0)
+						set_stat_row(i, "<b>"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
+					//else
+						//set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
+
+				}
 			death_count = true;
 			}
 			i++;
