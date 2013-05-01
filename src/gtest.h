@@ -68,7 +68,7 @@ protected:
 
 	Glib::ustring nation, loaded;
 
-	virtual bool on_search_key(GdkEventKey *ev);
+	virtual bool on_search_key(GdkEventKey* event);
 
 	Gtk::Entry search_entry;
 	Gtk::Box main_box, big_box, flag_box;
