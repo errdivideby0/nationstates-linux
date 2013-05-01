@@ -430,6 +430,7 @@ void gTest::on_menu_help(){
 }
 
 void gTest::on_menu_about(){
+	about.show();
 }
 
 void gTest::load_preferences(){

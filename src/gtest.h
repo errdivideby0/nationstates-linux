@@ -20,6 +20,7 @@
 
 #include <gtkmm.h>
 #include "preferences.h"
+#include "about.h"
 #include "treeview.h"
 #include "functions.h"
 #include "ploter.h"
@@ -84,6 +85,7 @@ protected:
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Preferences_Window preferences;
+	About_Page about;
 };
 
 #endif
