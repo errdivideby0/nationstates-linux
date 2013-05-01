@@ -381,6 +381,8 @@ void functions::save_data(Glib::ustring current_time, Glib::ustring nation){
 		savenation<<nation<<"\n";
 		savenation.close();
 	}
+
+	curl_grab("./nations-store/"+nation+"/flag.jpg", strchar(all_data.at(0).at(4)));
 }
 
 // This parses the nation.xml and forms a vector of all the values and titles. Best to pretend this does not exist

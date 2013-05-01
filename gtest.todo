@@ -2,7 +2,6 @@ Colours stay unique until one selected.
 Labels do not overlap in graph.
 Link to nation.
 Enviroment does not work.
-make preference to force refresh flag download.
 Treeview losses selection on search and exists, or change nation.
 Graphs replot on every search.
 reordering nationlist on reorder of nationview rows.
