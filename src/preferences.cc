@@ -62,7 +62,7 @@ void Preferences_Window::set_pref(){
 	cout<<pref_settings.size()<<"\n";
 	for(int i=0;i<pref_settings.size();i++)
 		cout<<pref_settings.at(i)<<"\n";
-	if (pref_settings.at(0) == "Hide Info/Flag box: false")
+	if (pref_settings.at(0) == "Hide Info/Flag box: true")
 		info_box_check.set_active(true);
 	if (pref_settings.at(1) == "true")
 		baked_potato.set_active(true);
@@ -72,10 +72,10 @@ void Preferences_Window::set_pref(){
 
 void Preferences_Window::on_info_box_check_clicked(){
 	if (info_box_check.get_active()){
-		pref_settings.at(0) = "Info/Flag box: true";
+		pref_settings.at(0) = "Hide Info/Flag box: true";
 	}
 	else{
-		pref_settings.at(0) = "Info/Flag box: false";
+		pref_settings.at(0) = "Hide Info/Flag box: false";
 	}
 }
 
