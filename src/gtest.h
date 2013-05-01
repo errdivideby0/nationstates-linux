@@ -64,6 +64,7 @@ protected:
 	void on_menu_file_new_generic();
 	void on_menu_others();
 	void on_page_switch(Gtk::Widget* page, guint page_num);
+	void load_preferences();
 
 	Glib::ustring nation, loaded;
 

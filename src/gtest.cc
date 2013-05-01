@@ -172,11 +172,13 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_page_switch));
 	search_entry.signal_key_press_event().connect(sigc::mem_fun(*this, &gTest::on_search_key));
+	preferences.signal_hide().connect(sigc::mem_fun(*this, &gTest::load_preferences));
 
 	Tree_View::instance().print_blank();
 	Nation_View::instance().refresh_nations();
 
 	show_all_children();
+	load_preferences();
 }
 
 void gTest::on_add_nation(){
@@ -429,5 +431,15 @@ void gTest::on_menu_help(){
 }
 
 void gTest::on_menu_about(){
+}
+
+void gTest::load_preferences(){
+	vector<Glib::ustring> pref_settings = fun.read("./settings.conf");
+	if (pref_settings.size() > 0){
+		if (pref_settings.at(0).find("true") != -1)
+			v_header.hide();
+		else
+			v_header.show();
+	}
 }
 
