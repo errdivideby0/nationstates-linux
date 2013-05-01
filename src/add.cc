@@ -23,8 +23,8 @@
 using namespace std;
 
 Add_Popup::Add_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
-	set_border_width(10);
-	set_default_size(200, 60);
+	set_border_width(6);
+	set_default_size(220, 60);
 
 	add(main_box);
 	main_box.pack_start(top_box);

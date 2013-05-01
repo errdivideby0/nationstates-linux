@@ -39,7 +39,7 @@ Save_View::Save_View(){
 	save_menu.append(*item);
 
 	item = Gtk::manage(new Gtk::MenuItem("Rename", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::pop_show));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::show_rename_popup));
 	save_menu.append(*item);
 
 	item = Gtk::manage(new Gtk::MenuItem("Delete", true));
@@ -92,7 +92,8 @@ void Save_View::save_menu_to_b(){
 	gTest::instance().load_main(selected_save, Nation_View::instance().selected_nation, 0);
 }
 
-void Save_View::pop_show(){
+void Save_View::show_rename_popup(){
+	pop.set_width();
 	pop.show();
 }
 
@@ -137,7 +138,7 @@ bool Save_View::on_key_press_event(GdkEventKey* event){
 	bool return_value = false;
 	return_value = TreeView::on_key_press_event(event);
 	if((selected_save.length()>0)&&(event->keyval == GDK_KEY_F2))
-		pop_show();
+		show_rename_popup();
 	else if((selected_save.length()>0)&&(event->keyval == GDK_KEY_Delete))
 		save_menu_delete();
 	return return_value;
