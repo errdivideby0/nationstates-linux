@@ -40,7 +40,7 @@ Delete_Popup::Delete_Popup(): main_box(Gtk::ORIENTATION_VERTICAL), delete_button
 	text.set_size_request(200,40);
 	bottom_box.pack_start(cancel_button, Gtk::PACK_SHRINK);
 	bottom_box.pack_start(delete_button, Gtk::PACK_SHRINK);
-	set_focus_child(cancel_button);
+	set_focus(cancel_button);
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 

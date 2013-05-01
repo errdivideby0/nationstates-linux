@@ -137,6 +137,7 @@ int functions::get_nation_data(Glib::ustring nation){
 		nation_url = nation_url+"+"+url_requests.at(i);
 	curl_grab("./nation.xml", nation_url);
 	int size = count_lines("./nation.xml");
+	save_census_median();
 	return size;
 }
 
@@ -381,6 +382,8 @@ void functions::save_data(Glib::ustring current_time, Glib::ustring nation){
 		savenation<<nation<<"\n";
 		savenation.close();
 	}
+
+	curl_grab("./nations-store/"+nation+"/flag.jpg", strchar(all_data.at(0).at(4)));
 }
 
 // This parses the nation.xml and forms a vector of all the values and titles. Best to pretend this does not exist
@@ -413,5 +416,23 @@ std::vector<Glib::ustring> functions::print_node(const xmlpp::Node* node, std::v
 			new_data_first = print_node(*iter, new_data_first);
 	}
 	return new_data_first;
+}
+
+void functions::save_census_median(){
+	curl_grab("./census_medians_temp.txt", "www.nationstates.net/cgi-bin/api.cgi?q=censusmedian");
+	vector<Glib::ustring> new_vector = read("./census_medians_temp.txt");
+	vector<Glib::ustring> census = read("./nations-store/census_medians.txt");
+	Glib::ustring new_value = new_vector.at(0).substr(21, 21);
+	if(census.size()<10)
+		census.resize(69);
+	int first = new_value.find("\"");
+	int census_id = std::stoi(new_value.substr(first+1, new_value.find("\"", first+1) - first - 1));
+	Glib::ustring census_value = new_value.substr(new_value.find(">")+1, new_value.find("<") - new_value.find(">") - 1);
+	census.at(census_id) = census_value;
+	ofstream save;
+	save.open("./nations-store/census_medians.txt");
+	for(int i=0; i<69; i++)
+		save<<census.at(i)<<"\n";
+	save.close();
 }
 

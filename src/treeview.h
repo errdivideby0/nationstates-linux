@@ -39,7 +39,7 @@ public:
 	void print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, std::string text_string);
 	void clear_stat_list();
 	std::vector<Glib::ustring> get_selected_stat();
-	void print_blank();
+	void print_blank(Glib::ustring text_string);
 	void print_hide(Glib::ustring search_text);
 
 protected:
@@ -75,6 +75,7 @@ protected:
 	std::vector<Glib::ustring> names;
 	Glib::ustring one, two , three, four;
 	static std::vector<Glib::ustring> stat_vector;
+	int death_count;
 	functions fun;
 };
 

@@ -17,10 +17,9 @@
 
 #include "ploter.h"
 #include "gtest.h"
-
 #include <cmath>
-#include <iostream>
 #include <sstream>
+#include <iostream>
 #include <string>
 #include <cairomm/context.h>
 #include <cairomm/matrix.h>
@@ -28,25 +27,21 @@
 
 using namespace std;
 
-std::vector<Glib::ustring> Census_Plot::unit_vector;
-
 Glib::ustring Census_Plot::to_precision(double num, int n) {
-    if(num == 0)
-      return "0";
+	if(num == 0)
+		return "0";
 
-    double d = std::ceil(std::log10(num < 0 ? -num : num));
-    int power = n - (int)d;
-    double magnitude = std::pow(10., power);
-    long shifted = ::round(num*magnitude);
+	double d = std::ceil(std::log10(num < 0 ? -num : num));
+	int power = n - (int)d;
+	double magnitude = std::pow(10., power);
+	long shifted = ::round(num*magnitude);
 
-    std::ostringstream oss;
-    oss << shifted/magnitude;
-    return oss.str();
+	std::ostringstream oss;
+	oss << shifted/magnitude;
+	return oss.str();
 }
 
 Census_Plot::Census_Plot(){
-	unit_vector = fun.read("./name-store/unit_names.txt");
-
 }
 
 bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
@@ -66,6 +61,8 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	int colour_pos = rand() % num_colours + 1;
 	int colour_pos_const = colour_pos;
 	int colour_pos_label;
+	bool median_exists = false;
+	double median;
 
 	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
 	int n_lines = stat_vector.size()/3;
@@ -86,6 +83,19 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			int larger = 0;
 			double min = values_vector.at(0);
 			double max = values_vector.at(0);
+			int point_ns = stoi(stat_vector.at(2));
+			if((n_lines == 1)&&(stat_vector.at(1)=="Census Data")){
+				vector<Glib::ustring> census = fun.read("./nations-store/census_medians.txt");
+				if(point_ns>9)
+					point_ns = point_ns + 17;
+				Glib::ustring point = census.at(point_ns);
+				if(point!=""){
+					median_exists = true;
+					median = std::stod(point);
+					min = std::stod(point);
+					max = std::stod(point);
+				}
+			}
 			for(int i=0; i<split*n_lines; i++){
 				if(values_vector.at(i)>max)
 					max = values_vector.at(i);
@@ -178,6 +188,26 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				}
 				cr->stroke();
 			}
+			if(median_exists){
+				cr->set_source_rgba(red_colour[colour_pos]/512.0, green_colour[colour_pos]/512.0, blue_colour[colour_pos]/512.0, 1);
+				if(min>=0){
+					cr->move_to(1.5*xs, height - ys - (median * (height - 2*ys) / max) +0.5);
+					cr->line_to(1.5*xs +((split-1)*step_width), height -ys - (median * (height - 2*ys) / max) +0.5);
+				}
+				else if(max<=0){
+					cr->move_to(1.5*xs, ys + (median * (height - 2*ys) / min));
+					cr->line_to(1.5*xs +((split-1)*step_width), ys + (median * (height - 2*ys) / min));
+				}
+				else if(larger == 1){
+					cr->move_to(1.5*xs, height/2 - (median * (height - 2*ys) / (2*max)) +0.5);
+					cr->line_to(1.5*xs +((split-1)*step_width), height/2 - (median * (height - 2*ys) / (2*max)) +0.5);
+				}
+				else{
+					cr->move_to(1.5*xs, height/2 + (median * (height - 2*ys) / (2*min)));
+					cr->line_to(1.5*xs +((split-1)*step_width), height/2 + (median * (height - 2*ys) / max) +0.5);
+				}
+				cr->stroke();
+			}
 			double width_end = 1.5*xs +((split-1)*step_width) + 4;
 			for(int k=0; k<n_lines; k++){
 				colour_pos_label = colour_pos_const + k;
@@ -196,6 +226,21 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 					cr->move_to(width_end, height/2 - (values_vector.at((k*split)+split-1) * (height - 2*ys) / (2*max)) +0.5 - (text_height/2));
 				else
 					cr->move_to(width_end, height/2 + (values_vector.at((k*split)+split-1) * (height - 2*ys) / (2*min)) - (text_height/2));
+				name_label->show_in_cairo_context(cr);
+				cr->stroke();
+			}
+			if(median_exists){
+				cr->set_source_rgba(red_colour[colour_pos]/512.0, green_colour[colour_pos]/512.0, blue_colour[colour_pos]/512.0, 1);
+				name_label = create_pango_layout("World Median");
+				name_label->get_pixel_size(text_width, text_height);
+				if(min>=0)
+					cr->move_to(width_end, height -ys - (median * (height - 2*ys) / max) +0.5 - (text_height/2));
+				else if(max<=0)
+					cr->move_to(width_end, ys + (median * (height - 2*ys) / min) - (text_height/2));
+				else if(larger==1)
+					cr->move_to(width_end, height/2 - (median * (height - 2*ys) / (2*max)) +0.5 - (text_height/2));
+				else
+					cr->move_to(width_end, height/2 + (median * (height - 2*ys) / (2*min)) - (text_height/2));
 				name_label->show_in_cairo_context(cr);
 				cr->stroke();
 			}

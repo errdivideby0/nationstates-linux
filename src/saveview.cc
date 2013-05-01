@@ -30,12 +30,12 @@ Save_View::Save_View(){
 	set_model(save_model);
 	append_column("Save Name", save_columns.stat_save);
 
-	Gtk::MenuItem*  item = Gtk::manage(new Gtk::MenuItem("Compare to B (A)", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_to_a));
+	Gtk::MenuItem* item = Gtk::manage(new Gtk::MenuItem("Load", true));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::load));
 	save_menu.append(*item);
 
-	item = Gtk::manage(new Gtk::MenuItem("Load (B)", true));
-	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::save_menu_to_b));
+	item = Gtk::manage(new Gtk::MenuItem("Compare", true));
+	item->signal_activate().connect(sigc::mem_fun(*this, &Save_View::compare));
 	save_menu.append(*item);
 
 	item = Gtk::manage(new Gtk::MenuItem("Rename", true));
@@ -59,7 +59,7 @@ bool Save_View::on_button_press_event(GdkEventButton* event){
 	return_value = TreeView::on_button_press_event(event);
 
 	if(event->type == GDK_2BUTTON_PRESS)
-		save_menu_to_a();
+		compare();
 	else if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 		save_menu.popup(event->button, event->time);
 
@@ -89,7 +89,7 @@ void Save_View::refresh_saves(){
 	}
 }
 
-void Save_View::save_menu_to_b(){
+void Save_View::load(){
 	gTest::instance().load_main(selected_save, Nation_View::instance().selected_nation, 0);
 }
 
@@ -104,6 +104,33 @@ Glib::ustring Save_View::get_selected_save(){
 
 void Save_View::save_menu_rename(Glib::ustring newname){
 	vector<Glib::ustring> datelist = fun.read("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt");
+
+	//// Check to see if filename already exists. If it does, rename to (1), if that exists, (2), if....
+	bool unique = false;
+	int count = 1;
+	while(unique == false){
+		for(int i=0; i<datelist.size()-1; i++){
+			if(datelist.at(i)==(newname+".csv")){
+				if(count>1)
+					newname = newname.substr(0, newname.find("(")-1);
+				newname = newname + " ("+to_string(count)+")";
+				count++;
+				break;
+			}
+			if(i==(datelist.size()-2)){
+				if(datelist.at(i+1)!=(newname+".csv"))
+					unique = true;
+				else{
+					if(count>1)
+						newname = newname.substr(0, newname.find("(")-1);
+					newname = newname + " ("+to_string(count)+")";
+					count++;
+				}
+			}
+		}
+	}
+
+	//// Find the old name in the loaded save list vector, replace it with the new, and use the new vector to save back to the datelog
 	for(int i=0; i<datelist.size(); i++){
 		if(selected_save == datelist.at(i)){
 			datelist.at(i) = newname+".csv";
@@ -111,7 +138,6 @@ void Save_View::save_menu_rename(Glib::ustring newname){
 			break;
 		}
 	}
-
 	ofstream savedate;
 	savedate.open(fun.strchar("./nations-store/"+Nation_View::instance().selected_nation+"/datelog.txt"));
 	for(int i=0; i<datelist.size(); i++)
@@ -139,6 +165,6 @@ bool Save_View::on_key_press_event(GdkEventKey* event){
 	return return_value;
 }
 
-void Save_View::save_menu_to_a(){
+void Save_View::compare(){
 	gTest::instance().compare_to_loaded(selected_save, Nation_View::instance().selected_nation);
 }
