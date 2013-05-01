@@ -19,6 +19,8 @@
 #define GTKMM_GTEST
 
 #include <gtkmm.h>
+#include "preferences.h"
+#include "treeview.h"
 #include "functions.h"
 #include "ploter.h"
 #include "add.h"
@@ -80,6 +82,7 @@ protected:
 	Gtk::Label fullname, events_label, description_label, rights, nation_label, latest_events_label;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Preferences_Window preferences;
 };
 
 #endif

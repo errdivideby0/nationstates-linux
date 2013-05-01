@@ -16,6 +16,7 @@
 */
 
 #include "gtest.h"
+#include "preferences.h"
 #include "saveview.h"
 #include "treeview.h"
 #include "nationview.h"
@@ -421,6 +422,7 @@ void gTest::on_menu_others(){
 }
 
 void gTest::on_menu_pref(){
+	preferences.show();
 }
 
 void gTest::on_menu_help(){
