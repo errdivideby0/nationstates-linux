@@ -311,9 +311,9 @@ void gTest::compare_latest(Glib::ustring nationed){
 	vector<Glib::ustring> previous_dates = fun.read(fun.strchar("./nations-store/"+nationed+"/datelog.txt"));
 	int lines = previous_dates.size();
 	if(lines>1)
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  1);
+		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  "");
 	else
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), 0);
+		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), "");
 }
 
 std::vector<Glib::ustring> gTest::get_stat_vector(){
@@ -326,7 +326,7 @@ std::vector<double> gTest::get_value_vector(){
 
 void gTest::compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation){;
 	if(nation.length()>0)
-		Tree_View::instance().print_data(nation, loaded, selected_nation, selected_save, 0);
+		Tree_View::instance().print_data(nation, loaded, selected_nation, selected_save, "");
 }
 
 void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
@@ -335,7 +335,7 @@ void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation
 	loaded = selected_save;
 
 	if(skip_tree_print==0)
-		Tree_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, 0);
+		Tree_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, "");
 
 	vector<Glib::ustring> basics = 			fun.load_data(nation, loaded, 0);
 	vector<Glib::ustring> census = 			fun.load_data(nation, loaded, 1);
@@ -411,8 +411,7 @@ void gTest::set_notebook_page(int page){
 
 bool gTest::on_search_key(GdkEventKey* event){
 	Glib::ustring search_text = search_entry.get_text();
-	if(search_text.length()>0)
-		Tree_View::instance().print_hide(search_text);
+	Tree_View::instance().print_hide(search_text);
 	return false;
 }
 

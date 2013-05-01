@@ -21,6 +21,7 @@
 #include "functions.h"
 #include "gtest.h"
 #include <fstream>
+#include <string>
 
 std::vector<Glib::ustring> Tree_View::stat_vector;
 
@@ -98,45 +99,67 @@ Glib::ustring Tree_View::get_name_at(int place){
 	return names.at(place);
 }
 
-void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustring> compare, int shift){
+void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustring> compare, int shift, std::string text_string, std::string text_lower){
 	double change_value = 0.0;
+	bool gen_count = false;
 	for( int i=0; i<main_vector.size(); i++){
-		append_stat_row();
-		change_value = fun.strouble(main_vector.at(i)) - fun.strouble(compare.at(i));
-		if(change_value != 0)
-			set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i+shift)+"</b>", "<b>"+main_vector.at(i)+"</b>", "<b>"+compare.at(i)+"</b>");
-		else
-			set_stat_row(i, "", names.at(i+shift), main_vector.at(i), main_vector.at(i));
+		if((names.at(i+shift).find(text_string)!=-1)||(names.at(i+shift).find(text_lower)!=-1)||(text_string=="")){
+			append_stat_row();
+			change_value = fun.strouble(main_vector.at(i)) - fun.strouble(compare.at(i));
+			if(change_value != 0)
+				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>", "<b>"+names.at(i+shift)+"</b>", "<b>"+main_vector.at(i)+"</b>", "<b>"+compare.at(i)+"</b>");
+			else
+				set_stat_row(i, "", names.at(i+shift), main_vector.at(i), main_vector.at(i));
+			gen_count = true;
+		}
 	}
+	if(gen_count == false)
+		TreeModel->erase(category_row);
 }
 
-void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, int print_mode){
+void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, std::string text_string){
 
 	clear_stat_list();
 	double change_value = 0.0;
+	one = main_nation;
+	two = main_save;
+	three = compare_nation;
+	four = compare_save;
+	string text_upper = text_string;
+	string text_lower = text_string;
+	text_upper[0] = toupper(text_upper[0]);
+	text_lower[0] = tolower(text_lower[0]);
 
 	try{
 		vector<Glib::ustring> main_deaths = fun.load_data(main_nation, main_save, 3);
 		vector<Glib::ustring> compare_deaths = fun.load_data(compare_nation, compare_save, 3);
 		append_category_row("Deaths");
+		bool death_count = false;
 		for(int i=0; i<main_deaths.size(); i++){
-			append_stat_row();
-			bool find = false;
-			for(int j=0; j<compare_deaths.size(); j++){
-				if(main_deaths.at(i) == compare_deaths.at(j)){
-					change_value = fun.strouble(main_deaths.at(i+1)) - fun.strouble(compare_deaths.at(j+1));
-					if(change_value != 0)
-						set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+main_deaths.at(i)+"</b>", "<b>"+main_deaths.at(i+1)+"</b>%", "<b>"+compare_deaths.at(j+1)+"</b>%");
-					else
-						set_stat_row(i, "", main_deaths.at(i), main_deaths.at(i+1)+"%", main_deaths.at(i+1)+"%");
-					j = compare_deaths.size()-1;
-					find = true;
+			if((main_deaths.at(i).find(text_upper)!=-1)||(main_deaths.at(i).find(text_lower)!=-1)||(text_upper=="")){
+				append_stat_row();
+				bool find = false;
+				for(int j=0; j<compare_deaths.size(); j++){
+					if(main_deaths.at(i) == compare_deaths.at(j)){
+						change_value = fun.strouble(main_deaths.at(i+1)) - fun.strouble(compare_deaths.at(j+1));
+						if(change_value != 0)
+							set_stat_row(i, "<b>"+fun.doubstr(change_value)+"</b>%", "<b>"+main_deaths.at(i)+"</b>", "<b>"+main_deaths.at(i+1)+"</b>%", "<b>"+compare_deaths.at(j+1)+"</b>%");
+						else
+							set_stat_row(i, "", main_deaths.at(i), main_deaths.at(i+1)+"%", main_deaths.at(i+1)+"%");
+						j = compare_deaths.size()-1;
+						find = true;
+					}
 				}
+				if(find == false)
+					set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
+			death_count = true;
 			}
-			if(find == false)
-				set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
 			i++;
 		}
+		if(death_count == false){
+			TreeModel->erase(category_row);
+		}
+
 	}
 	catch(exception& e){
 		cout<<"error in deaths\n";
@@ -144,23 +167,29 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 	append_category_row("Economy");
 	vector<Glib::ustring> eco_main = fun.load_data(main_nation, main_save, 8);
 	vector<Glib::ustring> eco_compare = fun.load_data(compare_nation, compare_save, 8);
+	bool eco_count = false;
 	for( int i=0; i<eco_main.size(); i++){
-		append_stat_row();
-		change_value = fun.strouble(eco_main.at(i)) - fun.strouble(eco_compare.at(i));
-		if(change_value != 0)
-			set_stat_row(i, "<b>"+fun.doubstr(change_value)+"%</b>", "<b>"+names.at(i+10)+"</b>", "<b>"+eco_main.at(i)+"%</b>", "<b>"+eco_compare.at(i)+"%</b>");
-		else
-			set_stat_row(i, "", names.at(i+10), eco_main.at(i)+"%", eco_main.at(i)+"%");
+		if((names.at(i+10).find(text_upper)!=-1)||(names.at(i+10).find(text_lower)!=-1)||(text_upper=="")){
+			append_stat_row();
+			change_value = fun.strouble(eco_main.at(i)) - fun.strouble(eco_compare.at(i));
+			if(change_value != 0)
+				set_stat_row(i, "<b>"+fun.doubstr(change_value)+"%</b>", "<b>"+names.at(i+10)+"</b>", "<b>"+eco_main.at(i)+"%</b>", "<b>"+eco_compare.at(i)+"%</b>");
+			else
+				set_stat_row(i, "", names.at(i+10), eco_main.at(i)+"%", eco_main.at(i)+"%");
+			eco_count = true;
+		}
 	}
+	if(eco_count == false)
+		TreeModel->erase(category_row);
 
 	append_category_row("Budget");
-	append_all(fun.load_data(main_nation, main_save, 7), fun.load_data(compare_nation, compare_save, 7), 13);
+	append_all(fun.load_data(main_nation, main_save, 7), fun.load_data(compare_nation, compare_save, 7), 13, text_upper, text_lower);
 
 	append_category_row("Census Data");
-	append_all(fun.load_data(main_nation, main_save, 1), fun.load_data(compare_nation, compare_save, 1), 24);
+	append_all(fun.load_data(main_nation, main_save, 1), fun.load_data(compare_nation, compare_save, 1), 24, text_upper, text_lower);
 
 	append_category_row("Manufacturing");
-	append_all(fun.load_data(main_nation, main_save, 2), fun.load_data(compare_nation, compare_save, 2), 76);
+	append_all(fun.load_data(main_nation, main_save, 2), fun.load_data(compare_nation, compare_save, 2), 76, text_upper, text_lower);
 
 	expand_stat_list();
 	columns_autosize();
@@ -231,5 +260,5 @@ std::vector<Glib::ustring> Tree_View::get_selected_stat(){
 }
 
 void Tree_View::print_hide(Glib::ustring search_text){
-	cout<<search_text<<"\n";
+	print_data(one, two, three, four, search_text);
 }
