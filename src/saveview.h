@@ -47,8 +47,8 @@ protected:
 	virtual bool on_button_press_event(GdkEventButton *ev);
 	virtual bool on_key_press_event(GdkEventKey *ev);
 
-	void save_menu_to_a();
-	void save_menu_to_b();
+	void compare();
+	void load();
 	void save_menu_delete();
 	void show_rename_popup();
 	void on_save_changed();

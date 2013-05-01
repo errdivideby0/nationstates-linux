@@ -119,6 +119,38 @@ void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustri
 
 void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, std::string text_string){
 
+	//set column titles
+	vector<Glib::ustring> main_saves = fun.read("./nations-store/"+main_nation+"/datelog.txt");
+	Glib::ustring main_position;
+	for(int i=0; i<main_saves.size(); i++){
+		if(main_saves.at(i)==main_save){
+			main_position = to_string(main_saves.size() - i - 1);
+			break;
+		}
+	}
+	vector<Glib::ustring> com_saves = fun.read("./nations-store/"+compare_nation+"/datelog.txt");
+	Glib::ustring compare_position;
+	for(int i=0; i<com_saves.size(); i++){
+		if(com_saves.at(i)==compare_save){
+			compare_position = to_string(com_saves.size() - i - 1);
+			break;
+		}
+	}
+	remove_all_columns();
+	Gtk::CellRendererText *render = Gtk::manage(new Gtk::CellRendererText());
+	Gtk::TreeView::Column *viewcol = Gtk::manage( new Gtk::TreeView::Column (" Nation Statistic", *render));
+	viewcol->add_attribute (render->property_markup(), stat_columns.stat_name);
+	append_column (*viewcol);
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (compare_nation.substr(0,3)+"-"+compare_position, *render));
+	viewcol->add_attribute (render->property_markup(), stat_columns.stat_value2);
+	append_column (*viewcol);
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (main_nation.substr(0,3)+"-"+main_position, *render));
+	viewcol->add_attribute (render->property_markup(), stat_columns.stat_value);
+	append_column (*viewcol);
+	viewcol = Gtk::manage( new Gtk::TreeView::Column (" +/-", *render));
+	viewcol->add_attribute (render->property_markup(), stat_columns.stat_update);
+	append_column (*viewcol);
+
 	clear_stat_list();
 	double change_value = 0.0;
 	one = main_nation;
@@ -152,13 +184,9 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 						find = true;
 					}
 				}
-				if(find == false){
-					if(main_deaths.at(i+1)!=0)
-						set_stat_row(i, "<b>"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
-					//else
-						//set_stat_row(i, "<b>-"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
+				if(find == false)
+					set_stat_row(i, "<b>"+main_deaths.at(i+1)+"</b>%", main_deaths.at(i), main_deaths.at(i+1)+"%", "0%");
 
-				}
 			death_count = true;
 			}
 			i++;
