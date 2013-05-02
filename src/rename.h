@@ -20,12 +20,12 @@
 
 #include <gtkmm.h>
 
-class popup : public Gtk::Window{
+class rename_popup : public Gtk::Window{
 private:
 
 public:
 
-	popup();
+	rename_popup();
 	void set_width();
 
 protected:

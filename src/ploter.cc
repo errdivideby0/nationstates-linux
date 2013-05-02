@@ -16,7 +16,7 @@
 */
 
 #include "ploter.h"
-#include "gtest.h"
+#include "nationstates.h"
 #include <cmath>
 #include <sstream>
 #include <iostream>
@@ -64,7 +64,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	bool median_exists = false;
 	double median;
 
-	std::vector<Glib::ustring> stat_vector = gTest::instance().get_stat_vector();
+	std::vector<Glib::ustring> stat_vector = Nationstates::instance().get_stat_vector();
 	int n_lines = stat_vector.size()/3;
 	if(stat_vector.size()>1){
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
@@ -76,7 +76,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 		Glib::RefPtr<Pango::Layout> name_label;
 
-		std::vector<double> values_vector = gTest::instance().get_value_vector();
+		std::vector<double> values_vector = Nationstates::instance().get_value_vector();
 		if(values_vector.size()>1){
 			double split = (values_vector.size()+0.00)/n_lines;
 			double step_width = ((width-(5.5*xs))/(split-1));

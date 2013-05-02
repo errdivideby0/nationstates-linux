@@ -17,17 +17,17 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "treeview.h"
+#include "statview.h"
 #include "functions.h"
-#include "gtest.h"
+#include "nationstates.h"
 #include <fstream>
 #include <string>
 
-std::vector<Glib::ustring> Tree_View::stat_vector;
+std::vector<Glib::ustring> Stat_View::stat_vector;
 
 using namespace std;
 
-Tree_View::Tree_View(){
+Stat_View::Stat_View(){
 
 	TreeModel = Gtk::TreeStore::create(stat_columns);
 	set_model(TreeModel);
@@ -49,8 +49,8 @@ Tree_View::Tree_View(){
 	append_column (*viewcol);
 	names.clear();
 
-	signal_button_press_event().connect(sigc::mem_fun(*this, &Tree_View::on_button_press_event));
-	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Tree_View::on_selection_changed));
+	signal_button_press_event().connect(sigc::mem_fun(*this, &Stat_View::on_button_press_event));
+	get_selection()->signal_changed().connect( sigc::mem_fun(*this, &Stat_View::on_selection_changed));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
 	ifstream reader;
@@ -62,34 +62,34 @@ Tree_View::Tree_View(){
 	reader.close();
 }
 
-bool Tree_View::on_button_press_event(GdkEventButton* event){
+bool Stat_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
 	if((event->type == GDK_2BUTTON_PRESS)&&(first_run))
-		gTest::instance().set_notebook_page(3);
+		Nationstates::instance().set_notebook_page(3);
 
 	return return_value;
 }
 
-void Tree_View::clear_stat_list(){
+void Stat_View::clear_stat_list(){
 	TreeModel->clear();
 }
 
-void Tree_View::expand_stat_list(){
+void Stat_View::expand_stat_list(){
 	expand_all();
 }
 
-void Tree_View::append_category_row(Glib::ustring category_name){
+void Stat_View::append_category_row(Glib::ustring category_name){
 	category_row = *(TreeModel->append());
 	category_row[stat_columns.stat_name] = category_name;
 }
 
-void Tree_View::append_stat_row(){
+void Stat_View::append_stat_row(){
 	stat_row = *(TreeModel->append(category_row.children()));
 }
 
-void Tree_View::set_stat_row(int index, Glib::ustring text1, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4){
+void Stat_View::set_stat_row(int index, Glib::ustring text1, Glib::ustring text2, Glib::ustring text3, Glib::ustring text4){
 	stat_row[stat_columns.index_number] = index;
 	stat_row[stat_columns.stat_update] = text1;
 	stat_row[stat_columns.stat_name] = text2;
@@ -97,11 +97,11 @@ void Tree_View::set_stat_row(int index, Glib::ustring text1, Glib::ustring text2
 	stat_row[stat_columns.stat_value2] = text4;
 }
 
-Glib::ustring Tree_View::get_name_at(int place){
+Glib::ustring Stat_View::get_name_at(int place){
 	return names.at(place);
 }
 
-void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustring> compare, int shift, std::string text_string, std::string text_lower){
+void Stat_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustring> compare, int shift, std::string text_string, std::string text_lower){
 	double change_value = 0.0;
 	bool gen_count = false;
 	for( int i=0; i<main_vector.size(); i++){
@@ -119,7 +119,7 @@ void Tree_View::append_all(vector<Glib::ustring> main_vector, vector<Glib::ustri
 		TreeModel->erase(category_row);
 }
 
-void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, std::string text_string){
+void Stat_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, Glib::ustring compare_nation, Glib::ustring compare_save, std::string text_string){
 
 	//set column titles
 	vector<Glib::ustring> main_saves = fun.read("./nations-store/"+main_nation+"/datelog.txt");
@@ -232,7 +232,7 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 	first_run = true;
 }
 
-void Tree_View::print_blank(Glib::ustring text_string){
+void Stat_View::print_blank(Glib::ustring text_string){
 
 	clear_stat_list();
 	string text_upper = text_string;
@@ -264,7 +264,7 @@ void Tree_View::print_blank(Glib::ustring text_string){
 	columns_autosize();
 }
 
-void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
+void Stat_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
 	if(iter){
 		Gtk::TreeModel::Row selected_row = *iter;
 		if((selected_row->parent())&&(to_string(selected_row[stat_columns.index_number]).length()>0)){
@@ -279,18 +279,18 @@ void Tree_View::selected_row_callback(const Gtk::TreeModel::iterator& iter){
 	}
 }
 
-void Tree_View::on_selection_changed(){
+void Stat_View::on_selection_changed(){
 	//if(get_selection()->count_selected_rows()<=1)
 		//srand(time(NULL));
 	stat_vector.clear();
-	get_selection()->selected_foreach_iter(sigc::mem_fun(*this, &Tree_View::selected_row_callback));
-	gTest::instance().force_notebook_refresh(3);
+	get_selection()->selected_foreach_iter(sigc::mem_fun(*this, &Stat_View::selected_row_callback));
+	Nationstates::instance().force_notebook_refresh(3);
 }
 
-std::vector<Glib::ustring> Tree_View::get_selected_stat(){
+std::vector<Glib::ustring> Stat_View::get_selected_stat(){
 	return stat_vector;
 }
 
-void Tree_View::print_hide(Glib::ustring search_text){
+void Stat_View::print_hide(Glib::ustring search_text){
 	print_data(one, two, three, four, search_text);
 }

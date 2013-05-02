@@ -15,14 +15,14 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "popup.h"
+#include "rename.h"
 #include "saveview.h"
 #include <cstdlib>
 #include <gtkmm.h>
 
 using namespace std;
 
-popup::popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
+rename_popup::rename_popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), cancel_button("Cancel"){
 
 	set_border_width(6);
 
@@ -39,29 +39,29 @@ popup::popup(): main_box(Gtk::ORIENTATION_VERTICAL), confirm_button("Confirm"), 
 	bottom_box.set_border_width(5);
 	bottom_box.set_layout(Gtk::BUTTONBOX_END);
 
-	cancel_button.signal_clicked().connect(sigc::mem_fun(*this, &popup::on_button_cancel));
-	confirm_button.signal_clicked().connect(sigc::mem_fun(*this, &popup::on_button_confirm));
-	signal_show().connect(sigc::mem_fun(*this, &popup::set_rename_text));
-	rename_input.signal_activate().connect(sigc::mem_fun(*this, &popup::on_button_confirm));
+	cancel_button.signal_clicked().connect(sigc::mem_fun(*this, &rename_popup::on_button_cancel));
+	confirm_button.signal_clicked().connect(sigc::mem_fun(*this, &rename_popup::on_button_confirm));
+	signal_show().connect(sigc::mem_fun(*this, &rename_popup::set_rename_text));
+	rename_input.signal_activate().connect(sigc::mem_fun(*this, &rename_popup::on_button_confirm));
 	show_all_children();
 }
 
-void popup::on_button_cancel(){
+void rename_popup::on_button_cancel(){
 	hide();
 }
 
-void popup::on_button_confirm(){
+void rename_popup::on_button_confirm(){
 	hide();
 	Save_View::instance().save_menu_rename(rename_input.get_text());
 }
 
-void popup::set_rename_text(){
+void rename_popup::set_rename_text(){
 	string name = Save_View::instance().get_selected_save();
 	rename_input.set_text(name);
 	rename_input.select_region(0, name.length());
 }
 
-void popup::set_width(){
+void rename_popup::set_width(){
 	string name = Save_View::instance().get_selected_save();
 	int text_width, text_height;
 	create_pango_layout(name)->get_pixel_size(text_width, text_height);

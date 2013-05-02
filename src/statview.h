@@ -21,17 +21,17 @@
 #include <gtkmm.h>
 #include "functions.h"
 
-class Tree_View : public Gtk::TreeView{
+class Stat_View : public Gtk::TreeView{
 
 private:
-	Tree_View();
-	Tree_View(const Tree_View&);
-	Tree_View& operator=(const Tree_View&);
+	Stat_View();
+	Stat_View(const Stat_View&);
+	Stat_View& operator=(const Stat_View&);
 
 public:
 
-	static Tree_View& instance(){
-		static Tree_View singleton;
+	static Stat_View& instance(){
+		static Stat_View singleton;
 		return singleton;
 	}
 

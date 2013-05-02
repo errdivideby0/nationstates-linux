@@ -25,7 +25,7 @@
 #include <curl/curl.h>
 #include <libxml++/libxml++.h>
 #include "functions.h"
-#include "gtest.h"
+#include "nationstates.h"
 
 using namespace std;
 

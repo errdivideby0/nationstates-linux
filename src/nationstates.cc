@@ -15,11 +15,12 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gtest.h"
+#include "nationstates.h"
 #include "preferences.h"
 #include "saveview.h"
-#include "treeview.h"
+#include "statview.h"
 #include "nationview.h"
+#include "statview.h"
 #include <cstdlib>
 #include <unistd.h>
 #include <iostream>
@@ -28,12 +29,12 @@
 #include <gtkmm.h>
 #include <string>
 
-std::vector<Glib::ustring> gTest::stat_vector;
-std::vector<double> gTest::values_vector;
+std::vector<Glib::ustring> Nationstates::stat_vector;
+std::vector<double> Nationstates::values_vector;
 
 using namespace std;
 
-gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
+Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	set_position(Gtk::WIN_POS_CENTER);
 	set_events(Gdk::BUTTON_RELEASE_MASK);
@@ -48,23 +49,23 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	action_group->add(Gtk::Action::create("File", "File"));
 
-	action_group->add(Gtk::Action::create("AddNation", "Add Nation"), Gtk::AccelKey("<control>N"), sigc::mem_fun(*this, &gTest::on_add_nation));
-	action_group->add(Gtk::Action::create("Quit", Gtk::Stock::QUIT), sigc::mem_fun(*this, &gTest::on_menu_file_quit));
+	action_group->add(Gtk::Action::create("AddNation", "Add Nation"), Gtk::AccelKey("<control>N"), sigc::mem_fun(*this, &Nationstates::menu_add_nation));
+	action_group->add(Gtk::Action::create("Quit", Gtk::Stock::QUIT), sigc::mem_fun(*this, &Nationstates::menu_quit));
 
 	action_group->add(Gtk::Action::create("Edit", "Edit"));
-	action_group->add(Gtk::Action::create("Copy", Gtk::Stock::COPY), sigc::mem_fun(*this, &gTest::on_menu_others));
-	action_group->add(Gtk::Action::create("Paste", Gtk::Stock::PASTE), sigc::mem_fun(*this, &gTest::on_menu_others));
-	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &gTest::on_menu_pref));
+	action_group->add(Gtk::Action::create("Copy", Gtk::Stock::COPY), sigc::mem_fun(*this, &Nationstates::menu_empty));
+	action_group->add(Gtk::Action::create("Paste", Gtk::Stock::PASTE), sigc::mem_fun(*this, &Nationstates::menu_empty));
+	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &Nationstates::menu_preferences));
 
 	action_group->add(Gtk::Action::create("View", "View"));
 	action_group->add(Gtk::Action::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &gTest::view_info_box_hide));
 
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
-	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &gTest::fetch_all));
+	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &Nationstates::menu_update_all));
 
 	action_group->add(Gtk::Action::create("MenuHelp", "Help"));
-	action_group->add(Gtk::Action::create("Help", "Help"), Gtk::AccelKey("F1"), sigc::mem_fun(*this, &gTest::on_menu_help));
-	action_group->add(Gtk::Action::create("About", "About"), sigc::mem_fun(*this, &gTest::on_menu_about));
+	action_group->add(Gtk::Action::create("Help", "Help"), Gtk::AccelKey("F1"), sigc::mem_fun(*this, &Nationstates::menu_help));
+	action_group->add(Gtk::Action::create("About", "About"), sigc::mem_fun(*this, &Nationstates::menu_about));
 
 	ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
@@ -110,14 +111,14 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	main_box.pack_start(left_box);
 		left_box.pack_start(scrolled_stats);
-				scrolled_stats.add(Tree_View::instance());
+				scrolled_stats.add(Stat_View::instance());
 				scrolled_stats.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-				scrolled_stats.set_size_request(400, 348);
+				scrolled_stats.set_size_request(420, 348);
 		left_box.pack_start(search_entry, Gtk::PACK_SHRINK);
 	main_box.pack_start(right_box);
-		right_box.set_size_request(600, 500);
+		right_box.set_size_request(580, 500);
 		right_box.pack_start(v_header, Gtk::PACK_SHRINK);
-			v_header.set_size_request(600, 87);
+			v_header.set_size_request(580, 87);
 			v_header.pack_start(header_upper_box);
 				header_upper_box.set_border_width(2);
 				header_upper_box.pack_start(nation_label);
@@ -145,16 +146,17 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 					save_box.pack_start(scrolled_nation);
 						scrolled_nation.add(Nation_View::instance());
 						scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-						scrolled_nation.set_size_request(200,0);
+						scrolled_nation.set_size_request(170,0);
 					save_box.pack_start(scrolled_save);
 						scrolled_save.add(Save_View::instance());
 						scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-						scrolled_save.set_size_request(400, 0);
+						scrolled_save.set_size_request(430, 0);
 				save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
-					latest_events_box.set_size_request(600, 120);
+					latest_events_box.set_size_request(580, 120);
 					latest_events_box.pack_start(events_preview);
 						events_preview.set_wrap_mode(Gtk::WRAP_WORD);
 						events_preview.set_border_width(8);
+						events_preview.set_editable(false);
 			notebook.append_page(description_box, "Description");
 				description_box.set_valign(Gtk::ALIGN_START);
 				description_box.set_halign(Gtk::ALIGN_START);
@@ -175,45 +177,44 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 
 	set_title("NationStates");
 
-	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &gTest::on_page_switch));
-	preferences.signal_hide().connect(sigc::mem_fun(*this, &gTest::load_preferences));
-	search_entry.signal_key_release_event().connect(sigc::mem_fun(*this, &gTest::on_search_key));
-	Tree_View::instance().signal_key_release_event().connect(sigc::mem_fun(*this, &gTest::on_tree_key));
+	//// SIGNAL HANDLERS ////
+	notebook.signal_switch_page().connect(sigc::mem_fun(*this, &Nationstates::on_page_switch));
+	preferences.signal_hide().connect(sigc::mem_fun(*this, &Nationstates::load_preferences));
+	search_entry.signal_key_release_event().connect(sigc::mem_fun(*this, &Nationstates::on_search_key));
+	Stat_View::instance().signal_key_release_event().connect(sigc::mem_fun(*this, &Nationstates::on_tree_key));
 
-
-	// possibly just disable
-	Tree_View::instance().set_enable_search(false);
-
-	Tree_View::instance().print_blank("");
+	//// CALLS TO OTHER CLASSES ////
+	Stat_View::instance().set_enable_search(false);
+	Stat_View::instance().print_blank("");
 	Nation_View::instance().refresh_nations();
 
 	show_all_children();
 	load_preferences();
 }
 
-void gTest::on_add_nation(){
+void Nationstates::menu_add_nation(){
 	adder.show();
 }
 
-void gTest::new_nation(Glib::ustring nationer){
+void Nationstates::new_nation(Glib::ustring nationer){
 	nation = fun.lowercase(nationer);
 	if(nation.length() > 0){
 		int nation_size = fun.get_nation_data(nation);
 		if(nation_size>69){
-			fetch(nation);
+			update_nation(nation);
 			Nation_View::instance().refresh_nations();
 		}
 	}
 }
 
-void gTest::on_page_switch(Gtk::Widget*, guint page_num){
+void Nationstates::on_page_switch(Gtk::Widget*, guint page_num){
 	std::vector<Glib::ustring> previous_dates;
 	std::vector< std::vector<Glib::ustring> > temp_vectors;
 
 	if((page_num == 3)&&(nation.length()>0)){
 		stat_vector.clear();
 		values_vector.clear();
-		stat_vector = Tree_View::instance().get_selected_stat();
+		stat_vector = Stat_View::instance().get_selected_stat();
 
 		if(stat_vector.size()>1){
 			for(int j=0; j<stat_vector.size()/3; j++){
@@ -288,7 +289,7 @@ void gTest::on_page_switch(Gtk::Widget*, guint page_num){
 	}
 }
 
-void gTest::update_event_preview(Glib::ustring selected_save){
+void Nationstates::update_event_preview(Glib::ustring selected_save){
 	try{
 		if(selected_save.length()>0){
 			Glib::ustring selected_nation = 		Nation_View::instance().get_selected_nation();
@@ -306,56 +307,57 @@ void gTest::update_event_preview(Glib::ustring selected_save){
 
 			for(int i=0; i<3; i++){
 				iter_at = events_buffer->end();
-				events_buffer->insert_with_tags(iter_at, "\n"+events_times.at(0), tags);
+				events_buffer->insert_with_tags(iter_at, "\n"+events_times.at(i), tags);
 				iter_at = events_buffer->end();
 				events_buffer->insert(iter_at, " - "+events.at(i));
 			}
 			events_preview.set_buffer(events_buffer);
+
 		}
 	}catch(exception e){
 		//Save_View::instance().select_default();
 	}
 }
 
-void gTest::fetch_all(){
+void Nationstates::menu_update_all(){
 	std::vector<Glib::ustring> nation_list = fun.read("./name-store/nation_list.txt");
 	if(nation_list.size()>0){
 		for( int i=0; i<nation_list.size(); i++)
-			fetch(nation_list.at(i));
+			update_nation(nation_list.at(i));
 	}
 }
 
-void gTest::compare_latest(Glib::ustring nationed){
+void Nationstates::load_latest(Glib::ustring nationed){
 	load_main(fun.read("./nations-store/"+nationed+"/datelog.txt").back(), nationed, 1);
 
 	vector<Glib::ustring> previous_dates = fun.read(fun.strchar("./nations-store/"+nationed+"/datelog.txt"));
 	int lines = previous_dates.size();
 	if(lines>1)
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  search_entry.get_text());
+		Stat_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.at(lines-2),  search_entry.get_text());
 	else
-		Tree_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), search_entry.get_text());
+		Stat_View::instance().print_data(nationed, previous_dates.back(), nationed, previous_dates.back(), search_entry.get_text());
 }
 
-std::vector<Glib::ustring> gTest::get_stat_vector(){
+std::vector<Glib::ustring> Nationstates::get_stat_vector(){
 	return stat_vector;
 }
 
-std::vector<double> gTest::get_value_vector(){
+std::vector<double> Nationstates::get_value_vector(){
 	return values_vector;
 }
 
-void gTest::compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation){;
+void Nationstates::load_compare(Glib::ustring selected_save, Glib::ustring selected_nation){;
 	if(nation.length()>0)
-		Tree_View::instance().print_data(nation, loaded, selected_nation, selected_save, search_entry.get_text());
+		Stat_View::instance().print_data(nation, loaded, selected_nation, selected_save, search_entry.get_text());
 }
 
-void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
+void Nationstates::load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print){
 
 	nation = selected_nation;
 	loaded = selected_save;
 
 	if(skip_tree_print==0){
-		Tree_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, search_entry.get_text());
+		Stat_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, search_entry.get_text());
 	}
 
 	vector<Glib::ustring> basics = 			fun.load_data(nation, loaded, 0);
@@ -388,7 +390,7 @@ void gTest::load_main(Glib::ustring selected_save, Glib::ustring selected_nation
 	flag.set("./nations-store/"+nation+"/flag.jpg");
 }
 
-void gTest::delete_nation(Glib::ustring nationer){
+void Nationstates::delete_nation(Glib::ustring nationer){
 	vector<Glib::ustring> delete_vector = fun.read("./name-store/nation_list.txt");
 	vector<Glib::ustring> deleter = fun.read("./nations-store/"+nationer+"/datelog.txt");
 	ofstream savenation;
@@ -409,14 +411,14 @@ void gTest::delete_nation(Glib::ustring nationer){
 	Nation_View::instance().refresh_nations();
 }
 
-void gTest::fetch(Glib::ustring nationer){
+void Nationstates::update_nation(Glib::ustring nationer){
 	Glib::ustring currenter_time = fun.get_time(0, false)+"-"+fun.get_time(1, false)+".csv";
 	fun.get_nation_data(nationer);
 	fun.save_data(currenter_time, nationer);
 	Nation_View::instance().refresh_nations();
 }
 
-void gTest::force_notebook_refresh(int page){
+void Nationstates::force_notebook_refresh(int page){
 	if(notebook.get_current_page() == page){
 		if(page>2)
 			notebook.set_current_page(page-1);
@@ -426,11 +428,11 @@ void gTest::force_notebook_refresh(int page){
 	}
 }
 
-void gTest::set_notebook_page(int page){
+void Nationstates::set_notebook_page(int page){
 	notebook.set_current_page(page);
 }
 
-bool gTest::on_tree_key(GdkEventKey* event){
+bool Nationstates::on_tree_key(GdkEventKey* event){
 	vector<Glib::ustring> st_vect {" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "-", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 	for(int i=0; i<st_vect.size(); i++){
 		if(event->string==st_vect.at(i)){
@@ -441,39 +443,35 @@ bool gTest::on_tree_key(GdkEventKey* event){
 	}
 }
 
-bool gTest::on_search_key(GdkEventKey* event){
+bool Nationstates::on_search_key(GdkEventKey* event){
 	if(nation!="")
-		Tree_View::instance().print_hide(search_entry.get_text());
+		Stat_View::instance().print_hide(search_entry.get_text());
 	else
-		Tree_View::instance().print_blank(search_entry.get_text());
+		Stat_View::instance().print_blank(search_entry.get_text());
 	set_focus(search_entry);
 	search_entry.set_position(search_entry.get_text().length());
 	return false;
 }
 
-void gTest::on_menu_file_quit(){
+void Nationstates::menu_quit(){
 	hide();
 }
 
-void gTest::on_menu_others(){
+void Nationstates::menu_empty(){
 }
 
-void gTest::on_menu_pref(){
+void Nationstates::menu_preferences(){
 	preferences.show();
 }
 
-void gTest::on_menu_help(){
+void Nationstates::menu_help(){
 }
 
-void gTest::on_menu_about(){
+void Nationstates::menu_about(){
 	about.show();
 }
 
-void gTest::view(){
-
-}
-
-void gTest::view_info_box_hide(){
+void Nationstates::view_info_box_hide(){
 	/*vector<Glib::ustring> view_settings = fun.read("./settings.conf");
 	if (view_settings.size() > 0){
 		if(view_settings.at(0).find("true") != -1)
@@ -483,7 +481,7 @@ void gTest::view_info_box_hide(){
 	}*/
 }
 
-void gTest::load_preferences(){
+void Nationstates::load_preferences(){
 	vector<Glib::ustring> pref_settings = fun.read("./settings.conf");
 	if (pref_settings.size() > 0){
 		if (pref_settings.at(0).find("true") != -1)

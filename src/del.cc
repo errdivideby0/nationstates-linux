@@ -15,7 +15,7 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gtest.h"
+#include "nationstates.h"
 #include "del.h"
 #include <gtkmm.h>
 #include <cstdlib>
@@ -55,7 +55,7 @@ void Delete_Popup::on_button_cancel(){
 
 void Delete_Popup::on_button_delete(){
 	hide();
-	gTest::instance().delete_nation(select_nat);
+	Nationstates::instance().delete_nation(select_nat);
 }
 
 void Delete_Popup::saved(Glib::ustring selected_nation){

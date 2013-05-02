@@ -21,34 +21,37 @@
 #include <gtkmm.h>
 #include "preferences.h"
 #include "about.h"
-#include "treeview.h"
 #include "functions.h"
 #include "ploter.h"
 #include "add.h"
 
-class gTest : public Gtk::Window{
+class Nationstates : public Gtk::Window{
 private:
 
-	gTest();
-	gTest(const gTest&);
-	gTest& operator=(const gTest&);
+	Nationstates();
+	Nationstates(const Nationstates&);
+	Nationstates& operator=(const Nationstates&);
 
 public:
 
-	static gTest& instance(){
-		static gTest singleton;
+	static Nationstates& instance(){
+		static Nationstates singleton;
 		return singleton;
 	}
 
-	void new_nation(Glib::ustring nationer);
-	void set_notebook_page(int page);
-	void compare_to_loaded(Glib::ustring selected_save, Glib::ustring selected_nation);
+	void load_compare(Glib::ustring selected_save, Glib::ustring selected_nation);
 	void load_main(Glib::ustring selected_save, Glib::ustring selected_nation, int skip_tree_print);
+	void load_latest(Glib::ustring nationed);
+
 	void update_event_preview(Glib::ustring selected_save);
+
+	void new_nation(Glib::ustring nationer);
 	void delete_nation(Glib::ustring nationer);
-	void fetch(Glib::ustring nationer);
-	void compare_latest(Glib::ustring nationed);
+	void update_nation(Glib::ustring nationer);
+
 	void force_notebook_refresh(int page);
+	void set_notebook_page(int page);
+
 	static std::vector<Glib::ustring> stat_vector;
 	static std::vector<double> values_vector;
 	std::vector<Glib::ustring> get_stat_vector();
@@ -56,21 +59,20 @@ public:
 
 protected:
 
-	void on_add_nation();
-	void on_menu_pref();
-	void on_menu_help();
-	void on_menu_about();
-	void fetch_all();
-	void on_menu_file_quit();
-	void on_menu_file_new_generic();
-	void on_menu_others();
-	void on_page_switch(Gtk::Widget* page, guint page_num);
+	void menu_add_nation();
+	void menu_preferences();
+	void menu_help();
+	void menu_about();
+	void menu_update_all();
+	void menu_quit();
+	void menu_empty();
 	void load_preferences();
 	void view();
 	void view_info_box_hide();
 
 	std::vector<Glib::ustring> view_settings;
 
+	void on_page_switch(Gtk::Widget* page, guint page_num);
 	virtual bool on_tree_key(GdkEventKey* event);
 	virtual bool on_search_key(GdkEventKey* event);
 
@@ -82,9 +84,6 @@ protected:
 	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook;
-	Census_Plot plotter;
-	functions fun;
-	Add_Popup adder;
 	Gtk::Image flag;
 	Gtk::Label fullname, events_label, description_label, rights, nation_label;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
@@ -92,6 +91,10 @@ protected:
 	Gtk::TextView events_preview;
 	Glib::RefPtr<Gtk::TextBuffer> events_buffer;
 	Glib::RefPtr<Gtk::TextTag> bold_tag;
+
+	Census_Plot plotter;
+	functions fun;
+	Add_Popup adder;
 	Preferences_Window preferences;
 	About_Page about;
 };
