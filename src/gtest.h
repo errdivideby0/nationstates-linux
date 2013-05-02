@@ -82,9 +82,12 @@ protected:
 	functions fun;
 	Add_Popup adder;
 	Gtk::Image flag;
-	Gtk::Label fullname, events_label, description_label, rights, nation_label, latest_events_label;
+	Gtk::Label fullname, events_label, description_label, rights, nation_label;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Gtk::TextView events_preview;
+	Glib::RefPtr<Gtk::TextBuffer> events_buffer;
+	Glib::RefPtr<Gtk::TextTag> bold_tag;
 	Preferences_Window preferences;
 	About_Page about;
 };

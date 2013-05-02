@@ -146,10 +146,9 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 						scrolled_save.set_size_request(400, 0);
 				save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
 					latest_events_box.set_size_request(600, 120);
-					latest_events_box.set_border_width(8);
-					latest_events_box.pack_start(latest_events_label);
-						latest_events_label.set_justify(Gtk::JUSTIFY_LEFT);
-						latest_events_label.set_line_wrap();
+					latest_events_box.pack_start(events_preview);
+						events_preview.set_wrap_mode(Gtk::WRAP_WORD);
+						events_preview.set_border_width(8);
 			notebook.append_page(description_box, "Description");
 				description_box.set_valign(Gtk::ALIGN_START);
 				description_box.set_halign(Gtk::ALIGN_START);
@@ -286,14 +285,26 @@ void gTest::on_page_switch(Gtk::Widget*, guint page_num){
 void gTest::update_event_preview(Glib::ustring selected_save){
 	try{
 		if(selected_save.length()>0){
-			Glib::ustring selected_nation = Nation_View::instance().get_selected_nation();
+			Glib::ustring selected_nation = 		Nation_View::instance().get_selected_nation();
 			vector<Glib::ustring> events_times = 	fun.convert_times(fun.load_data(selected_nation, selected_save, 4), "%b %d, %R");
-			vector<Glib::ustring> events = 				fun.load_data(selected_nation, selected_save, 5);
+			vector<Glib::ustring> events = 			fun.load_data(selected_nation, selected_save, 5);
 
-			Glib::ustring events_text = "•<b>"+events_times.at(0)+"</b> - "+events.at(0);
-			for(int i=1; i<3; i++)
-				events_text = events_text+"\n•<b>"+events_times.at(i)+"</b> - "+events.at(i);
-			latest_events_label.set_markup(events_text);
+			Gtk::TextIter iter_at;
+			events_buffer = Gtk::TextBuffer::create();
+
+			bold_tag = events_buffer->create_tag("bold");
+			bold_tag->set_property("weight", Pango::WEIGHT_BOLD);
+
+			vector< Glib::RefPtr<Gtk::TextTag> > tags;
+			tags.push_back(bold_tag);
+
+			for(int i=0; i<3; i++){
+				iter_at = events_buffer->end();
+				events_buffer->insert_with_tags(iter_at, "\n"+events_times.at(0), tags);
+				iter_at = events_buffer->end();
+				events_buffer->insert(iter_at, " - "+events.at(i));
+			}
+			events_preview.set_buffer(events_buffer);
 		}
 	}catch(exception e){
 		//Save_View::instance().select_default();

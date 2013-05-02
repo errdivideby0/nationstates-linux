@@ -75,7 +75,7 @@ protected:
 	std::vector<Glib::ustring> names;
 	Glib::ustring one, two , three, four;
 	static std::vector<Glib::ustring> stat_vector;
-	int death_count;
+	bool first_run;
 	functions fun;
 };
 
