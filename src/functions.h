@@ -44,7 +44,7 @@ public:
 
 private:
 	std::vector< std::vector<Glib::ustring> > convert_data(std::vector<Glib::ustring> all_data, Glib::ustring nation);
-
+	void save_census_median();
 };
 
 #endif

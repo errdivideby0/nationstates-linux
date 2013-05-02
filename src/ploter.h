@@ -22,8 +22,7 @@
 #include <cairomm/context.h>
 #include "functions.h"
 
-class Census_Plot : public Gtk::DrawingArea
-{
+class Census_Plot : public Gtk::DrawingArea{
 public:
 	Census_Plot();
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
@@ -31,7 +30,6 @@ public:
 protected:
 	functions fun;
 	Glib::ustring to_precision(double num, int n);
-	static std::vector<Glib::ustring> unit_vector;
 };
 
 #endif
