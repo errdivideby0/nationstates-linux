@@ -40,13 +40,13 @@ About_Page::About_Page(): main_box(Gtk::ORIENTATION_VERTICAL), close_button("Clo
 						"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
 						"GNU General Public License for more details.\n");
-	vbox_one.pack_start(label_two);
-	label_two.set_label("http://poloure.github.io/nationstates-linux/");
+	vbox_one.pack_start(link_button);
+	link_button.set_uri("http://poloure.github.io/nationstates-linux/");
+	link_button.set_label("Github Page");
 	main_box.pack_start(bbox_one, Gtk::PACK_SHRINK);
 	bbox_one.set_layout(Gtk::BUTTONBOX_END);
 	bbox_one.pack_start(close_button);
 	bbox_one.set_border_width(5);
-	label_two.signal_button_release_event().connect(sigc::mem_fun(*this, &About_Page::on_link_clicked));
 	close_button.signal_clicked().connect(sigc::mem_fun(*this, &About_Page::on_close_button));
 	show_all_children();
 }
@@ -54,15 +54,3 @@ About_Page::About_Page(): main_box(Gtk::ORIENTATION_VERTICAL), close_button("Clo
 void About_Page::on_close_button(){
 	hide();
 }
-
-bool About_Page::on_link_clicked(GdkEventButton* event){
-	if (event->type== GDK_BUTTON_PRESS){
-		GError *error = NULL;
-		gtk_show_uri(gdk_screen_get_default(), "http://poloure.github.io/nationstates-linux/", gtk_get_current_event_time(), &error);
-		if (error){
-			cout<<"error\n";
-		}
-	}
-	return false;
-}
-

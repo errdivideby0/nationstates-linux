@@ -29,13 +29,13 @@ public:
 	About_Page();
 
 protected:
-	virtual bool on_link_clicked(GdkEventButton* event);
 	void on_close_button();
 	Gtk::Box main_box;
 	Gtk::ButtonBox bbox_one;
 	Gtk::VBox vbox_one;
-	Gtk::Label label_one, label_two;
+	Gtk::Label label_one;
 	Gtk::Button close_button;
+	Gtk::LinkButton link_button;
 
 };
 
