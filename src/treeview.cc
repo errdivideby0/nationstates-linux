@@ -32,6 +32,8 @@ Tree_View::Tree_View(){
 	TreeModel = Gtk::TreeStore::create(stat_columns);
 	set_model(TreeModel);
 
+	first_run = false;
+
 	Gtk::CellRendererText *render = Gtk::manage(new Gtk::CellRendererText());
 	Gtk::TreeView::Column *viewcol = Gtk::manage( new Gtk::TreeView::Column (" Nation Statistic", *render));
 	viewcol->add_attribute (render->property_markup(), stat_columns.stat_name);
@@ -64,7 +66,7 @@ bool Tree_View::on_button_press_event(GdkEventButton* event){
 	bool return_value = false;
 	return_value = TreeView::on_button_press_event(event);
 
-	if(event->type == GDK_2BUTTON_PRESS)
+	if((event->type == GDK_2BUTTON_PRESS)&&(first_run))
 		gTest::instance().set_notebook_page(3);
 
 	return return_value;
@@ -227,6 +229,7 @@ void Tree_View::print_data(Glib::ustring main_nation, Glib::ustring main_save, G
 
 	expand_stat_list();
 	columns_autosize();
+	first_run = true;
 }
 
 void Tree_View::print_blank(Glib::ustring text_string){
