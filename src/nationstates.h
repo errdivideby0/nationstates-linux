@@ -83,13 +83,13 @@ protected:
 	Gtk::VBox right_box, v_header, save_box_big, menu_box, mainmain, left_box;
 	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
-	Gtk::Notebook notebook;
+	Gtk::Notebook notebook, events_notebook;
 	Gtk::Image flag;
 	Gtk::Label fullname, events_label, description_label, rights, nation_label;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
-	Gtk::TextView events_preview;
-	Glib::RefPtr<Gtk::TextBuffer> events_buffer;
+	Gtk::TextView events_preview, save_comments;
+	Glib::RefPtr<Gtk::TextBuffer> events_buffer, save_comments_buffer;
 	Glib::RefPtr<Gtk::TextTag> bold_tag;
 
 	Census_Plot plotter;
