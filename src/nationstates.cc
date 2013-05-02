@@ -58,7 +58,8 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &Nationstates::menu_preferences));
 
 	action_group->add(Gtk::Action::create("View", "View"));
-	action_group->add(Gtk::Action::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &Nationstates::view_info_box_hide));
+	view_info_box_hide_check = Gtk::ToggleAction::create("Hide Info/Flag Box", "Hide Info/Flag Box");
+	action_group->add(view_info_box_hide_check), sigc::mem_fun(*this, &Nationstates::view_info_box_hide);
 
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
 	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &Nationstates::menu_update_all));
@@ -87,6 +88,7 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
         "    </menu>"
 		"    <menu action='View'>"
 		"       <menuitem action='Hide Info/Flag Box' />"
+		"       <menuitem action='Test' />"
 		"    </menu>"
         "    <menu action='Tools'>"
         "      <menuitem action='UpdateAll'/>"
@@ -494,11 +496,5 @@ void Nationstates::view_info_box_hide(){
 
 void Nationstates::load_preferences(){
 	vector<Glib::ustring> pref_settings = fun.read("./settings.conf");
-	if (pref_settings.size() > 0){
-		if (pref_settings.at(0).find("true") != -1)
-			v_header.hide();
-		else
-			v_header.show();
-	}
 }
 

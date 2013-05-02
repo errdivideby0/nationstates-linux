@@ -88,6 +88,7 @@ protected:
 	Gtk::Image flag_image;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gtk::ToggleAction> view_info_box_hide_check;
 	Gtk::TextView events_preview, save_comments;
 	Glib::RefPtr<Gtk::TextBuffer> events_buffer, save_comments_buffer;
 	Glib::RefPtr<Gtk::TextTag> bold_tag;
