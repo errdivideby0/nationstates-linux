@@ -58,7 +58,8 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &Nationstates::menu_preferences));
 
 	action_group->add(Gtk::Action::create("View", "View"));
-	action_group->add(Gtk::RadioAction::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &gTest::view_info_box_hide));
+	view_info_box_hide_check = Gtk::ToggleAction::create("Hide Info/Flag Box", "Hide Info/Flag Box");
+	action_group->add(view_info_box_hide_check), sigc::mem_fun(*this, &Nationstates::view_info_box_hide);
 
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
 	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &Nationstates::menu_update_all));
@@ -87,6 +88,7 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
         "    </menu>"
 		"    <menu action='View'>"
 		"       <menuitem action='Hide Info/Flag Box' />"
+		"       <menuitem action='Test' />"
 		"    </menu>"
         "    <menu action='Tools'>"
         "      <menuitem action='UpdateAll'/>"
@@ -151,12 +153,15 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 						scrolled_save.add(Save_View::instance());
 						scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 						scrolled_save.set_size_request(430, 0);
-				save_box_big.pack_start(latest_events_box, Gtk::PACK_SHRINK);
-					latest_events_box.set_size_request(580, 120);
-					latest_events_box.pack_start(events_preview);
-						events_preview.set_wrap_mode(Gtk::WRAP_WORD);
-						events_preview.set_border_width(8);
-						events_preview.set_editable(false);
+				save_box_big.pack_start(events_notebook, Gtk::PACK_SHRINK);
+					events_notebook.set_tab_pos(Gtk::POS_BOTTOM);
+					events_notebook.append_page(latest_events_box, "Latest Events");
+						latest_events_box.set_size_request(580, 120);
+						latest_events_box.pack_start(events_preview);
+							events_preview.set_wrap_mode(Gtk::WRAP_WORD);
+							events_preview.set_border_width(8);
+							events_preview.set_editable(false);
+					events_notebook.append_page(save_comments, "User Comments");
 			notebook.append_page(description_box, "Description");
 				description_box.set_valign(Gtk::ALIGN_START);
 				description_box.set_halign(Gtk::ALIGN_START);
@@ -483,11 +488,5 @@ void Nationstates::view_info_box_hide(){
 
 void Nationstates::load_preferences(){
 	vector<Glib::ustring> pref_settings = fun.read("./settings.conf");
-	if (pref_settings.size() > 0){
-		if (pref_settings.at(0).find("true") != -1)
-			v_header.hide();
-		else
-			v_header.show();
-	}
 }
 
