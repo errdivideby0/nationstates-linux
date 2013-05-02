@@ -85,6 +85,7 @@ protected:
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook, events_notebook;
 	Gtk::Label fullname, events_label, description_label, rights, nation_label;
+	Gtk::Image flag_image;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TextView events_preview, save_comments;
