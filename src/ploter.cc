@@ -67,17 +67,16 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	std::vector<Glib::ustring> stat_vector = Nationstates::instance().get_stat_vector();
 	int n_lines = stat_vector.size()/3;
 	if(stat_vector.size()>1){
-		cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
-		Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("Time");
-
-		date_label->get_pixel_size(text_width, text_height);
-		cr->move_to(1.5*xs + ((width-(5.5*xs))/2) - (text_width/2), height - ysb/3.5 - (text_height/2));
-		date_label->show_in_cairo_context(cr);
-
 		Glib::RefPtr<Pango::Layout> name_label;
 
 		std::vector<double> values_vector = Nationstates::instance().get_value_vector();
 		if(values_vector.size()>1){
+			cr->set_source_rgba(0.0, 0.0, 0.0, 0.95);
+			Glib::RefPtr<Pango::Layout> date_label = create_pango_layout("Time");
+			date_label->get_pixel_size(text_width, text_height);
+			cr->move_to(1.5*xs + ((width-(5.5*xs))/2) - (text_width/2), height - ysb/3.5 - (text_height/2));
+			date_label->show_in_cairo_context(cr);
+
 			double split = (values_vector.size()+0.00)/n_lines;
 			double step_width = ((width-(5.5*xs))/(split-1));
 			int larger = 0;
@@ -126,7 +125,6 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 			cr->move_to(1.5*xs, ys);
 			cr->line_to(1.5*xs, height - ys);
 			cr->stroke();
-
 			// Print the axis lines and then labels
 			Glib::RefPtr<Pango::Layout> y_label;
 			cr->set_line_width(1.0);
@@ -206,11 +204,11 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 					cr->move_to(1.5*xs, height/2 + (median * (height - 2*ys) / (2*min)));
 					cr->line_to(1.5*xs +((split-1)*step_width), height/2 + (median * (height - 2*ys) / max) +0.5);
 				}
-				cr->stroke();
+			cr->stroke();
 			}
 			double width_end = 1.5*xs +((split-1)*step_width) + 4;
 			for(int k=0; k<n_lines; k++){
-				colour_pos_label = colour_pos_const + k;
+					colour_pos_label = colour_pos_const + k;
 				while(colour_pos_label>num_colours)
 					colour_pos_label = colour_pos_label- num_colours - 1;
 				cr->set_source_rgba(red_colour[colour_pos_label]/256.0, green_colour[colour_pos_label]/256.0, blue_colour[colour_pos_label]/256.0, 1);
