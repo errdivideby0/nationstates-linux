@@ -66,6 +66,10 @@ protected:
 	void on_menu_others();
 	void on_page_switch(Gtk::Widget* page, guint page_num);
 	void load_preferences();
+	void view();
+	void view_info_box_hide();
+
+	std::vector<Glib::ustring> view_settings;
 
 	virtual bool on_tree_key(GdkEventKey* event);
 	virtual bool on_search_key(GdkEventKey* event);

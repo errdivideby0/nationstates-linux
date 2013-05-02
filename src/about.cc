@@ -31,6 +31,7 @@ About_Page::About_Page(): main_box(Gtk::ORIENTATION_VERTICAL), close_button("Clo
 	main_box.pack_start(vbox_one);
 	vbox_one.pack_start(label_one);
 	vbox_one.set_size_request(1,1);
+	vbox_one.set_border_width(8);
 	label_one.set_label("Nationstates-linux is free software: you can redistribute it and/or modify\n"
 						"it under the terms of the GNU General Public License as published by\n"
 						"the Free Software Foundation, either version 3 of the License, or\n"
@@ -43,12 +44,17 @@ About_Page::About_Page(): main_box(Gtk::ORIENTATION_VERTICAL), close_button("Clo
 	vbox_one.pack_start(link_button);
 	link_button.set_uri("http://poloure.github.io/nationstates-linux/");
 	link_button.set_label("Github Page");
+	link_button.set_relief(Gtk::RELIEF_NONE);
 	main_box.pack_start(bbox_one, Gtk::PACK_SHRINK);
 	bbox_one.set_layout(Gtk::BUTTONBOX_END);
 	bbox_one.pack_start(close_button);
 	bbox_one.set_border_width(5);
+	link_button.signal_clicked().connect(sigc::mem_fun(*this, &About_Page::on_link_button_clicked));
 	close_button.signal_clicked().connect(sigc::mem_fun(*this, &About_Page::on_close_button));
 	show_all_children();
+}
+
+void About_Page::on_link_button_clicked(){
 }
 
 void About_Page::on_close_button(){

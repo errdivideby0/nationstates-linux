@@ -29,6 +29,7 @@ public:
 	About_Page();
 
 protected:
+	void on_link_button_clicked();
 	void on_close_button();
 	Gtk::Box main_box;
 	Gtk::ButtonBox bbox_one;

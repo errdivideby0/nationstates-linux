@@ -56,6 +56,9 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Paste", Gtk::Stock::PASTE), sigc::mem_fun(*this, &gTest::on_menu_others));
 	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &gTest::on_menu_pref));
 
+	action_group->add(Gtk::Action::create("View", "View"));
+	action_group->add(Gtk::Action::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &gTest::view_info_box_hide));
+
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
 	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &gTest::fetch_all));
 
@@ -81,6 +84,9 @@ gTest::gTest(): main_box(Gtk::ORIENTATION_HORIZONTAL){
         "      <separator/>"
         "      <menuitem action='Preferences'/>"
         "    </menu>"
+		"    <menu action='View'>"
+		"       <menuitem action='Hide Info/Flag Box' />"
+		"    </menu>"
         "    <menu action='Tools'>"
         "      <menuitem action='UpdateAll'/>"
         "    </menu>"
@@ -461,6 +467,20 @@ void gTest::on_menu_help(){
 
 void gTest::on_menu_about(){
 	about.show();
+}
+
+void gTest::view(){
+
+}
+
+void gTest::view_info_box_hide(){
+	/*vector<Glib::ustring> view_settings = fun.read("./settings.conf");
+	if (view_settings.size() > 0){
+		if(view_settings.at(0).find("true") != -1)
+			v_header.hide();
+		else
+			v_header.show();
+	}*/
 }
 
 void gTest::load_preferences(){
