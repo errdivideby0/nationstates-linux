@@ -54,9 +54,10 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	double xsb = width/12.0;
 	double ys = height/18.0;
 	double ysb = (height - (2*ys))/10.0;
-	vector<int> red_colour {51, 170, 153, 255, 255, 220, 238, 139, 72, 30, 0, 34, 255, 139, 255, 255};
-	vector<int> green_colour {181, 102, 204, 187, 68, 20, 48, 71, 61, 144, 205, 139, 153, 125, 69, 99};
-	vector<int> blue_colour {229, 204, 0, 51, 68, 60, 167, 137, 139, 255, 102, 34, 18, 107, 0, 71};
+	vector< vector<Glib::ustring> > colours = Nationstates::instance().get_colour_vectors();
+	vector<Glib::ustring> red_colour = colours.at(0);
+	vector<Glib::ustring> green_colour = colours.at(1);
+	vector<Glib::ustring> blue_colour = colours.at(2);
 	int num_colours = red_colour.size() - 1;
 	int colour_pos = rand() % num_colours + 1;
 	int colour_pos_const = colour_pos;
@@ -157,7 +158,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				colour_pos = colour_pos_const + k;
 				while(colour_pos>num_colours)
 					colour_pos = colour_pos - num_colours - 1;
-				cr->set_source_rgba(red_colour[colour_pos]/256.0, green_colour[colour_pos]/256.0, blue_colour[colour_pos]/256.0, 1);
+				cr->set_source_rgba(std::stod(red_colour.at(colour_pos))/256.0, std::stod(green_colour.at(colour_pos))/256.0, std::stod(blue_colour.at(colour_pos))/256.0, 1);
 				for(int i=0; i<split-1; i++){
 					if(min>=0){
 						cr->move_to(1.5*xs +(i*step_width), height - ys - (values_vector.at((k*split)+i) * (height - 2*ys) / max) +0.5);
@@ -187,7 +188,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				cr->stroke();
 			}
 			if(median_exists){
-				cr->set_source_rgba(red_colour[colour_pos]/512.0, green_colour[colour_pos]/512.0, blue_colour[colour_pos]/512.0, 1);
+				cr->set_source_rgba(std::stod(red_colour.at(colour_pos))/512.0, std::stod(green_colour.at(colour_pos))/512.0, std::stod(blue_colour.at(colour_pos))/512.0, 1);
 				if(min>=0){
 					cr->move_to(1.5*xs, height - ys - (median * (height - 2*ys) / max) +0.5);
 					cr->line_to(1.5*xs +((split-1)*step_width), height -ys - (median * (height - 2*ys) / max) +0.5);
@@ -211,7 +212,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 					colour_pos_label = colour_pos_const + k;
 				while(colour_pos_label>num_colours)
 					colour_pos_label = colour_pos_label- num_colours - 1;
-				cr->set_source_rgba(red_colour[colour_pos_label]/256.0, green_colour[colour_pos_label]/256.0, blue_colour[colour_pos_label]/256.0, 1);
+				cr->set_source_rgba(stod(red_colour.at(colour_pos_label))/256.0, stod(green_colour.at(colour_pos_label))/256.0, stod(blue_colour.at(colour_pos_label))/256.0, 1);
 				if(stat_vector.at(k*3).find('<')!=-1)
 					stat_vector.at(k*3) = stat_vector.at(k*3).substr(3, stat_vector.at(k*3).length() - 7);
 				name_label = create_pango_layout(stat_vector.at(k*3));
@@ -228,7 +229,7 @@ bool Census_Plot::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 				cr->stroke();
 			}
 			if(median_exists){
-				cr->set_source_rgba(red_colour[colour_pos]/512.0, green_colour[colour_pos]/512.0, blue_colour[colour_pos]/512.0, 1);
+				cr->set_source_rgba(stod(red_colour.at(colour_pos))/512.0, stod(green_colour.at(colour_pos))/512.0, stod(blue_colour.at(colour_pos))/512.0, 1);
 				name_label = create_pango_layout("World Median");
 				name_label->get_pixel_size(text_width, text_height);
 				if(min>=0)

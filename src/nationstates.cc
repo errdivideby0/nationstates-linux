@@ -119,20 +119,17 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 		left_box.pack_start(search_entry, Gtk::PACK_SHRINK);
 	main_box.pack_start(right_box);
 		right_box.set_size_request(580, 500);
-		right_box.pack_start(v_header, Gtk::PACK_SHRINK);
-			v_header.set_size_request(580, 87);
-			v_header.pack_start(header_upper_box);
-				header_upper_box.set_border_width(2);
-				header_upper_box.pack_start(nation_label);
+		right_box.pack_start(header_box, Gtk::PACK_SHRINK);
+			header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
+				flag_box.set_border_width(6);
+				flag_box.set_size_request(130, 84);
+				flag_box.pack_start(flag_image);
+			header_box.pack_start(v_header, Gtk::PACK_EXPAND_WIDGET);
+				v_header.pack_start(nation_label);
 					nation_label.set_selectable(true);
 					nation_label.set_markup("<b><big>Nation</big></b>");
 					nation_label.set_justify(Gtk::JUSTIFY_CENTER);
-			v_header.pack_start(header_box);
-				header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
-					flag_box.set_border_width(6);
-					flag_box.set_size_request(130, 84);
-					flag_box.pack_start(flag_image);
-				header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
+				v_header.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
 					nation_box.pack_start(fullname, Gtk::PACK_SHRINK);
 						fullname.set_selectable(true);
 						fullname.set_markup("\"Motto\"\nCategory:\nPopulation:");
@@ -494,7 +491,18 @@ void Nationstates::view_info_box_hide(){
 	}*/
 }
 
+vector< vector<Glib::ustring> > Nationstates::get_colour_vectors(){
+	return colours;
+}
+
 void Nationstates::load_preferences(){
+	red_colours = fun.read("./name-store/red_colours.txt");
+	green_colours = fun.read("./name-store/green_colours.txt");
+	blue_colours = fun.read("./name-store/blue_colours.txt");
+	colours.clear();
+	colours.push_back(red_colours);
+	colours.push_back(green_colours);
+	colours.push_back(blue_colours);
 	vector<Glib::ustring> pref_settings = fun.read("./settings.conf");
 }
 

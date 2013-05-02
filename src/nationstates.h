@@ -56,6 +56,7 @@ public:
 	static std::vector<double> values_vector;
 	std::vector<Glib::ustring> get_stat_vector();
 	std::vector<double> get_value_vector();
+	std::vector< std::vector<Glib::ustring> > get_colour_vectors();
 
 protected:
 
@@ -75,6 +76,9 @@ protected:
 	void on_page_switch(Gtk::Widget* page, guint page_num);
 	virtual bool on_tree_key(GdkEventKey* event);
 	virtual bool on_search_key(GdkEventKey* event);
+
+	std::vector<Glib::ustring> red_colours, green_colours, blue_colours;
+	std::vector< std::vector<Glib::ustring> > colours;
 
 	Glib::ustring nation, loaded;
 
