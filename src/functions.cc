@@ -57,26 +57,6 @@ Glib::ustring functions::doubstr(double number){
 	return ss.str();
 }
 
-// Counts the number of lines in a file (1, 2, 3, ...)
-int functions::count_lines(Glib::ustring file){
-	ifstream read;
-	read.open(strchar(file));
-	int nlines = -1;
-	string nline;
-	while (read.good()){
-		getline (read,nline);
-		nlines++;
-	}
-	read.close();
-	return nlines;
-}
-
-// Function used by curl to write data
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-		size_t written = fwrite(ptr, size, nmemb, stream);
-		return written;
-}
-
 // Trim a Glib::ustring (string, # of chars to remove from begining, # of chars to remove from end)
 Glib::ustring functions::trim(Glib::ustring the_string, int from_start, int from_end){
 	return the_string.substr(from_start, the_string.size() - from_start - from_end);
@@ -110,7 +90,7 @@ void functions::curl_grab(Glib::ustring filed, Glib::ustring url){
 	if (curl) {
 		FILE *fp = fopen(strchar(filed),"wb");
 		curl_easy_setopt(curl, CURLOPT_URL, strchar(url));
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_perform(curl);
 		curl_easy_cleanup(curl);
@@ -136,9 +116,8 @@ int functions::get_nation_data(Glib::ustring nation){
 	for(int i=0; i<url_requests.size(); i++)
 		nation_url = nation_url+"+"+url_requests.at(i);
 	curl_grab("./nation.xml", nation_url);
-	int size = count_lines("./nation.xml");
 	save_census_median();
-	return size;
+	return read("./nation.xml").size();
 }
 
 // Gets the current time. Mode zero gives the date in ISO YYYY-MM-DD, mode one gives whether it is the morning nationstates or the afternoon, mode one give the current hour HH

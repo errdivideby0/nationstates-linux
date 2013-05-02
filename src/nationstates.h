@@ -84,7 +84,6 @@ protected:
 	Gtk::HBox header_box, description_box, issues_box, region_box, graph_box, event_box, save_box, nation_box, header_upper_box, latest_events_box;
 	Gtk::ScrolledWindow scrolled_save, scrolled_nation, scrolled_events, scrolled_stats;
 	Gtk::Notebook notebook, events_notebook;
-	Gtk::Image flag;
 	Gtk::Label fullname, events_label, description_label, rights, nation_label;
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
 	Glib::RefPtr<Gtk::ActionGroup> action_group;

@@ -128,7 +128,6 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 			v_header.pack_start(header_box);
 				header_box.pack_start(flag_box, Gtk::PACK_SHRINK);
 					flag_box.set_border_width(6);
-					flag_box.pack_start(flag, Gtk::PACK_SHRINK);
 					flag_box.set_size_request(130, 72);
 				header_box.pack_start(nation_box, Gtk::PACK_EXPAND_WIDGET);
 					nation_box.pack_start(fullname, Gtk::PACK_SHRINK);
@@ -196,6 +195,42 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	events_notebook.hide();
 	load_preferences();
 }
+
+struct ScalingImage : public Gtk::Image{
+	explicit ScalingImage(Glib::RefPtr<Gdk::Pixbuf> pixbuf, Gdk::InterpType interp = Gdk::INTERP_BILINEAR): Gtk::Image(pixbuf), m_original(pixbuf),
+	m_interp(interp), m_sized(false){
+	}
+
+	protected:
+	virtual void on_size_allocate(Gtk::Allocation & r){
+		if(!m_sized){
+			Glib::RefPtr<Gdk::Pixbuf> scaled = m_original->scale_simple(r.get_width(), r.get_height(), m_interp);
+			Gtk::Image::set(scaled);
+			m_sized = true;
+		}
+		else{
+			Gtk::Image::on_size_allocate(r);
+			m_sized = false;
+		}
+	}
+
+	private:
+		Glib::RefPtr<Gdk::Pixbuf> m_original;
+		Gdk::InterpType m_interp;
+		bool m_sized;
+};
+
+struct AspectPreservingScalingImage : public Gtk::AspectFrame{
+	explicit AspectPreservingScalingImage(Glib::RefPtr<Gdk::Pixbuf> const & pixbuf, Gdk::InterpType interp = Gdk::INTERP_BILINEAR): m_img(pixbuf,interp){
+		set(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER,
+        pixbuf->get_width()/float(pixbuf->get_height()));
+		set_shadow_type(Gtk::SHADOW_NONE);
+		set_size_request(pixbuf->get_width()/2,pixbuf->get_height()/2);
+		add(m_img);
+	}
+	private:
+		ScalingImage m_img;
+};
 
 void Nationstates::menu_add_nation(){
 	adder.show();
@@ -361,9 +396,8 @@ void Nationstates::load_main(Glib::ustring selected_save, Glib::ustring selected
 	nation = selected_nation;
 	loaded = selected_save;
 
-	if(skip_tree_print==0){
+	if(skip_tree_print==0)
 		Stat_View::instance().print_data(selected_nation, selected_save, selected_nation, selected_save, search_entry.get_text());
-	}
 
 	vector<Glib::ustring> basics = 			fun.load_data(nation, loaded, 0);
 	vector<Glib::ustring> census = 			fun.load_data(nation, loaded, 1);
@@ -390,9 +424,13 @@ void Nationstates::load_main(Glib::ustring selected_save, Glib::ustring selected
 	description_label	.set_label(description);
 	events_label		.set_markup(events_text);
 
-	flag.clear();
+	//flag.clear();
 	//fun.curl_grab("./nations-store/"+nation+"/flag.jpg", basics.at(4));
-	flag.set("./nations-store/"+nation+"/flag.jpg");
+	AspectPreservingScalingImage flag(Gdk::Pixbuf::create_from_file("./nations-store/"+nation+"/flag.jpg"));
+	//try{
+	//	flag_box.remove(flag);}
+	//catch(exception e){}
+	flag_box.pack_start(flag);
 }
 
 void Nationstates::delete_nation(Glib::ustring nationer){
