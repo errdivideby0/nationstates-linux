@@ -58,7 +58,7 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	action_group->add(Gtk::Action::create("Preferences", "Preferences"), Gtk::AccelKey("<control><alt>P"), sigc::mem_fun(*this, &Nationstates::menu_preferences));
 
 	action_group->add(Gtk::Action::create("View", "View"));
-	action_group->add(Gtk::Action::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &gTest::view_info_box_hide));
+	action_group->add(Gtk::RadioAction::create("Hide Info/Flag Box", "Hide Info/Flag Box"), sigc::mem_fun(*this, &gTest::view_info_box_hide));
 
 	action_group->add(Gtk::Action::create("Tools", "Tools"));
 	action_group->add(Gtk::Action::create("UpdateAll", "Update All"), Gtk::AccelKey("<control>U"), sigc::mem_fun(*this, &Nationstates::menu_update_all));
