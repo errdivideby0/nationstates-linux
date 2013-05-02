@@ -16,7 +16,7 @@
 */
 
 #include "saveview.h"
-#include "gtest.h"
+#include "nationstates.h"
 #include "nationview.h"
 #include <fstream>
 
@@ -71,7 +71,7 @@ void Save_View::on_save_changed(){
 		selected_row = *(get_selection()->get_selected());
 		Glib::ustring ndate = selected_row[save_columns.stat_save];
 		selected_save = ndate + ".csv";
-		gTest::instance().update_event_preview(selected_save);
+		Nationstates::instance().update_event_preview(selected_save);
 	}
 	else
 		selected_save.clear();
@@ -85,12 +85,12 @@ void Save_View::refresh_saves(){
 		vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+select_nation+"/datelog.txt");
 		for(signed int i=previous_dates.size()-1; i>-1; i--)
 			append_save(fun.trim(previous_dates.at(i), 0, 4));
-		gTest::instance().update_event_preview(previous_dates.back());
+		Nationstates::instance().update_event_preview(previous_dates.back());
 	}
 }
 
 void Save_View::load(){
-	gTest::instance().load_main(selected_save, Nation_View::instance().selected_nation, 0);
+	Nationstates::instance().load_main(selected_save, Nation_View::instance().selected_nation, 0);
 }
 
 void Save_View::show_rename_popup(){
@@ -166,5 +166,5 @@ bool Save_View::on_key_press_event(GdkEventKey* event){
 }
 
 void Save_View::compare(){
-	gTest::instance().compare_to_loaded(selected_save, Nation_View::instance().selected_nation);
+	Nationstates::instance().load_compare(selected_save, Nation_View::instance().selected_nation);
 }

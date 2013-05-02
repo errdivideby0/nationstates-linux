@@ -15,13 +15,30 @@
     along with nationstates-linux.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "nationstates.h"
+#ifndef GTKMM_GTEST_ASK
+#define GTKMM_GTEST_ASK
+
 #include <gtkmm.h>
 
-int main(int argc, char *argv[]){
-	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+class rename_popup : public Gtk::Window{
+private:
 
-	Nationstates& nationstates = Nationstates::instance();
+public:
 
-	return app->run(nationstates);
-}
+	rename_popup();
+	void set_width();
+
+protected:
+
+	void on_button_cancel();
+	void on_button_confirm();
+	void set_rename_text();
+
+	Gtk::Box main_box;
+	Gtk::HBox top_box;
+	Gtk::ButtonBox bottom_box;
+	Gtk::Entry rename_input;
+	Gtk::Button cancel_button, confirm_button;
+};
+
+#endif

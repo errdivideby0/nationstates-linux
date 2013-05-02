@@ -16,7 +16,7 @@
 */
 
 #include "add.h"
-#include "gtest.h"
+#include "nationstates.h"
 #include <cstdlib>
 #include <gtkmm.h>
 
@@ -52,5 +52,5 @@ void Add_Popup::on_button_cancel(){
 
 void Add_Popup::on_button_confirm(){
 	hide();
-	gTest::instance().new_nation(nation_input.get_text());
+	Nationstates::instance().new_nation(nation_input.get_text());
 }

@@ -20,7 +20,7 @@
 
 #include <gtkmm.h>
 #include "functions.h"
-#include "popup.h"
+#include "rename.h"
 
 class Save_View : public Gtk::TreeView{
 
@@ -72,7 +72,7 @@ protected:
 	Gtk::TreeModel::iterator parentrow, iter;
 	Gtk::Menu save_menu, save_title_menu;
 	functions fun;
-	popup pop;
+	rename_popup pop;
 };
 
 #endif
