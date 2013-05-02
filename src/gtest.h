@@ -20,6 +20,7 @@
 
 #include <gtkmm.h>
 #include "preferences.h"
+#include "about.h"
 #include "treeview.h"
 #include "functions.h"
 #include "ploter.h"
@@ -88,6 +89,7 @@ protected:
 	Glib::RefPtr<Gtk::TextBuffer> events_buffer;
 	Glib::RefPtr<Gtk::TextTag> bold_tag;
 	Preferences_Window preferences;
+	About_Page about;
 };
 
 #endif

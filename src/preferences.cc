@@ -64,9 +64,9 @@ void Preferences_Window::set_pref(){
 		cout<<pref_settings.at(i)<<"\n";
 	if (pref_settings.at(0).find("true") != -1)
 		info_box_check.set_active(true);
-	if (pref_settings.at(1) == "true")
+	if (pref_settings.at(1).find("true") != -1)
 		baked_potato.set_active(true);
-	if (pref_settings.at(2) == "true")
+	if (pref_settings.at(2).find("true") != -1)
 		not_a_potato.set_active(true);
 }
 
@@ -79,16 +79,16 @@ void Preferences_Window::on_info_box_check_clicked(){
 
 void Preferences_Window::on_baked_potato_clicked(){
 	if (baked_potato.get_active())
-		pref_settings.at(1) = "true";
+		pref_settings.at(1) = "Test: true";
 	else
-		pref_settings.at(1) = "false";
+		pref_settings.at(1) = "Test: false";
 }
 
 void Preferences_Window::on_not_a_potato_clicked(){
 	if (not_a_potato.get_active())
-		pref_settings.at(2) = "true";
+		pref_settings.at(2) = "Test: true";
 	else
-		pref_settings.at(2) = "false";
+		pref_settings.at(2) = "Test: false";
 }
 
 void Preferences_Window::on_apply_button(){
