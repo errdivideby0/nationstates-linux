@@ -517,10 +517,10 @@ void Nationstates::load_preferences(){
 	if(settings.size() > 0){
 		if(settings.at(3).find("true") != -1){
 			view_info_box_hide_check->set_active();
-			v_header.hide();
+			header_box.hide();
 		}
 		else
-			v_header.show();
+			header_box.show();
 	}
 }
 
