@@ -34,11 +34,11 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), a
 	general_tab.pack_start(general_tab_vbox_one);
 	general_tab.pack_start(general_tab_vbox_two);
 	general_tab_vbox_one.pack_start(info_box_check);
-	info_box_check.set_label("Hide Information/Flag box");
+	info_box_check.set_label("test");
 	general_tab_vbox_one.pack_start(baked_potato);
-	baked_potato.set_label("baked potato");
+	baked_potato.set_label("test");
 	general_tab_vbox_one.pack_start(not_a_potato);
-	not_a_potato.set_label("not a potato");
+	not_a_potato.set_label("test");
 	signal_show().connect(sigc::mem_fun(*this, &Preferences_Window::set_pref));
 	info_box_check.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_info_box_check_clicked));
 	baked_potato.signal_clicked().connect(sigc::mem_fun(*this, &Preferences_Window::on_baked_potato_clicked));
@@ -56,7 +56,7 @@ Preferences_Window::Preferences_Window(): main_box(Gtk::ORIENTATION_VERTICAL), a
 void Preferences_Window::set_pref(){
 	pref_settings = fun.read("./settings.conf");
 	if (pref_settings.size() == 0){
-		for(int i=0;i<3;i++)
+		for(int i=0;i<4;i++)
 			pref_settings.push_back("");
 	}
 	cout<<pref_settings.size()<<"\n";
@@ -72,9 +72,9 @@ void Preferences_Window::set_pref(){
 
 void Preferences_Window::on_info_box_check_clicked(){
 	if (info_box_check.get_active())
-		pref_settings.at(0) = "Hide Info/Flag box: true";
+		pref_settings.at(0) = "test: true";
 	else
-		pref_settings.at(0) = "Hide Info/Flag box: false";
+		pref_settings.at(0) = "test: false";
 }
 
 void Preferences_Window::on_baked_potato_clicked(){

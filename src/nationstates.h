@@ -69,8 +69,9 @@ protected:
 	void load_preferences();
 	void view();
 	void view_info_box_hide();
+	void view_settings();
 
-	std::vector<Glib::ustring> view_settings;
+	std::vector<Glib::ustring> settings;
 
 	void on_page_switch(Gtk::Widget* page, guint page_num);
 	virtual bool on_tree_key(GdkEventKey* event);
