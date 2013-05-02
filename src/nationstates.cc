@@ -148,11 +148,11 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 					save_box.pack_start(scrolled_nation);
 						scrolled_nation.add(Nation_View::instance());
 						scrolled_nation.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-						scrolled_nation.set_size_request(170,0);
+						scrolled_nation.set_size_request(160,0);
 					save_box.pack_start(scrolled_save);
 						scrolled_save.add(Save_View::instance());
 						scrolled_save.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-						scrolled_save.set_size_request(430, 0);
+						scrolled_save.set_size_request(420, 0);
 				save_box_big.pack_start(events_notebook, Gtk::PACK_SHRINK);
 					events_notebook.set_tab_pos(Gtk::POS_BOTTOM);
 					events_notebook.append_page(latest_events_box, "Latest Events");
@@ -162,6 +162,7 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 							events_preview.set_border_width(8);
 							events_preview.set_editable(false);
 					events_notebook.append_page(save_comments, "User Comments");
+						save_comments.set_size_request(580, 120);
 			notebook.append_page(description_box, "Description");
 				description_box.set_valign(Gtk::ALIGN_START);
 				description_box.set_halign(Gtk::ALIGN_START);
@@ -194,6 +195,7 @@ Nationstates::Nationstates(): main_box(Gtk::ORIENTATION_HORIZONTAL){
 	Nation_View::instance().refresh_nations();
 
 	show_all_children();
+	events_notebook.hide();
 	load_preferences();
 }
 
@@ -225,14 +227,7 @@ void Nationstates::on_page_switch(Gtk::Widget*, guint page_num){
 			for(int j=0; j<stat_vector.size()/3; j++){
 				previous_dates.clear();
 				Glib::ustring name = stat_vector.at(j*3);
-				vector<Glib::ustring> death_names;
 				vector<Glib::ustring> previous_dates = fun.read("./nations-store/"+nation+"/datelog.txt");
-
-				/*if(stat_vector.at((j*3)+1)=="Deaths"){
-					vector<Glib::ustring> death_temp = fun.load_data(nation, previous_dates.back(), 3);
-					for(int k=0; k<death_temp.size()/2; k++)
-						death_names.push_back(death_temp.at(k*2));
-				}*/
 
 				for(int i=0; i<previous_dates.size(); i++){
 
@@ -281,13 +276,19 @@ void Nationstates::on_page_switch(Gtk::Widget*, guint page_num){
 						else
 							values_vector.push_back(fun.strouble(fun.trim(bud.at(10), 0, 1)));
 					}
-					/*else{
+					else{
+						bool death_found = false;
 						vector<Glib::ustring> det = fun.load_data(nation, previous_dates.at(i), 3);
-						for(int k=0; k<death_names.size(); k++){
-							if(death_names.at(k).find(name)!=-1)
+						for(int k=0; k<det.size()/2; k++){
+							if(name.find(det.at(k*2))!=-1){
 								values_vector.push_back(fun.strouble(det.at((k*2)+1)));
+								death_found = true;
+								break;
+							}
 						}
-					}*/
+						if(death_found==false)
+							values_vector.push_back(0.0);
+					}
 				}
 			}
 		}
@@ -296,7 +297,7 @@ void Nationstates::on_page_switch(Gtk::Widget*, guint page_num){
 
 void Nationstates::update_event_preview(Glib::ustring selected_save){
 	try{
-		if(selected_save.length()>0){
+		//if(selected_save.length()>0){
 			Glib::ustring selected_nation = 		Nation_View::instance().get_selected_nation();
 			vector<Glib::ustring> events_times = 	fun.convert_times(fun.load_data(selected_nation, selected_save, 4), "%b %d, %R");
 			vector<Glib::ustring> events = 			fun.load_data(selected_nation, selected_save, 5);
@@ -317,8 +318,9 @@ void Nationstates::update_event_preview(Glib::ustring selected_save){
 				events_buffer->insert(iter_at, " - "+events.at(i));
 			}
 			events_preview.set_buffer(events_buffer);
+			//if(events_preview_hide == false) // for the hide events preview
+					events_notebook.show();
 
-		}
 	}catch(exception e){
 		//Save_View::instance().select_default();
 	}
