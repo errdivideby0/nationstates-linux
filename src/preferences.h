@@ -31,6 +31,10 @@ public:
 protected:
 
 	std::vector<Glib::ustring> pref_settings;
+	std::vector<Glib::ustring> red;
+	std::vector<Glib::ustring> green;
+	std::vector<Glib::ustring> blue;
+	void on_select_colour();
 	void set_pref();
 	void on_close_button();
 	void on_apply_button();
@@ -39,11 +43,17 @@ protected:
 	void on_not_a_potato_clicked();
 	Gtk::Notebook pref_notebook;
 	Gtk::Box main_box;
-	Gtk::HBox general_tab, test_two;
-	Gtk::VBox general_tab_vbox_one, general_tab_vbox_two;
-	Gtk::ButtonBox bbox_one;
-	Gtk::Button apply_button, close_button;
+	Gtk::HBox general_tab;
+	Gtk::VBox general_tab_vbox_one, general_tab_vbox_two, colour_tab_vbox_one;
+	Gtk::ButtonBox bbox_one, colour_tab_button_box_one;
+	Gtk::ScrolledWindow colour_tab_scroll_window_one;
+	Gtk::Button close_button, select_colour_button;
 	Gtk::CheckButton info_box_check, baked_potato, not_a_potato;
+	Gtk::ColorButton colour_tab_colour_button;
+	Gtk::DrawingArea colour_tab_drawing_area;
+
+	Gdk::RGBA colour_tab_rgba;
+
 	functions fun;
 };
 
